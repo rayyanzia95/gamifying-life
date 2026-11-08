@@ -82,10 +82,6 @@ function render() {
     const addons = document.createElement("div");
     addons.className = "addons";
 
-    if (main.type === "fard") {
-      const inJamaah = Boolean(mainEvent && mainEvent.onTime && mainEvent.masjid);
-      addons.append(makeCheckbox("jama'ah", inJamaah, () => toggleJamaah(prayer.id, main.id)));
-    }
     if (mainEvent && main.type === "fard") {
       const inJamaah = Boolean(mainEvent.onTime && mainEvent.masjid);
       addons.append(makeCheckbox("jama'ah", inJamaah, () => toggleJamaah(prayer.id, main.id)));
