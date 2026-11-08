@@ -29,20 +29,14 @@ function toggleFlag(prayerId, setId, flag) {
 }
 
 function toggleJamaah(prayerId, setId) {
-  let events = loadEvents();
+  const events = loadEvents();
   const event = findEvent(events, prayerId, setId);
+  if (!event) return;
 
-  if (event && event.onTime && event.masjid) {
-    events = events.filter(e => e !== event);
-  } else if (event) {
-    event.onTime = true;
-    event.masjid = true;
-  } else {
-    events.push({
-      date: todayString(), prayer: prayerId, set: setId,
-      onTime: true, masjid: true
-    });
-  }
+  const inJamaah = event.onTime && event.masjid;
+  event.onTime = !inJamaah;
+  event.masjid = !inJamaah;
+
   saveEvents(events);
   render();
 }
@@ -93,11 +87,14 @@ function render() {
       addons.append(makeCheckbox("jama'ah", inJamaah, () => toggleJamaah(prayer.id, main.id)));
     }
     if (mainEvent && main.type === "fard") {
+      const inJamaah = Boolean(mainEvent.onTime && mainEvent.masjid);
+      addons.append(makeCheckbox("jama'ah", inJamaah, () => toggleJamaah(prayer.id, main.id)));
       addons.append(makeCheckbox("on time", Boolean(mainEvent.onTime), () => toggleFlag(prayer.id, main.id, "onTime")));
       addons.append(makeCheckbox("masjid", Boolean(mainEvent.masjid), () => toggleFlag(prayer.id, main.id, "masjid")));
     }
 
     for (const set of prayer.sets) {
+        if (set !== main && !mainEvent) continue;
       const event = findEvent(events, prayer.id, set.id);
 
       if (set !== main) {
