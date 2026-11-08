@@ -1,5 +1,4 @@
 const goal = totalMax({ extras: false });
-document.getElementById("goal").textContent = "Daily goal: " + goal + " XP";
 
 function findEvent(events, prayerId, setId) {
   return events.find(e =>
@@ -43,7 +42,8 @@ function render() {
   const events = loadEvents();
   const list = document.getElementById("prayers");
   list.innerHTML = "";
-  let earned = 0;
+  let core = 0;
+  let extra = 0;
 
   for (const prayer of PRAYERS) {
     const item = document.createElement("li");
@@ -57,7 +57,12 @@ function render() {
       row.append(makeCheckbox(text, Boolean(event), () => toggleDone(prayer.id, set.id)));
 
       if (event) {
-        earned += setEarnedXp(set, event);
+        const xp = setEarnedXp(set, event);
+        if (prayer.bonus || set.optional) {
+          extra += xp;
+        } else {
+          core += xp;
+        }
 
         if (set.type === "fard" || set.type === "wajib") {
           row.append(" ", makeCheckbox("on time", Boolean(event.onTime), () => toggleFlag(prayer.id, set.id, "onTime")));
@@ -71,7 +76,10 @@ function render() {
     list.append(item);
   }
 
-  document.getElementById("earned").textContent = "Earned today: " + earned + " XP";
+  const percent = Math.min((core / goal) * 100, 100);
+  document.getElementById("bar-fill").style.width = percent + "%";
+  document.getElementById("progress-label").textContent = core + " / " + goal + " XP today";
+  document.getElementById("bonus").textContent = extra > 0 ? "+ " + extra + " bonus XP" : "";
 }
 
 render();

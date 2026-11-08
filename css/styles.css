@@ -1,0 +1,42 @@
+body {
+  font-family: system-ui, sans-serif;
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 24px 16px;
+  color: #1f1f1d;
+}
+
+h1 {
+  font-size: 22px;
+  font-weight: 500;
+  margin: 0 0 16px;
+}
+
+.card {
+  border: 1px solid #e2e2dc;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 24px;
+}
+
+.card p {
+  margin: 0;
+  font-size: 14px;
+  color: #5f5e5a;
+}
+
+.bar {
+  height: 8px;
+  background: #ecece6;
+  border-radius: 4px;
+  margin: 10px 0;
+  overflow: hidden;
+}
+
+.bar-fill {
+  height: 100%;
+  width: 0;
+  background: #2e7d4f;
+  border-radius: 4px;
+  transition: width 0.3s;
+}
