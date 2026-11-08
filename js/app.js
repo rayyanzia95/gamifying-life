@@ -28,6 +28,25 @@ function toggleFlag(prayerId, setId, flag) {
   render();
 }
 
+function toggleJamaah(prayerId, setId) {
+  let events = loadEvents();
+  const event = findEvent(events, prayerId, setId);
+
+  if (event && event.onTime && event.masjid) {
+    events = events.filter(e => e !== event);
+  } else if (event) {
+    event.onTime = true;
+    event.masjid = true;
+  } else {
+    events.push({
+      date: todayString(), prayer: prayerId, set: setId,
+      onTime: true, masjid: true
+    });
+  }
+  saveEvents(events);
+  render();
+}
+
 function makeCheckbox(text, checked, onChange) {
   const label = document.createElement("label");
   const box = document.createElement("input");
@@ -38,6 +57,17 @@ function makeCheckbox(text, checked, onChange) {
   return label;
 }
 
+function mainSet(prayer) {
+  return prayer.sets.find(set => set.type === "fard") || prayer.sets[0];
+}
+
+function setLabel(set) {
+  let text = set.id.replace("-", " ");
+  if (set.rakah) text += " (" + set.rakah + ")";
+  if (set.optional) text += " · extra";
+  return text;
+}
+
 function render() {
   const events = loadEvents();
   const list = document.getElementById("prayers");
@@ -46,15 +76,38 @@ function render() {
   let extra = 0;
 
   for (const prayer of PRAYERS) {
+    const main = mainSet(prayer);
+    const mainEvent = findEvent(events, prayer.id, main.id);
+
     const item = document.createElement("li");
-    item.append(prayer.name + (prayer.bonus ? " (bonus)" : ""));
+    const heading = document.createElement("div");
+    const name = prayer.name + (prayer.bonus ? " (bonus)" : "");
+    heading.append(makeCheckbox(name, Boolean(mainEvent), () => toggleDone(prayer.id, main.id)));
+    item.append(heading);
+
+    const addons = document.createElement("div");
+    addons.className = "addons";
+
+    if (main.type === "fard") {
+      const inJamaah = Boolean(mainEvent && mainEvent.onTime && mainEvent.masjid);
+      addons.append(makeCheckbox("jama'ah", inJamaah, () => toggleJamaah(prayer.id, main.id)));
+    }
+    if (mainEvent && main.type === "fard") {
+      addons.append(makeCheckbox("on time", Boolean(mainEvent.onTime), () => toggleFlag(prayer.id, main.id, "onTime")));
+      addons.append(makeCheckbox("masjid", Boolean(mainEvent.masjid), () => toggleFlag(prayer.id, main.id, "masjid")));
+    }
 
     for (const set of prayer.sets) {
       const event = findEvent(events, prayer.id, set.id);
-      const row = document.createElement("div");
-      const text = set.rakah ? set.type + " " + set.rakah : set.type;
 
-      row.append(makeCheckbox(text, Boolean(event), () => toggleDone(prayer.id, set.id)));
+      if (set !== main) {
+        const row = document.createElement("div");
+        row.append(makeCheckbox(setLabel(set), Boolean(event), () => toggleDone(prayer.id, set.id)));
+        if (event && set.type === "wajib") {
+          row.append(" ", makeCheckbox("on time", Boolean(event.onTime), () => toggleFlag(prayer.id, set.id, "onTime")));
+        }
+        addons.append(row);
+      }
 
       if (event) {
         const xp = setEarnedXp(set, event);
@@ -63,16 +116,10 @@ function render() {
         } else {
           core += xp;
         }
-
-        if (set.type === "fard" || set.type === "wajib") {
-          row.append(" ", makeCheckbox("on time", Boolean(event.onTime), () => toggleFlag(prayer.id, set.id, "onTime")));
-        }
-        if (set.type === "fard") {
-          row.append(" ", makeCheckbox("masjid", Boolean(event.masjid), () => toggleFlag(prayer.id, set.id, "masjid")));
-        }
       }
-      item.append(row);
     }
+
+    item.append(addons);
     list.append(item);
   }
 
