@@ -22,3 +22,16 @@ function totalMax({ extras }) {
   }
   return total;
 }
+
+function setBaseXp(set) {
+  if (set.type === "sunnah") {
+    return (set.rakah / 2) * SCORING.sunnahPerTwoRakah;
+  }
+  if (set.type === "fard" || set.type === "wajib") {
+    return SCORING[set.type].base;
+  }
+  if (set.type === "tahajjud") {
+    return SCORING.tahajjud.base;
+  }
+  return 0;
+}
