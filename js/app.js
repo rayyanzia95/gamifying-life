@@ -1,15 +1,15 @@
 const goal = totalMax({ extras: false });
 document.getElementById("goal").textContent = "Daily goal: " + goal + " XP";
 
-function isDone(events, prayerId, setId) {
-  return events.some(e =>
+function findEvent(events, prayerId, setId) {
+  return events.find(e =>
     e.date === todayString() && e.prayer === prayerId && e.set === setId
   );
 }
 
-function toggle(prayerId, setId) {
+function toggleDone(prayerId, setId) {
   let events = loadEvents();
-  if (isDone(events, prayerId, setId)) {
+  if (findEvent(events, prayerId, setId)) {
     events = events.filter(e =>
       !(e.date === todayString() && e.prayer === prayerId && e.set === setId)
     );
@@ -18,6 +18,25 @@ function toggle(prayerId, setId) {
   }
   saveEvents(events);
   render();
+}
+
+function toggleFlag(prayerId, setId, flag) {
+  const events = loadEvents();
+  const event = findEvent(events, prayerId, setId);
+  if (!event) return;
+  event[flag] = !event[flag];
+  saveEvents(events);
+  render();
+}
+
+function makeCheckbox(text, checked, onChange) {
+  const label = document.createElement("label");
+  const box = document.createElement("input");
+  box.type = "checkbox";
+  box.checked = checked;
+  box.addEventListener("change", onChange);
+  label.append(box, " ", text);
+  return label;
 }
 
 function render() {
@@ -31,19 +50,23 @@ function render() {
     item.append(prayer.name + (prayer.bonus ? " (bonus)" : ""));
 
     for (const set of prayer.sets) {
-      const label = document.createElement("label");
-      label.style.display = "block";
-
-      const box = document.createElement("input");
-      box.type = "checkbox";
-      box.checked = isDone(events, prayer.id, set.id);
-      box.addEventListener("change", () => toggle(prayer.id, set.id));
-
-      if (box.checked) earned += setBaseXp(set);
-
+      const event = findEvent(events, prayer.id, set.id);
+      const row = document.createElement("div");
       const text = set.rakah ? set.type + " " + set.rakah : set.type;
-      label.append(box, " ", text);
-      item.append(label);
+
+      row.append(makeCheckbox(text, Boolean(event), () => toggleDone(prayer.id, set.id)));
+
+      if (event) {
+        earned += setEarnedXp(set, event);
+
+        if (set.type === "fard" || set.type === "wajib") {
+          row.append(" ", makeCheckbox("on time", Boolean(event.onTime), () => toggleFlag(prayer.id, set.id, "onTime")));
+        }
+        if (set.type === "fard") {
+          row.append(" ", makeCheckbox("masjid", Boolean(event.masjid), () => toggleFlag(prayer.id, set.id, "masjid")));
+        }
+      }
+      item.append(row);
     }
     list.append(item);
   }
