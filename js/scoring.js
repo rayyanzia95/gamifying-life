@@ -35,3 +35,13 @@ function setBaseXp(set) {
   }
   return 0;
 }
+
+function setEarnedXp(set, event) {
+  let xp = setBaseXp(set);
+  if (set.type === "fard" || set.type === "wajib") {
+    const rule = SCORING[set.type];
+    if (event.onTime) xp += rule.onTime;
+    if (event.masjid) xp += rule.masjid;
+  }
+  return xp;
+}
