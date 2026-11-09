@@ -47,13 +47,11 @@ function setEarnedXp(set, event) {
     if (event.onTime) xp += rule.onTime;
     if (event.masjid) xp += rule.masjid;
   }
-    if (event.masjid) xp += rule.masjid;
-  }
   if (set.type === "tahajjud" && event.dua) {
     xp += event.long ? SCORING.tahajjud.longDua : SCORING.tahajjud.shortDua;
   }
   return xp;
-
+}
 function mainSet(prayer) {
   return prayer.sets.find(set => set.type === "fard") || prayer.sets[0];
 }
@@ -90,4 +88,30 @@ function levelInfo(xp, multiplier) {
     cost = (LEVELS.first + LEVELS.step * (level - 1)) * multiplier;
   }
   return { level, into, cost };
+}
+
+function branchGoal(branchId) {
+  let total = 0;
+  for (const prayer of PRAYERS) {
+    if (prayer.branch !== branchId) continue;
+    for (const set of prayer.sets) {
+      if (!(prayer.bonus || set.optional)) total += setMaxXp(set);
+    }
+  }
+  return total;
+}
+
+function todayXp(events, branchId) {
+  const today = todayString();
+  let core = 0;
+  let extra = 0;
+  for (const event of events) {
+    if (event.date !== today || !isCounted(event, events)) continue;
+    const prayer = PRAYERS.find(p => p.id === event.prayer);
+    if (prayer.branch !== branchId) continue;
+    const set = prayer.sets.find(s => s.id === event.set);
+    const xp = setEarnedXp(set, event);
+    if (prayer.bonus || set.optional) extra += xp; else core += xp;
+  }
+  return { core, extra };
 }

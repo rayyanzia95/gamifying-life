@@ -6,6 +6,9 @@ const SCORING = {
 };
 
 const LEVELS = { first: 600, step: 100, overallMultiplier: 3 };
+const BRANCHES = [
+  { id: "deen", name: "Deen", page: "deen.html" },
+];
 
 const PRAYERS = [
   { id: "tahajjud", branch: "deen", name: "Tahajjud", bonus: true, sets: [
