@@ -37,6 +37,10 @@ function setBaseXp(set) {
 }
 
 function setEarnedXp(set, event) {
+  if (set.type === "sunnah") {
+    const rakah = event.rakah ?? set.rakah;
+    return (rakah / 2) * SCORING.sunnahPerTwoRakah;
+  }
   let xp = setBaseXp(set);
   if (set.type === "fard" || set.type === "wajib") {
     const rule = SCORING[set.type];
