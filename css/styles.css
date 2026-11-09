@@ -31,13 +31,20 @@ h1 {
   border-radius: 4px;
   margin: 10px 0;
   overflow: hidden;
+  display: flex;
 }
 
 .bar-fill {
   height: 100%;
   width: 0;
   background: #2e7d4f;
-  border-radius: 4px;
+  transition: width 0.3s;
+}
+
+.bonus-fill {
+  height: 100%;
+  width: 0;
+  background: #8cc5a1;
   transition: width 0.3s;
 }
 

@@ -128,10 +128,13 @@ function render() {
     list.append(item);
   }
 
-  const percent = Math.min((core / goal) * 100, 100);
-  document.getElementById("bar-fill").style.width = percent + "%";
-  document.getElementById("progress-label").textContent = core + " / " + goal + " XP today";
-  document.getElementById("bonus").textContent = extra > 0 ? "+ " + extra + " bonus XP" : "";
+  const total = core + extra;
+  const corePercent = Math.min((core / goal) * 100, 100);
+  const bonusPercent = Math.min((extra / goal) * 100, 100 - corePercent);
+  document.getElementById("bar-fill").style.width = corePercent + "%";
+  document.getElementById("bonus-fill").style.width = bonusPercent + "%";
+  document.getElementById("progress-label").textContent = total + " / " + goal + " XP today";
+  document.getElementById("bonus").textContent = extra > 0 ? "includes " + extra + " bonus XP" : "";
 
   const totals = xpByBranch(events);
   const overallXp = Object.values(totals).reduce((sum, xp) => sum + xp, 0);
