@@ -8,10 +8,15 @@ function findEvent(events, prayerId, setId) {
 
 function toggleDone(prayerId, setId) {
   let events = loadEvents();
+  const prayer = PRAYERS.find(p => p.id === prayerId);
+  const isMain = setId === mainSet(prayer).id;
+
   if (findEvent(events, prayerId, setId)) {
-    events = events.filter(e =>
-      !(e.date === todayString() && e.prayer === prayerId && e.set === setId)
-    );
+    events = events.filter(e => {
+      const sameDay = e.date === todayString() && e.prayer === prayerId;
+      if (!sameDay) return true;
+      return !(isMain || e.set === setId);
+    });
   } else {
     events.push({ date: todayString(), prayer: prayerId, set: setId });
   }
@@ -51,9 +56,55 @@ function makeCheckbox(text, checked, onChange) {
   return label;
 }
 
-function setLabel(set) {
+function stepRakah(prayerId, set, delta) {
+  let events = loadEvents();
+  const event = findEvent(events, prayerId, set.id);
+  const next = (event ? (event.rakah ?? set.rakah) : 0) + delta;
+  if (next < 0 || next > set.rakah) return;
+
+  if (!event) {
+    events.push({ date: todayString(), prayer: prayerId, set: set.id, rakah: next });
+  } else if (next === 0) {
+    events = events.filter(e => e !== event);
+  } else {
+    event.rakah = next;
+  }
+  saveEvents(events);
+  render();
+}
+
+function makeStepper(text, current, max, onStep) {
+  const row = document.createElement("div");
+  row.className = "stepper";
+
+  const minus = document.createElement("button");
+  minus.textContent = "−";
+  minus.setAttribute("aria-label", "Fewer rakah");
+  minus.disabled = current <= 0;
+  minus.addEventListener("click", () => onStep(-2));
+
+  const value = document.createElement("span");
+  value.className = "stepper-value";
+  value.textContent = current + " / " + max;
+
+  const plus = document.createElement("button");
+  plus.textContent = "+";
+  plus.setAttribute("aria-label", "More rakah");
+  plus.disabled = current >= max;
+  plus.addEventListener("click", () => onStep(2));
+
+  row.append(minus, value, plus, " ", text);
+  return row;
+}
+
+function setLabel(set, prayer) {
   let text = set.id.replace("-", " ");
-  if (set.rakah) text += " (" + set.rakah + ")";
+  if (set.type === "sunnah") {
+    const count = prayer.sets.filter(s => s.type === "sunnah").length;
+    if (count === 1) text = "sunnah";
+  } else if (set.rakah) {
+    text += " (" + set.rakah + ")";
+  }
   if (set.optional) text += " · extra";
   return text;
 }
@@ -107,7 +158,12 @@ function render() {
 
       if (set !== main) {
         const row = document.createElement("div");
-        row.append(makeCheckbox(setLabel(set), Boolean(event), () => toggleDone(prayer.id, set.id)));
+        if (set.type === "sunnah") {
+          const done = event ? (event.rakah ?? set.rakah) : 0;
+          row.append(makeStepper(setLabel(set, prayer), done, set.rakah, delta => stepRakah(prayer.id, set, delta)));
+        } else {
+          row.append(makeCheckbox(setLabel(set, prayer), Boolean(event), () => toggleDone(prayer.id, set.id)));
+        }
         if (event && set.type === "wajib") {
           row.append(" ", makeCheckbox("on time", Boolean(event.onTime), () => toggleFlag(prayer.id, set.id, "onTime")));
         }
