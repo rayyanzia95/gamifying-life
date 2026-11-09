@@ -64,3 +64,44 @@ h1 {
   font-size: 14px;
   color: #5f5e5a;
 }
+.levels {
+  display: flex;
+  justify-content: space-around;
+}
+
+.badge {
+  text-align: center;
+}
+
+.badge svg {
+  width: 96px;
+  height: 96px;
+}
+
+.ring-track {
+  fill: none;
+  stroke: #ecece6;
+  stroke-width: 8;
+}
+
+.ring-fill {
+  fill: none;
+  stroke: #2e7d4f;
+  stroke-width: 8;
+}
+
+.badge-level {
+  font-size: 32px;
+  font-weight: 500;
+  fill: #1f1f1d;
+}
+
+.badge-name {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.badge-xp {
+  font-size: 12px;
+  color: #5f5e5a;
+}
