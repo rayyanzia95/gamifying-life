@@ -47,8 +47,12 @@ function setEarnedXp(set, event) {
     if (event.onTime) xp += rule.onTime;
     if (event.masjid) xp += rule.masjid;
   }
+    if (event.masjid) xp += rule.masjid;
+  }
+  if (set.type === "tahajjud" && event.dua) {
+    xp += event.long ? SCORING.tahajjud.longDua : SCORING.tahajjud.shortDua;
+  }
   return xp;
-}
 
 function mainSet(prayer) {
   return prayer.sets.find(set => set.type === "fard") || prayer.sets[0];

@@ -46,6 +46,16 @@ function toggleJamaah(prayerId, setId) {
   render();
 }
 
+function toggleDua(prayerId, setId) {
+  const events = loadEvents();
+  const event = findEvent(events, prayerId, setId);
+  if (!event) return;
+  event.dua = !event.dua;
+  if (!event.dua) event.long = false;
+  saveEvents(events);
+  render();
+}
+
 function makeCheckbox(text, checked, onChange) {
   const label = document.createElement("label");
   const box = document.createElement("input");
@@ -150,6 +160,13 @@ function render() {
       addons.append(makeCheckbox("jama'ah", inJamaah, () => toggleJamaah(prayer.id, main.id)));
       addons.append(makeCheckbox("on time", Boolean(mainEvent.onTime), () => toggleFlag(prayer.id, main.id, "onTime")));
       addons.append(makeCheckbox("masjid", Boolean(mainEvent.masjid), () => toggleFlag(prayer.id, main.id, "masjid")));
+    }
+
+    if (mainEvent && main.type === "tahajjud") {
+      addons.append(makeCheckbox("dua", Boolean(mainEvent.dua), () => toggleDua(prayer.id, main.id)));
+      if (mainEvent.dua) {
+        addons.append(makeCheckbox("10+ min", Boolean(mainEvent.long), () => toggleFlag(prayer.id, main.id, "long")));
+      }
     }
 
     for (const set of prayer.sets) {
