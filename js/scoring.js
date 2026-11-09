@@ -45,3 +45,41 @@ function setEarnedXp(set, event) {
   }
   return xp;
 }
+
+function mainSet(prayer) {
+  return prayer.sets.find(set => set.type === "fard") || prayer.sets[0];
+}
+
+function isCounted(event, events) {
+  const prayer = PRAYERS.find(p => p.id === event.prayer);
+  if (!prayer) return false;
+  if (!prayer.sets.some(s => s.id === event.set)) return false;
+  const main = mainSet(prayer);
+  if (event.set === main.id) return true;
+  return events.some(e =>
+    e.date === event.date && e.prayer === event.prayer && e.set === main.id
+  );
+}
+
+function xpByBranch(events) {
+  const totals = {};
+  for (const event of events) {
+    if (!isCounted(event, events)) continue;
+    const prayer = PRAYERS.find(p => p.id === event.prayer);
+    const set = prayer.sets.find(s => s.id === event.set);
+    totals[prayer.branch] = (totals[prayer.branch] || 0) + setEarnedXp(set, event);
+  }
+  return totals;
+}
+
+function levelInfo(xp, multiplier) {
+  let level = 1;
+  let into = xp;
+  let cost = LEVELS.first * multiplier;
+  while (into >= cost) {
+    into -= cost;
+    level += 1;
+    cost = (LEVELS.first + LEVELS.step * (level - 1)) * multiplier;
+  }
+  return { level, into, cost };
+}
