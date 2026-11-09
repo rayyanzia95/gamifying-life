@@ -158,7 +158,7 @@ function render() {
 
       if (set !== main) {
         const row = document.createElement("div");
-        if (set.type === "sunnah") {
+        if (set.stepper) {
           const done = event ? (event.rakah ?? set.rakah) : 0;
           row.append(makeStepper(setLabel(set, prayer), done, set.rakah, delta => stepRakah(prayer.id, set, delta)));
         } else {
