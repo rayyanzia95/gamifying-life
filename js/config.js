@@ -13,9 +13,7 @@ const PRAYERS = [
     { id: "fard", type: "fard", rakah: 2 },
   ]},
   { id: "dhuhr", branch: "deen", name: "Dhuhr", sets: [
-    { id: "sunnah-before", type: "sunnah", rakah: 4 },
     { id: "fard", type: "fard", rakah: 4 },
-    { id: "sunnah-after", type: "sunnah", rakah: 2 },
     { id: "sunnah", type: "sunnah", rakah: 6, stepper: true },
   ]},
   { id: "asr", branch: "deen", name: "Asr", sets: [

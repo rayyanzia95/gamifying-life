@@ -112,3 +112,33 @@ h1 {
   font-size: 12px;
   color: #5f5e5a;
 }
+
+.stepper {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.stepper button {
+  width: 28px;
+  height: 28px;
+  border: 1px solid #d9d9d2;
+  border-radius: 6px;
+  background: #fff;
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.stepper button:disabled {
+  color: #c4c4bd;
+  background: #f4f4f0;
+  cursor: default;
+}
+
+.stepper-value {
+  min-width: 36px;
+  text-align: center;
+  font-weight: 500;
+  color: #1f1f1d;
+}
