@@ -119,22 +119,6 @@ function setLabel(set, prayer) {
   return text;
 }
 
-function badgeHtml(name, info) {
-  const C = 2 * Math.PI * 40;
-  const filled = (info.into / info.cost) * C;
-  return `
-    <div class="badge">
-      <svg viewBox="0 0 100 100" role="img" aria-label="${name} level ${info.level}">
-        <circle class="ring-track" cx="50" cy="50" r="40"/>
-        <circle class="ring-fill" cx="50" cy="50" r="40"
-          transform="rotate(-90 50 50)" stroke-dasharray="${filled} ${C}"/>
-        <text class="badge-level" x="50" y="60" text-anchor="middle">${info.level}</text>
-      </svg>
-      <div class="badge-name">${name}</div>
-      <div class="badge-xp">${info.into} / ${info.cost} XP</div>
-    </div>`;
-}
-
 function render() {
   const events = loadEvents();
   const list = document.getElementById("prayers");
@@ -209,12 +193,8 @@ function render() {
   document.getElementById("progress-label").textContent = total + " / " + goal + " XP today";
   document.getElementById("bonus").textContent = extra > 0 ? "includes " + extra + " bonus XP" : "";
 
-  const totals = xpByBranch(events);
-  const overallXp = Object.values(totals).reduce((sum, xp) => sum + xp, 0);
-  const overall = levelInfo(overallXp, LEVELS.overallMultiplier);
-  const deen = levelInfo(totals.deen || 0, 1);
-  document.getElementById("levels").innerHTML =
-    badgeHtml("Overall", overall) + badgeHtml("Deen", deen);
+  const deen = levelInfo(xpByBranch(events).deen || 0, 1);
+  document.getElementById("levels").innerHTML = badgeHtml("Deen", deen);
 }
 
 render();
