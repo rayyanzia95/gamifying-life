@@ -195,6 +195,22 @@ function render() {
 
   const deen = levelInfo(xpByBranch(events).deen || 0, 1);
   document.getElementById("levels").innerHTML = badgeHtml("Deen", deen);
+  drawDial(events);
+}
+
+function drawDial(events) {
+  const box = document.getElementById("dial");
+  const windows = prayerWindows(todayString());
+  if (!windows) {
+    box.innerHTML = "<p>No prayer times for today yet. Add the next timetable to js/prayer-times.js.</p>";
+    return;
+  }
+  const prayedIds = PRAYERS
+    .filter(prayer => findEvent(events, prayer.id, mainSet(prayer).id))
+    .map(prayer => prayer.id);
+  const now = new Date();
+  box.innerHTML = dialHtml(windows, prayedIds, now.getHours() * 60 + now.getMinutes());
 }
 
 render();
+setInterval(() => drawDial(loadEvents()), 60 * 1000);

@@ -182,3 +182,60 @@ h1 {
   color: #5f5e5a;
   text-decoration: none;
 }
+.dial {
+  display: block;
+  width: 100%;
+  max-width: 270px;
+  height: auto;
+  margin: 0 auto;
+}
+
+.dial-track {
+  fill: none;
+  stroke: #ecece6;
+  stroke-width: 14;
+}
+
+.dial-arc {
+  fill: none;
+  stroke: #cfe5d6;
+  stroke-width: 14;
+}
+
+.dial-arc.prayed {
+  stroke: #2e7d4f;
+}
+
+.dial-arc.bonus {
+  stroke: #dcd9f5;
+}
+
+.dial-arc.bonus.prayed {
+  stroke: #7f77dd;
+}
+
+.dial-label {
+  font-size: 11px;
+  fill: #5f5e5a;
+  text-anchor: middle;
+  dominant-baseline: middle;
+}
+
+.dial-hand {
+  stroke: #d85a30;
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+
+.dial-now {
+  font-size: 18px;
+  font-weight: 500;
+  fill: #1f1f1d;
+  text-anchor: middle;
+}
+
+.dial-next {
+  font-size: 12px;
+  fill: #5f5e5a;
+  text-anchor: middle;
+}
