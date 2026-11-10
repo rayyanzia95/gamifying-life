@@ -318,3 +318,12 @@ h1 {
   line-height: 1;
   cursor: pointer;
 }
+
+.card-title {
+  font-weight: 500;
+  margin-bottom: 10px;
+}
+
+#revision p {
+  margin-top: 10px;
+}

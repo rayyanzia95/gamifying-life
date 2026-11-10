@@ -7,6 +7,16 @@ const SCORING = {
 
 const LEVELS = { first: 600, step: 100, overallMultiplier: 3 };
 
+// Quran revision, logged in hizb (60 in the Quran), in order from Hizb 1.
+// Up to dailyTarget counts toward the daily goal; anything beyond is bonus XP.
+const QURAN = {
+  branch: "deen",
+  total: 60,
+  dailyTarget: 1,
+  xpPerHizb: 30,
+  cycleStart: "2026-11-10", // revision starts at Hizb 1 on this day
+};
+
 // Edmonton. Alberta stays on UTC-6 all year.
 const LOCATION = { lat: 53.5461, lng: -113.4938, utcOffset: -6 };
 const BRANCHES = [

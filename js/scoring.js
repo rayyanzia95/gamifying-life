@@ -12,17 +12,6 @@ function setMaxXp(set) {
   return 0;
 }
 
-function totalMax({ extras }) {
-  let total = 0;
-  for (const prayer of PRAYERS) {
-    for (const set of prayer.sets) {
-      const isExtra = Boolean(prayer.bonus || set.optional);
-      if (isExtra === extras) total += setMaxXp(set);
-    }
-  }
-  return total;
-}
-
 function setBaseXp(set) {
   if (set.type === "sunnah") {
     return (set.rakah / 2) * SCORING.sunnahPerTwoRakah;
@@ -67,13 +56,34 @@ function isCounted(event, events) {
   );
 }
 
+// What one event is worth: { branch, core, extra }, or null if it doesn't count.
+// Core XP fills the daily goal; extra XP pushes the bar past it.
+function scoreEvent(event, events) {
+  if (event.activity === "quran") return scoreRevision(event);
+  if (!isCounted(event, events)) return null;
+  const prayer = PRAYERS.find(p => p.id === event.prayer);
+  const set = prayer.sets.find(s => s.id === event.set);
+  const xp = setEarnedXp(set, event);
+  const isExtra = Boolean(prayer.bonus || set.optional);
+  return { branch: prayer.branch, core: isExtra ? 0 : xp, extra: isExtra ? xp : 0 };
+}
+
+function scoreRevision(event) {
+  const toGoal = Math.min(event.amount, QURAN.dailyTarget);
+  const beyond = event.amount - toGoal;
+  return {
+    branch: QURAN.branch,
+    core: toGoal * QURAN.xpPerHizb,
+    extra: beyond * QURAN.xpPerHizb,
+  };
+}
+
 function xpByBranch(events) {
   const totals = {};
   for (const event of events) {
-    if (!isCounted(event, events)) continue;
-    const prayer = PRAYERS.find(p => p.id === event.prayer);
-    const set = prayer.sets.find(s => s.id === event.set);
-    totals[prayer.branch] = (totals[prayer.branch] || 0) + setEarnedXp(set, event);
+    const score = scoreEvent(event, events);
+    if (!score) continue;
+    totals[score.branch] = (totals[score.branch] || 0) + score.core + score.extra;
   }
   return totals;
 }
@@ -98,6 +108,7 @@ function branchGoal(branchId) {
       if (!(prayer.bonus || set.optional)) total += setMaxXp(set);
     }
   }
+  if (QURAN.branch === branchId) total += QURAN.dailyTarget * QURAN.xpPerHizb;
   return total;
 }
 
@@ -106,12 +117,11 @@ function todayXp(events, branchId) {
   let core = 0;
   let extra = 0;
   for (const event of events) {
-    if (event.date !== today || !isCounted(event, events)) continue;
-    const prayer = PRAYERS.find(p => p.id === event.prayer);
-    if (prayer.branch !== branchId) continue;
-    const set = prayer.sets.find(s => s.id === event.set);
-    const xp = setEarnedXp(set, event);
-    if (prayer.bonus || set.optional) extra += xp; else core += xp;
+    if (event.date !== today) continue;
+    const score = scoreEvent(event, events);
+    if (!score || score.branch !== branchId) continue;
+    core += score.core;
+    extra += score.extra;
   }
   return { core, extra };
 }

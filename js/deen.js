@@ -1,4 +1,4 @@
-const goal = totalMax({ extras: false });
+const goal = branchGoal("deen");
 
 function findEvent(events, prayerId, setId) {
   return events.find(e =>
@@ -83,25 +83,27 @@ function stepRakah(prayerId, set, delta) {
   render();
 }
 
-function makeStepper(text, current, max, onStep) {
+// The options object has defaults, so the rakah stepper can keep calling it
+// with just four arguments.
+function makeStepper(text, current, max, onStep, { step = 2, target = max, unit = "rakah" } = {}) {
   const row = document.createElement("div");
   row.className = "stepper";
 
   const minus = document.createElement("button");
   minus.textContent = "−";
-  minus.setAttribute("aria-label", "Fewer rakah");
+  minus.setAttribute("aria-label", "Less " + unit);
   minus.disabled = current <= 0;
-  minus.addEventListener("click", () => onStep(-2));
+  minus.addEventListener("click", () => onStep(-step));
 
   const value = document.createElement("span");
   value.className = "stepper-value";
-  value.textContent = current + " / " + max;
+  value.textContent = current + " / " + target;
 
   const plus = document.createElement("button");
   plus.textContent = "+";
-  plus.setAttribute("aria-label", "More rakah");
+  plus.setAttribute("aria-label", "More " + unit);
   plus.disabled = current >= max;
-  plus.addEventListener("click", () => onStep(2));
+  plus.addEventListener("click", () => onStep(step));
 
   row.append(minus, value, plus, " ", text);
   return row;
@@ -123,8 +125,6 @@ function render() {
   const events = loadEvents();
   const list = document.getElementById("prayers");
   list.innerHTML = "";
-  let core = 0;
-  let extra = 0;
 
   for (const prayer of PRAYERS) {
     const main = mainSet(prayer);
@@ -170,21 +170,13 @@ function render() {
         }
         addons.append(row);
       }
-
-      if (event) {
-        const xp = setEarnedXp(set, event);
-        if (prayer.bonus || set.optional) {
-          extra += xp;
-        } else {
-          core += xp;
-        }
-      }
     }
 
     item.append(addons);
     list.append(item);
   }
 
+  const { core, extra } = todayXp(events, "deen");
   const total = core + extra;
   const corePercent = Math.min((core / goal) * 100, 100);
   const bonusPercent = Math.min((extra / goal) * 100, 100 - corePercent);
@@ -195,7 +187,37 @@ function render() {
 
   const deen = levelInfo(xpByBranch(events).deen || 0, 1);
   document.getElementById("levels").innerHTML = badgeHtml("Deen", deen);
+  drawRevision(events);
   drawDial(events);
+}
+
+// Save today's hizb count as one event, replacing any earlier one for today.
+function stepRevision(delta) {
+  const events = loadEvents();
+  const next = todayRevision(events) + delta;
+  if (next < 0 || next > QURAN.total) return;
+  const today = todayString();
+  const others = events.filter(e => !(isRevision(e) && e.date === today));
+  const updated = next > 0
+    ? [...others, { date: today, activity: "quran", amount: next }]
+    : others;
+  saveEvents(updated);
+  render();
+}
+
+function drawRevision(events) {
+  const box = document.getElementById("revision");
+  const heading = document.createElement("div");
+  heading.className = "card-title";
+  heading.textContent = "Quran revision";
+
+  const stepper = makeStepper("hizb today", todayRevision(events), QURAN.total,
+    delta => stepRevision(delta), { step: 1, target: QURAN.dailyTarget, unit: "hizb" });
+
+  const next = document.createElement("p");
+  next.textContent = "Next: " + hizbLabel(nextHizb(events));
+
+  box.replaceChildren(heading, stepper, next);
 }
 
 function drawDial(events) {
