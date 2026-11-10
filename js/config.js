@@ -6,6 +6,9 @@ const SCORING = {
 };
 
 const LEVELS = { first: 600, step: 100, overallMultiplier: 3 };
+
+// Edmonton. Alberta stays on UTC-6 all year.
+const LOCATION = { lat: 53.5461, lng: -113.4938, utcOffset: -6 };
 const BRANCHES = [
   { id: "deen", name: "Deen", page: "deen.html" },
 ];
