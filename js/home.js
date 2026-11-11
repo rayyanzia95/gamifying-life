@@ -40,8 +40,20 @@ function moneyRow(name) {
   };
 }
 
+// Personal's ring: journal + reading today (plum), then time alone + friends this week (teal).
+function personalRow(name) {
+  const { today, week } = personalParts(events, todayString());
+  return {
+    name,
+    parts: [
+      { ...today, colour: "plum", text: `${today.core + today.extra} / ${today.goal} today` },
+      { ...week, colour: "teal", text: `${week.core} / ${week.goal} week` },
+    ],
+  };
+}
+
 // Which function draws each mixed branch's split ring.
-const MIXED_ROWS = { health: healthRow, academics: academicsRow, money: moneyRow };
+const MIXED_ROWS = { health: healthRow, academics: academicsRow, money: moneyRow, personal: personalRow };
 
 // A weekly branch (Chores) fills its ring over the week, a mixed one (Health,
 // Academics) is split into daily and weekly parts, and the rest fill each day.

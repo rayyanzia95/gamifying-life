@@ -241,6 +241,7 @@ const BRANCHES = [
   { id: "health", name: "Health", page: "health.html", period: "mixed" },
   { id: "academics", name: "Academics", page: "academics.html", period: "mixed" },
   { id: "money", name: "Money", page: "money.html", period: "mixed" },
+  { id: "personal", name: "Personal", page: "personal.html", period: "mixed" },
 ];
 
 const PRAYERS = [
