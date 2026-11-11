@@ -153,6 +153,24 @@ const MONEY = {
   ],
 };
 
+// Personal: journal and reading count each day; time alone (no screens) and time
+// with friends count over the week (Sun–Sat). Books are typed in on the page, so
+// the reading list stays on the device. Sessions are quiet: bonus XP, nothing else.
+const PERSONAL = {
+  branch: "personal",
+  journalXp: 10,         // core: journalled today
+  reading: {
+    dayPages: 20,        // core: 1 XP per 2 pages, up to 10 XP at 20 pages a day
+    dayXp: 10,
+    extraPages: 20,      // bonus: +5 for every further 20 pages that day
+    extraXp: 5,
+    finishXp: 50,        // bonus, once, when a book's last page is reached
+  },
+  alone: { perWeek: 3, xp: 10, extraXp: 5 },     // time alone with no screens
+  friends: { perWeek: 2, xp: 20, extraXp: 10 },  // good time with friends
+  sessionXp: 20,         // bonus, first session of a week
+};
+
 // Fall 2026 deadlines, copied from the Fall 2026 Planner (Canvas, Oct 1).
 // Edit a row here when a date moves; its tick is kept, because a deadline is
 // known by its course + title, not its date. kind is one of ACADEMICS.deadlineXp.
