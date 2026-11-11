@@ -20,40 +20,47 @@ function toggleDone(prayerId, setId) {
   } else {
     events.push({ date: todayString(), prayer: prayerId, set: setId });
   }
-  saveEvents(events);
+  saveEvents(clampAfterPrayerDua(events));
   render();
 }
 
+// Save today's count for an activity as one event (none when it's 0),
+// replacing any earlier one for today. Used by the juz and dua counters.
+function saveTodayAmount(activity, amount) {
+  const today = todayString();
+  const others = loadEvents().filter(e => !(e.date === today && e.activity === activity));
+  const updated = amount > 0 ? [...others, { date: today, activity, amount }] : others;
+  saveEvents(updated);
+  render();
+}
+
+// Replace today's event for this prayer set with change(event), leaving the rest alone.
+function updateEvent(prayerId, setId, change) {
+  const events = loadEvents();
+  const target = findEvent(events, prayerId, setId);
+  if (!target) return;
+  saveEvents(events.map(e => (e === target ? change(e) : e)));
+  render();
+}
+
+// [flag] uses the variable's value as the key, e.g. { ...e, masjid: !e.masjid }.
 function toggleFlag(prayerId, setId, flag) {
-  const events = loadEvents();
-  const event = findEvent(events, prayerId, setId);
-  if (!event) return;
-  event[flag] = !event[flag];
-  saveEvents(events);
-  render();
+  updateEvent(prayerId, setId, e => ({ ...e, [flag]: !e[flag] }));
 }
 
+// Jama'ah means you prayed on time, so ticking it ticks on time too.
+// Unticking it leaves on time alone; masjid is separate either way.
 function toggleJamaah(prayerId, setId) {
-  const events = loadEvents();
-  const event = findEvent(events, prayerId, setId);
-  if (!event) return;
+  updateEvent(prayerId, setId, e => ({ ...e, jamaah: !e.jamaah, onTime: e.jamaah ? e.onTime : true }));
+}
 
-  const inJamaah = event.onTime && event.masjid;
-  event.onTime = !inJamaah;
-  event.masjid = !inJamaah;
-
-  saveEvents(events);
-  render();
+// The other direction: not on time means it can't have been jama'ah.
+function toggleOnTime(prayerId, setId) {
+  updateEvent(prayerId, setId, e => ({ ...e, onTime: !e.onTime, jamaah: e.onTime ? false : e.jamaah }));
 }
 
 function toggleDua(prayerId, setId) {
-  const events = loadEvents();
-  const event = findEvent(events, prayerId, setId);
-  if (!event) return;
-  event.dua = !event.dua;
-  if (!event.dua) event.long = false;
-  saveEvents(events);
-  render();
+  updateEvent(prayerId, setId, e => ({ ...e, dua: !e.dua, long: e.dua ? false : e.long }));
 }
 
 function makeCheckbox(text, checked, onChange) {
@@ -140,11 +147,9 @@ function render() {
     addons.className = "addons";
 
     if (mainEvent && main.type === "fard") {
-      const inJamaah = Boolean(mainEvent.onTime && mainEvent.masjid);
-      addons.append(makeCheckbox("jama'ah", inJamaah, () => toggleJamaah(prayer.id, main.id)));
-      addons.append(makeCheckbox("on time", Boolean(mainEvent.onTime), () => toggleFlag(prayer.id, main.id, "onTime")));
+      addons.append(makeCheckbox("jama'ah", Boolean(mainEvent.jamaah), () => toggleJamaah(prayer.id, main.id)));
+      addons.append(makeCheckbox("on time", Boolean(mainEvent.onTime), () => toggleOnTime(prayer.id, main.id)));
       addons.append(makeCheckbox("masjid", Boolean(mainEvent.masjid), () => toggleFlag(prayer.id, main.id, "masjid")));
-      addons.append(makeCheckbox("dua", Boolean(mainEvent.dua), () => toggleFlag(prayer.id, main.id, "dua")));
     }
 
     if (mainEvent && main.type === "tahajjud") {
@@ -271,6 +276,10 @@ function streakLabel({ days, paused }, action) {
   return paused ? `${text} · paused, ${action.toLowerCase()} today to keep it` : text;
 }
 
+// The dial's dua state from the last draw, so only new ticks animate.
+// null until the first draw, which shows everything without animating.
+let lastDialDua = null;
+
 function drawDial(events) {
   const box = document.getElementById("dial");
   const windows = prayerWindows(todayString());
@@ -281,7 +290,9 @@ function drawDial(events) {
   const prayedIds = PRAYERS
     .filter(prayer => findEvent(events, prayer.id, mainSet(prayer).id))
     .map(prayer => prayer.id);
-  box.innerHTML = dialHtml(windows, prayedIds, nowMinutes());
+  const dua = duaToday(events);
+  box.innerHTML = dialHtml(windows, prayedIds, nowMinutes(), dua, lastDialDua ?? dua);
+  lastDialDua = dua;
 }
 
 render();

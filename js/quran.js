@@ -19,14 +19,16 @@ function revisedTotal(events) {
     .reduce((sum, e) => sum + e.amount, 0);
 }
 
-// The juz you're up to (1–30). Wraps back to 1 after a full revision.
+// Where you're up to: 7 = start of Juz 7, 7.5 = second half of Juz 7.
+// Wraps back to 1 after a full revision.
 function nextJuz(events) {
   return (revisedTotal(events) % QURAN.total) + 1;
 }
 
-// 7 → "Juz 7"
+// 7 → "Juz 7", 7.5 → "Juz 7, 2nd half"
 function juzLabel(juz) {
-  return `Juz ${juz}`;
+  const whole = Math.floor(juz);
+  return juz === whole ? `Juz ${whole}` : `Juz ${whole}, 2nd half`;
 }
 
 // Where this revision stands: { done, completed } — done is juz into the

@@ -4,25 +4,17 @@
 
 function quranTile(events) {
   const stepper = makeStepper("juz", todayRevision(events), QURAN.total,
-    delta => stepRevision(delta), { step: 1, target: QURAN.dailyTarget, unit: "juz" });
+    delta => stepRevision(delta), { step: QURAN.step, target: QURAN.dailyTarget, unit: "juz" });
   const next = "Next: " + juzLabel(nextJuz(events));
   const streak = revisionStreak(events);
   const summary = streak.days > 0 ? [next + " · ", streakBadge(streak)] : [next];
   return makeTile("quran", "Quran", summary, [stepper]);
 }
 
-// Save today's juz count as one event, replacing any earlier one for today.
 function stepRevision(delta) {
-  const events = loadEvents();
-  const next = todayRevision(events) + delta;
+  const next = todayRevision(loadEvents()) + delta;
   if (next < 0 || next > QURAN.total) return;
-  const today = todayString();
-  const others = events.filter(e => !(isRevision(e) && e.date === today));
-  const updated = next > 0
-    ? [...others, { date: today, activity: "quran", amount: next }]
-    : others;
-  saveEvents(updated);
-  render();
+  saveTodayAmount("quran", next);
 }
 
 // Quran detail: Ramadan countdown, streak, and the pace needed to finish.

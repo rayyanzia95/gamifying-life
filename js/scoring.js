@@ -62,11 +62,15 @@ function scoreEvent(event, events) {
   if (event.activity === "quran") return scoreRevision(event);
   if (event.activity === "adhkar") return { branch: DUA.branch, core: DUA.adhkarXp, extra: 0 };
   if (event.activity === "dua") return scorePersonalDua(event);
+  if (event.activity === "dua-after-prayers") {
+    return { branch: DUA.branch, core: 0, extra: event.amount * DUA.afterFardXp };
+  }
   if (!isCounted(event, events)) return null;
   const prayer = PRAYERS.find(p => p.id === event.prayer);
   const set = prayer.sets.find(s => s.id === event.set);
   const xp = setEarnedXp(set, event);
   const isExtra = Boolean(prayer.bonus || set.optional);
+  // Older days logged dua after a prayer as a flag on the fard; keep their XP.
   const afterDua = set.type === "fard" && event.dua ? DUA.afterFardXp : 0;
   return {
     branch: prayer.branch,

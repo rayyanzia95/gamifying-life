@@ -13,7 +13,8 @@ const QURAN = {
   branch: "deen",
   total: 30,
   dailyTarget: 1,
-  xpPerJuz: 30,
+  step: 0.5,             // the juz counter moves in half juz
+  xpPerJuz: 30,          // so half a juz is 15
   cycleStart: "2026-11-10", // revision starts at Juz 1 on this day
 };
 
@@ -25,7 +26,7 @@ const DUA = {
     { id: "evening", name: "Evening" },
   ],
   adhkarXp: 15,          // each
-  afterFardXp: 2,        // per fard prayer, ticked as a "dua" flag on that prayer
+  afterFardXp: 2,        // per dua after a fard, logged with a 0–5 counter
   personal: { base: 10, long: 5 }, // long = 10+ min
   pausesPerWeek: 1,      // streak: one missed day a week (Sun–Sat) is forgiven
 };

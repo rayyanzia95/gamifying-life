@@ -16,6 +16,7 @@
   --bonus: #7f77dd;
   --bonus-soft: #dcd9f5;
   --now: #d85a30;
+  --gold: #c8901a;
 }
 
 /* Dark values. Used when the device is in dark mode (unless you picked light),
@@ -38,6 +39,7 @@
     --bonus: #9d96ec;
     --bonus-soft: #33305a;
     --now: #ef7a4f;
+    --gold: #e8b64c;
   }
 }
 
@@ -58,6 +60,7 @@
   --bonus: #9d96ec;
   --bonus-soft: #33305a;
   --now: #ef7a4f;
+  --gold: #e8b64c;
 }
 
 body {
@@ -283,6 +286,80 @@ h1 {
   fill: var(--muted);
   text-anchor: middle;
   dominant-baseline: middle;
+}
+
+/* Dua on the dial: gold beads, sun/moon for adhkar, and a halo for the day. */
+.dua-bead {
+  fill: var(--gold);
+  stroke: var(--surface);
+  stroke-width: 2;
+}
+
+.dua-mark {
+  fill: none;
+  stroke: var(--disabled-text);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+}
+
+.dua-mark.done {
+  fill: var(--gold);
+  stroke: var(--gold);
+}
+
+/* The round backing that lets the sun/moon sit on top of the ring. */
+.dua-mark .dua-badge {
+  fill: var(--surface);
+  stroke: var(--line);
+  stroke-width: 1;
+}
+
+.dua-mark.done .dua-badge {
+  stroke: var(--gold);
+}
+
+.dua-halo-track,
+.dua-halo {
+  fill: none;
+  stroke-width: 3;
+}
+
+.dua-halo-track {
+  stroke: var(--line);
+}
+
+.dua-halo {
+  stroke: var(--gold);
+  stroke-linecap: round;
+}
+
+/* Pop: grows past full size then settles. transform-box makes it scale around its own centre. */
+.pop {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: pop 0.6s ease-out;
+}
+
+@keyframes pop {
+  0% { transform: scale(0); opacity: 0; }
+  60% { transform: scale(1.5); opacity: 1; }
+  100% { transform: scale(1); }
+}
+
+/* The halo sweeps forward from where it was (--from) to its new length. */
+.dua-halo.grow {
+  animation: halo-grow 0.9s ease-out;
+}
+
+@keyframes halo-grow {
+  from { stroke-dasharray: var(--from) var(--length); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pop,
+  .dua-halo.grow {
+    animation: none;
+  }
 }
 
 .dial-hand {
