@@ -53,9 +53,10 @@ function weekRange(nights, fajr, usual) {
   };
 }
 
-// "06" for 360, "22" for -120.
+// "6a" for 360, "10p" for -120, "12a" for midnight: short 12 h labels.
 function hourLabel(minutes) {
-  return minutesToHhmm((minutes + MINUTES_PER_DAY) % MINUTES_PER_DAY).slice(0, 2);
+  const [time, suffix] = clock12(minutes).split(" ");
+  return time.split(":")[0] + suffix[0];
 }
 
 function weekdayLetter(date) {

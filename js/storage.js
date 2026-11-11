@@ -76,6 +76,15 @@ function minutesToHhmm(minutes) {
   return `${pad(Math.floor(rounded / 60))}:${pad(rounded % 60)}`;
 }
 
+// 1350 -> "10:30 pm", -90 -> "10:30 pm" too: 12 h like the phone's time pickers.
+// The double % wraps negatives (bedtimes before midnight) into 0–1439.
+function clock12(minutes) {
+  const wrapped = ((Math.round(minutes) % MINUTES_PER_DAY) + MINUTES_PER_DAY) % MINUTES_PER_DAY;
+  const hours = Math.floor(wrapped / 60);
+  const suffix = hours < 12 ? "am" : "pm";
+  return `${hours % 12 || 12}:${String(wrapped % 60).padStart(2, "0")} ${suffix}`;
+}
+
 // 95 -> "1 h 35 min"
 function durationLabel(minutes) {
   const hours = Math.floor(minutes / 60);

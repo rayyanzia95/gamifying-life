@@ -62,9 +62,9 @@ function sleepCheckList(night, events) {
   const checks = sleepChecks(night, events);
   const usual = checks.usual === null
     ? `needs ${SLEEP.usual.minNights} nights logged`
-    : `usual ${minutesToHhmm((checks.usual + MINUTES_PER_DAY) % MINUTES_PER_DAY)}`;
+    : `usual ${clock12(checks.usual)}`;
   const rows = [
-    [checks.bedtime, `In bed by ${SLEEP.bedBy}`],
+    [checks.bedtime, `In bed by ${clock12(toMinutes(SLEEP.bedBy))}`],
     [checks.hours, `${SLEEP.hours} h+ sleep`],
     [checks.consistent, `Within ${SLEEP.usual.withinMinutes} min of usual (${usual})`],
   ].map(([met, text]) => {
