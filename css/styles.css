@@ -115,15 +115,30 @@ h1 {
   transition: width 0.3s;
 }
 
-#prayers {
+#prayers,
+#quests {
   list-style: none;
   padding: 0;
   margin: 0;
 }
 
-#prayers li {
+#prayers li,
+#quests li {
   padding: 10px 0;
   border-top: 1px solid var(--line);
+}
+
+/* Chores: the tick or counter on the left, the faint hint on the right. */
+.quest {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+#quests li:first-child {
+  border-top: 0;
+  padding-top: 0;
 }
 
 #prayers li > div:first-child {

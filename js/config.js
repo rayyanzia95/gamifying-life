@@ -50,8 +50,29 @@ const PRAYER_METHOD = {
   fajrNightPortion: 18 / 60, // Fajr no earlier than sunrise − 18/60 of the night ("angle-based"),
                              // which keeps Fajr from jumping in May and August
 };
+// Cleaning & Chores: weekly quests. The week runs Sunday to Saturday.
+// times = how many per week (default 1). everyWeeks: 2 means once every two weeks:
+// doing it this week or last week covers it. hint is a usual day, shown only as a hint.
+// Doing a chore more than its target still earns XP, as bonus.
+const CHORES = {
+  branch: "chores",
+  weekBonus: 50,         // when every quest is covered for the week
+  list: [
+    { id: "laundry",  name: "Laundry",         xp: 20, hint: "Fri" },
+    { id: "folding",  name: "Folding clothes", xp: 10, hint: "Sat" },
+    { id: "room",     name: "Clean room",      xp: 20 },
+    { id: "desk",     name: "Clean desk",      xp: 10 },
+    { id: "washroom", name: "Clean washroom",  xp: 20, hint: "Sat" },
+    { id: "dishes",   name: "Dishes",          xp: 10, times: 3 },
+    { id: "ironing",  name: "Ironing",         xp: 20, everyWeeks: 2 },
+    { id: "dusting",  name: "Dusting",         xp: 15, everyWeeks: 2 },
+  ],
+};
+
+// period "week": the Home ring fills over the week instead of each day.
 const BRANCHES = [
   { id: "deen", name: "Deen", page: "deen.html" },
+  { id: "chores", name: "Chores", page: "chores.html", period: "week" },
 ];
 
 const PRAYERS = [
