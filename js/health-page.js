@@ -266,13 +266,19 @@ function render() {
   document.getElementById("levels").innerHTML = badgeHtml("Health", levelInfo(xp, 1));
   document.getElementById("sleep-week").innerHTML = sleepWeekHtml(events, today);
 
-  // The bar mixes sleep and diet today with this week's sessions.
-  const parts = Object.values(healthParts(events, today));
+  // The bar mixes sleep and diet today with this week's sessions, one coloured
+  // section each, like the Home ring.
+  const { sleep, diet, exercise } = healthParts(events, today);
+  const parts = [
+    { ...sleep, colour: "sleep" },
+    { ...diet, colour: "diet" },
+    { ...exercise, colour: "exercise" },
+  ];
   const sum = key => parts.reduce((total, part) => total + part[key], 0);
   const core = sum("core");
   const extra = sum("extra");
   const goal = sum("goal");
-  fillBar(core, extra, goal);
+  document.getElementById("bar-parts").innerHTML = barPartsHtml(parts);
   document.getElementById("progress-label").textContent =
     `${core + extra} / ${goal} XP · sleep and diet today + sessions this week`;
 

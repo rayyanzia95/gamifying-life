@@ -139,3 +139,16 @@ function fillBar(core, extra, goal) {
   document.getElementById("bar-fill").style.width = corePercent + "%";
   document.getElementById("bonus-fill").style.width = bonusPercent + "%";
 }
+
+// The bar version of ringPartsSvg (Health: sleep, diet, sessions). Each part gets a
+// section of the bar sized by its goal (flex-grow), and fills in its own colour over
+// a faint track of that colour. Parts are { core, extra, goal, colour }.
+function barPartsHtml(parts) {
+  return parts.map(part => {
+    const share = part.goal > 0 ? Math.min((part.core + part.extra) / part.goal, 1) : 0;
+    return `<div class="bar-part" style="flex-grow: ${part.goal}">
+      <span class="bar-part-track part-${part.colour}"></span>
+      <span class="bar-part-fill part-${part.colour}" style="width: ${share * 100}%"></span>
+    </div>`;
+  }).join("");
+}
