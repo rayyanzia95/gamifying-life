@@ -288,13 +288,9 @@ h1 {
   dominant-baseline: middle;
 }
 
-/* Dua on the dial: gold beads, sun/moon for adhkar, and a halo for the day. */
-.dua-bead {
-  fill: var(--gold);
-  stroke: var(--surface);
-  stroke-width: 2;
-}
-
+/* Dua on the dial: a line of sun, beads and moon in the centre, plus a halo for the day.
+   Everything is a faint outline until done, then gold. */
+.dua-bead,
 .dua-mark {
   fill: none;
   stroke: var(--disabled-text);
@@ -302,19 +298,13 @@ h1 {
   stroke-linecap: round;
 }
 
-.dua-mark.done {
-  fill: var(--gold);
-  stroke: var(--gold);
-}
-
-/* The round backing that lets the sun/moon sit on top of the ring. */
-.dua-mark .dua-badge {
-  fill: var(--surface);
-  stroke: var(--line);
+.dua-bead {
   stroke-width: 1;
 }
 
-.dua-mark.done .dua-badge {
+.dua-bead.done,
+.dua-mark.done {
+  fill: var(--gold);
   stroke: var(--gold);
 }
 
