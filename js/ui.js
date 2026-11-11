@@ -31,7 +31,7 @@ function ringsHtml(rows) {
   const legend = rows.map(row => `
     <div class="legend-row">
       <span>${row.name}</span>
-      <span>${row.core + row.extra} / ${row.goal} XP</span>
+      <span>${row.core + row.extra} / ${row.goal} XP${row.weekly ? " this week" : ""}</span>
     </div>`).join("");
 
   return `
