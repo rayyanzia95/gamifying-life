@@ -7,15 +7,18 @@ const SCORING = {
 
 const LEVELS = { first: 600, step: 100, overallMultiplier: 3 };
 
-// Quran revision, logged in hizb (60 in the Quran), in order from Hizb 1.
+// Quran revision, logged in juz (30 in the Quran), in order from Juz 1.
 // Up to dailyTarget counts toward the daily goal; anything beyond is bonus XP.
 const QURAN = {
   branch: "deen",
-  total: 60,
+  total: 30,
   dailyTarget: 1,
-  xpPerHizb: 30,
-  cycleStart: "2026-11-10", // revision starts at Hizb 1 on this day
+  xpPerJuz: 30,
+  cycleStart: "2026-11-10", // revision starts at Juz 1 on this day
 };
+
+// Expected 1 Ramadan 1448. Update once the masjid announces the moon sighting.
+const RAMADAN_START = "2027-02-08";
 
 // Edmonton. Alberta stays on UTC-6 all year.
 const LOCATION = { lat: 53.5461, lng: -113.4938, utcOffset: -6 };

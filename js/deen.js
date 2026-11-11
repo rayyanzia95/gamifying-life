@@ -187,11 +187,72 @@ function render() {
 
   const deen = levelInfo(xpByBranch(events).deen || 0, 1);
   document.getElementById("levels").innerHTML = badgeHtml("Deen", deen);
+  drawTiles(events);
   drawRevision(events);
   drawDial(events);
+  document.getElementById("view-prayers").hidden = selectedView !== "prayers";
+  document.getElementById("view-quran").hidden = selectedView !== "quran";
 }
 
-// Save today's hizb count as one event, replacing any earlier one for today.
+// Which detail shows under the tiles: "prayers" or "quran".
+let selectedView = "prayers";
+
+function selectView(view) {
+  selectedView = view;
+  render();
+}
+
+// A tile: tapping it (anywhere but its own controls) picks the view below.
+function makeTile(view, title, summary, controls) {
+  const isSelected = selectedView === view;
+  const tile = document.createElement("section");
+  tile.className = isSelected ? "tile selected" : "tile";
+  tile.addEventListener("click", e => {
+    if (!e.target.closest("button, input, label")) selectView(view);
+  });
+
+  const open = document.createElement("button");
+  open.type = "button";
+  open.className = "tile-title";
+  open.textContent = title;
+  open.setAttribute("aria-pressed", String(isSelected));
+  open.addEventListener("click", () => selectView(view));
+
+  const text = document.createElement("p");
+  text.textContent = summary;
+
+  tile.append(open, text, ...controls);
+  return tile;
+}
+
+// Prayers tile: today's count, plus a quick tick for the prayer whose time it is.
+function prayerTile(events) {
+  const daily = PRAYERS.filter(p => !p.bonus);
+  const prayed = daily.filter(p => findEvent(events, p.id, mainSet(p).id)).length;
+  const summary = `${prayed} / ${daily.length} today`;
+
+  const windows = prayerWindows(todayString());
+  const current = windows && currentWindow(windows, nowMinutes());
+  if (!current) return makeTile("prayers", "Prayers", summary, []);
+
+  const prayer = PRAYERS.find(p => p.id === current.id);
+  const main = mainSet(prayer);
+  const tick = makeCheckbox(prayer.name + " · now", Boolean(findEvent(events, prayer.id, main.id)),
+    () => toggleDone(prayer.id, main.id));
+  return makeTile("prayers", "Prayers", summary, [tick]);
+}
+
+function quranTile(events) {
+  const stepper = makeStepper("juz", todayRevision(events), QURAN.total,
+    delta => stepRevision(delta), { step: 1, target: QURAN.dailyTarget, unit: "juz" });
+  return makeTile("quran", "Quran", "Next: " + juzLabel(nextJuz(events)), [stepper]);
+}
+
+function drawTiles(events) {
+  document.getElementById("tiles").replaceChildren(prayerTile(events), quranTile(events));
+}
+
+// Save today's juz count as one event, replacing any earlier one for today.
 function stepRevision(delta) {
   const events = loadEvents();
   const next = todayRevision(events) + delta;
@@ -205,19 +266,23 @@ function stepRevision(delta) {
   render();
 }
 
+// Quran detail: Ramadan countdown and a bar toward finishing this revision.
 function drawRevision(events) {
-  const box = document.getElementById("revision");
-  const heading = document.createElement("div");
-  heading.className = "card-title";
-  heading.textContent = "Quran revision";
+  const { done, completed } = revisionProgress(events);
+  const daysLeft = daysBetween(todayString(), RAMADAN_START);
+  const countdown = daysLeft > 0 ? `${daysLeft} days to Ramadan` : "Ramadan Mubarak";
+  const finished = completed > 0
+    ? ` · ${completed} full revision${completed > 1 ? "s" : ""} done`
+    : "";
 
-  const stepper = makeStepper("hizb today", todayRevision(events), QURAN.total,
-    delta => stepRevision(delta), { step: 1, target: QURAN.dailyTarget, unit: "hizb" });
-
-  const next = document.createElement("p");
-  next.textContent = "Next: " + hizbLabel(nextHizb(events));
-
-  box.replaceChildren(heading, stepper, next);
+  document.getElementById("revision").innerHTML = `
+    <div class="card-row">
+      <span class="card-title">Quran revision</span>
+      <span class="muted">${countdown}</span>
+    </div>
+    <div class="bar"><div class="bar-fill" style="width: ${(done / QURAN.total) * 100}%"></div></div>
+    <p>${done} / ${QURAN.total} juz${finished} · next: ${juzLabel(nextJuz(events))}</p>
+    <p>${paceLabel(QURAN.total - done, daysLeft)}</p>`;
 }
 
 function drawDial(events) {
@@ -230,9 +295,14 @@ function drawDial(events) {
   const prayedIds = PRAYERS
     .filter(prayer => findEvent(events, prayer.id, mainSet(prayer).id))
     .map(prayer => prayer.id);
-  const now = new Date();
-  box.innerHTML = dialHtml(windows, prayedIds, now.getHours() * 60 + now.getMinutes());
+  box.innerHTML = dialHtml(windows, prayedIds, nowMinutes());
 }
 
 render();
-setInterval(() => drawDial(loadEvents()), 60 * 1000);
+
+// Every minute: move the dial's hand and update which prayer the tile offers.
+setInterval(() => {
+  const events = loadEvents();
+  drawTiles(events);
+  drawDial(events);
+}, 60 * 1000);

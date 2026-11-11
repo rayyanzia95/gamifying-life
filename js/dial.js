@@ -33,6 +33,16 @@ function prayerWindows(date) {
   ];
 }
 
+function nowMinutes() {
+  const now = new Date();
+  return now.getHours() * 60 + now.getMinutes();
+}
+
+// The prayer window you're in right now, or undefined between windows.
+function currentWindow(windows, now) {
+  return windows.find(w => now >= w.start && now < w.end);
+}
+
 function pointAt(radius, minutes) {
   const angle = (minutes / MINUTES_PER_DAY) * 2 * Math.PI - Math.PI / 2;
   const centre = DIAL.size / 2;
@@ -77,7 +87,7 @@ function windowArc(w, prayedIds) {
 
 function dialHtml(windows, prayedIds, now) {
   const centre = DIAL.size / 2;
-  const current = windows.find(w => now >= w.start && now < w.end);
+  const current = currentWindow(windows, now);
   const next = windows.find(w => w.start > now);
   const heading = current ? prayerName(current.id) : clockLabel(now);
   const subline = next ? `${prayerName(next.id)} in ${durationLabel(next.start - now)}` : "";

@@ -73,8 +73,8 @@ function scoreRevision(event) {
   const beyond = event.amount - toGoal;
   return {
     branch: QURAN.branch,
-    core: toGoal * QURAN.xpPerHizb,
-    extra: beyond * QURAN.xpPerHizb,
+    core: toGoal * QURAN.xpPerJuz,
+    extra: beyond * QURAN.xpPerJuz,
   };
 }
 
@@ -108,7 +108,7 @@ function branchGoal(branchId) {
       if (!(prayer.bonus || set.optional)) total += setMaxXp(set);
     }
   }
-  if (QURAN.branch === branchId) total += QURAN.dailyTarget * QURAN.xpPerHizb;
+  if (QURAN.branch === branchId) total += QURAN.dailyTarget * QURAN.xpPerJuz;
   return total;
 }
 
