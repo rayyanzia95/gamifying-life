@@ -402,3 +402,24 @@ h1 {
   display: block;
   padding: 6px 0;
 }
+
+/* Deen top card: level badge beside the prayer dial, Quran bar underneath. */
+.summary-row {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 8px;
+}
+
+#quran-progress {
+  margin-top: 12px;
+}
+
+.summary-label {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.streak.paused {
+  opacity: 0.45;
+}

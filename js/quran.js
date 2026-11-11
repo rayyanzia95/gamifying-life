@@ -43,3 +43,30 @@ function paceLabel(remaining, daysLeft) {
   if (perDay <= 1) return `1 juz every ${Math.floor(daysLeft / remaining)} days to finish`;
   return `${perDay.toFixed(1)} juz a day to finish`;
 }
+
+// Revision streak: { days, paused }. Missing one day pauses it (the count stays);
+// missing two days in a row resets it. Today isn't missed until it's over.
+function revisionStreak(events) {
+  const revisedDays = new Set(
+    events.filter(e => isRevision(e) && e.amount > 0).map(e => e.date)
+  );
+  const today = todayString();
+  const yesterday = shiftDate(today, -1);
+  const doneToday = revisedDays.has(today);
+
+  let date = doneToday ? today : yesterday;
+  let days = 0;
+  let missesInARow = 0;
+  while (missesInARow < 2) {
+    if (revisedDays.has(date)) {
+      days += 1;
+      missesInARow = 0;
+    } else {
+      missesInARow += 1;
+    }
+    date = shiftDate(date, -1);
+  }
+
+  const paused = days > 0 && !doneToday && !revisedDays.has(yesterday);
+  return { days, paused };
+}

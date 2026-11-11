@@ -189,6 +189,7 @@ function render() {
   document.getElementById("levels").innerHTML = badgeHtml("Deen", deen);
   drawTiles(events);
   drawRevision(events);
+  drawQuranProgress(events);
   drawDial(events);
   document.getElementById("view-prayers").hidden = selectedView !== "prayers";
   document.getElementById("view-quran").hidden = selectedView !== "quran";
@@ -204,6 +205,7 @@ function selectView(view) {
 }
 
 // A tile: tapping it (anywhere but its own controls) picks the view below.
+// summary is a list of text and elements, e.g. ["Next: Juz 3 · ", streakBadge].
 function makeTile(view, title, summary, controls) {
   const isSelected = selectedView === view;
   const tile = document.createElement("section");
@@ -220,7 +222,7 @@ function makeTile(view, title, summary, controls) {
   open.addEventListener("click", () => selectView(view));
 
   const text = document.createElement("p");
-  text.textContent = summary;
+  text.append(...summary);
 
   tile.append(open, text, ...controls);
   return tile;
@@ -230,7 +232,7 @@ function makeTile(view, title, summary, controls) {
 function prayerTile(events) {
   const daily = PRAYERS.filter(p => !p.bonus);
   const prayed = daily.filter(p => findEvent(events, p.id, mainSet(p).id)).length;
-  const summary = `${prayed} / ${daily.length} today`;
+  const summary = [`${prayed} / ${daily.length} today`];
 
   const windows = prayerWindows(todayString());
   const current = windows && currentWindow(windows, nowMinutes());
@@ -246,7 +248,25 @@ function prayerTile(events) {
 function quranTile(events) {
   const stepper = makeStepper("juz", todayRevision(events), QURAN.total,
     delta => stepRevision(delta), { step: 1, target: QURAN.dailyTarget, unit: "juz" });
-  return makeTile("quran", "Quran", "Next: " + juzLabel(nextJuz(events)), [stepper]);
+  const next = "Next: " + juzLabel(nextJuz(events));
+  const streak = revisionStreak(events);
+  const summary = streak.days > 0 ? [next + " · ", streakBadge(streak)] : [next];
+  return makeTile("quran", "Quran", summary, [stepper]);
+}
+
+// "🔥 5", dimmed while the streak is paused.
+function streakBadge({ days, paused }) {
+  const badge = document.createElement("span");
+  badge.className = paused ? "streak paused" : "streak";
+  badge.textContent = `🔥 ${days}`;
+  badge.setAttribute("aria-label", `${days}-day streak${paused ? ", paused" : ""}`);
+  return badge;
+}
+
+function streakLabel({ days, paused }) {
+  if (days === 0) return "Revise today to start a streak";
+  const text = `🔥 ${days}-day streak`;
+  return paused ? `${text} · paused, revise today to keep it` : text;
 }
 
 function drawTiles(events) {
@@ -267,7 +287,7 @@ function stepRevision(delta) {
   render();
 }
 
-// Quran detail: Ramadan countdown and a bar toward finishing this revision.
+// Quran detail: Ramadan countdown, streak, and the pace needed to finish.
 function drawRevision(events) {
   const { done, completed } = revisionProgress(events);
   const daysLeft = daysBetween(todayString(), RAMADAN_START);
@@ -281,9 +301,20 @@ function drawRevision(events) {
       <span class="card-title">Quran revision</span>
       <span class="muted">${countdown}</span>
     </div>
-    <div class="bar"><div class="bar-fill" style="width: ${(done / QURAN.total) * 100}%"></div></div>
-    <p>${done} / ${QURAN.total} juz${finished} · next: ${juzLabel(nextJuz(events))}</p>
+    <p>${streakLabel(revisionStreak(events))}</p>
+    <p>Next: ${juzLabel(nextJuz(events))}${finished}</p>
     <p>${paceLabel(QURAN.total - done, daysLeft)}</p>`;
+}
+
+// Top card: a bar toward finishing this revision of all 30 juz.
+function drawQuranProgress(events) {
+  const { done } = revisionProgress(events);
+  document.getElementById("quran-progress").innerHTML = `
+    <div class="card-row">
+      <span class="summary-label">Quran</span>
+      <span class="muted">${done} / ${QURAN.total} juz</span>
+    </div>
+    <div class="bar"><div class="bar-fill" style="width: ${(done / QURAN.total) * 100}%"></div></div>`;
 }
 
 function drawDial(events) {
