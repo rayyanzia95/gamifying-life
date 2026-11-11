@@ -2,7 +2,9 @@
 // Midnight is at the top and the day runs clockwise. Times are minutes after midnight.
 
 const MINUTES_PER_DAY = 24 * 60;
-const DIAL = { size: 270, radius: 80, labelRadius: 104, gapMinutes: 3 };
+// size is the drawing area; extra room past the ring keeps the prayer names inside it.
+// labelRadius is where a name starts: just clear of the ring's outer edge (radius + 7).
+const DIAL = { size: 300, radius: 80, labelRadius: 93, gapMinutes: 3 };
 
 function toMinutes(hhmm) {
   const [hours, minutes] = hhmm.split(":").map(Number);
@@ -71,15 +73,30 @@ function clockLabel(minutes) {
   return `${hours % 12 || 12}:${mins} ${suffix}`;
 }
 
+// A prayer's name just outside the ring, anchored so it grows away from the ring:
+// names on the right start at the point, names on the left end there, and names near
+// the top or bottom sit above or below it. So no name ever runs back over the ring.
+function prayerLabel(w, prayed) {
+  const minutes = (w.start + w.end) / 2;
+  const angle = (minutes / MINUTES_PER_DAY) * 2 * Math.PI - Math.PI / 2;
+  const [dx, dy] = [Math.cos(angle), Math.sin(angle)];
+  const SIDE = 0.35; // how far off vertical/horizontal before a name counts as on a side
+  const anchor = dx > SIDE ? "start" : dx < -SIDE ? "end" : "middle";
+  const baseline = dy > SIDE ? "hanging" : dy < -SIDE ? "auto" : "middle";
+  const [x, y] = pointAt(DIAL.labelRadius, minutes);
+  return `<text class="dial-label${prayed ? " prayed" : ""}" x="${x}" y="${y}"
+    text-anchor="${anchor}" dominant-baseline="${baseline}">${prayerName(w.id)}</text>`;
+}
+
 function windowArc(w, prayedIds) {
+  const prayed = prayedIds.includes(w.id);
   const classes = ["dial-arc"];
   if (w.id === "tahajjud") classes.push("bonus");
-  if (prayedIds.includes(w.id)) classes.push("prayed");
-  const [x, y] = pointAt(DIAL.labelRadius, (w.start + w.end) / 2);
+  if (prayed) classes.push("prayed");
   const path = arcPath(DIAL.radius, w.start + DIAL.gapMinutes, w.end - DIAL.gapMinutes);
   return `
     <path class="${classes.join(" ")}" d="${path}"/>
-    <text class="dial-label" x="${x}" y="${y}">${prayerName(w.id)}</text>`;
+    ${prayerLabel(w, prayed)}`;
 }
 
 // Dua extras: a gold halo for the day just inside the arcs, and one line under the

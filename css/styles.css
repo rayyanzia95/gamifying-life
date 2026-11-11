@@ -252,7 +252,7 @@ h1 {
 .dial {
   display: block;
   width: 100%;
-  max-width: 270px;
+  max-width: 300px;
   height: auto;
   margin: 0 auto;
 }
@@ -281,11 +281,16 @@ h1 {
   stroke: var(--bonus);
 }
 
+/* Prayer names around the dial. Position and anchoring come from dial.js. */
 .dial-label {
-  font-size: 11px;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
   fill: var(--muted);
-  text-anchor: middle;
-  dominant-baseline: middle;
+}
+
+.dial-label.prayed {
+  fill: var(--accent);
 }
 
 /* Dua on the dial: a line of sun, beads and moon in the centre, plus a halo for the day.
