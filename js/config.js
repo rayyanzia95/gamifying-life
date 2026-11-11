@@ -133,6 +133,26 @@ const ACADEMICS = {
   boss: { windowDays: 14, bonusXp: 30 },
 };
 
+// Money: XP for logging, never for spending less. The week runs Sunday to Saturday.
+// No amounts live here: the weekly budget and savings goal are typed in on the
+// Money page and saved with your events on the device only, because this repo is public.
+const MONEY = {
+  branch: "money",
+  dayXp: 15,             // core: today is logged (a spend, or "No spend today")
+  noSpendXp: 10,         // bonus for a no-spend day
+  payoutXp: 50,          // bonus when a week ends: share of the budget left × 50
+  payoutMinDays: 5,      // ...banked only if at least 5 of the 7 days were logged
+  depositXp: 25,         // bonus for the first savings deposit of a week
+  goalXp: 100,           // bonus, once, when a savings goal is reached
+  categories: [
+    { id: "food",      name: "Food out" },
+    { id: "groceries", name: "Groceries" },
+    { id: "transport", name: "Transport" },
+    { id: "fun",       name: "Fun" },
+    { id: "other",     name: "Other" },
+  ],
+};
+
 // Fall 2026 deadlines, copied from the Fall 2026 Planner (Canvas, Oct 1).
 // Edit a row here when a date moves; its tick is kept, because a deadline is
 // known by its course + title, not its date. kind is one of ACADEMICS.deadlineXp.
