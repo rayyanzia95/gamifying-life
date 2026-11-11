@@ -17,6 +17,7 @@
   --bonus-soft: #dcd9f5;
   --now: #d85a30;
   --gold: #c8901a;
+  --sleep: #4a63c9;
 }
 
 /* Dark values. Used when the device is in dark mode (unless you picked light),
@@ -40,6 +41,7 @@
     --bonus-soft: #33305a;
     --now: #ef7a4f;
     --gold: #e8b64c;
+    --sleep: #7b8fe6;
   }
 }
 
@@ -61,6 +63,7 @@
   --bonus-soft: #33305a;
   --now: #ef7a4f;
   --gold: #e8b64c;
+  --sleep: #7b8fe6;
 }
 
 body {
@@ -229,6 +232,36 @@ h1 {
   fill: none;
   stroke: var(--accent-soft);
   stroke-width: 8;
+}
+
+/* A split Home ring (Health): each part in its own colour, over a faint
+   track in that colour. Sleep is night blue, exercise the usual green. */
+.ring-part,
+.ring-part-track {
+  fill: none;
+  stroke-width: 8;
+}
+
+.ring-part-track {
+  opacity: 0.18;
+}
+
+.part-sleep {
+  stroke: var(--sleep);
+  background: var(--sleep);
+}
+
+.part-exercise {
+  stroke: var(--accent);
+  background: var(--accent);
+}
+
+.legend-dot {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  margin: 0 4px 0 8px;
 }
 
 .rings {

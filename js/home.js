@@ -5,8 +5,22 @@ const overallXp = Object.values(totals).reduce((sum, xp) => sum + xp, 0);
 document.getElementById("overall").innerHTML =
   badgeHtml("Overall", levelInfo(overallXp, LEVELS.overallMultiplier));
 
-// A weekly branch (Chores) fills its ring over the week; the rest fill each day.
+// Health's ring in two colours: sleep today, then this week's sessions.
+function healthRow(name) {
+  const { sleep, exercise } = healthParts(events, todayString());
+  return {
+    name,
+    parts: [
+      { ...sleep, colour: "sleep", text: `${sleep.core + sleep.extra} / ${sleep.goal} sleep` },
+      { ...exercise, colour: "exercise", text: `${exercise.count} / ${EXERCISE.perWeek} sessions` },
+    ],
+  };
+}
+
+// A weekly branch (Chores) fills its ring over the week, a mixed one (Health)
+// is split into daily and weekly parts, and the rest fill each day.
 const rows = BRANCHES.map(branch => {
+  if (branch.period === "mixed") return healthRow(branch.name);
   if (branch.period === "week") {
     const week = choreWeek(events, weekStart(todayString()));
     return { name: branch.name, core: week.core, extra: week.extra, goal: week.goal, weekly: true };

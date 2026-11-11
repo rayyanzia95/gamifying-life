@@ -14,9 +14,47 @@ function badgeHtml(name, info) {
     </div>`;
 }
 
+// An arc of a Home ring: `length` long, starting `from` along the ring (from the top, clockwise).
+// The dash pattern is: nothing for 0, a gap of `from`, the arc, then a gap for the rest.
+function ringArc(cls, r, from, length) {
+  const C = 2 * Math.PI * r;
+  return `<circle class="${cls}" cx="50" cy="50" r="${r}"
+    transform="rotate(-90 50 50)" stroke-dasharray="0 ${from} ${length} ${C}"/>`;
+}
+
+const RING_PART_GAP = 2; // space between the parts of a split ring
+
+// One ring split into parts (Health: sleep today, then sessions this week).
+// Each part's share of the ring is sized by its goal; it has its own colour
+// and a faint track in that colour.
+function ringPartsSvg(parts, r) {
+  const C = 2 * Math.PI * r;
+  const total = parts.reduce((sum, part) => sum + part.goal, 0);
+  return parts.map((part, i) => {
+    const before = parts.slice(0, i).reduce((sum, p) => sum + p.goal, 0);
+    const from = (before / total) * C + RING_PART_GAP / 2;
+    const room = (part.goal / total) * C - RING_PART_GAP;
+    const share = part.goal > 0 ? Math.min((part.core + part.extra) / part.goal, 1) : 0;
+    return ringArc(`ring-part-track part-${part.colour}`, r, from, room) +
+      ringArc(`ring-part part-${part.colour}`, r, from, share * room);
+  }).join("");
+}
+
+// Legend text: "40 / 115 XP", or for a split ring one coloured dot and text per part.
+function legendValue(row) {
+  if (row.parts) {
+    return row.parts.map(part =>
+      `<span class="legend-dot part-${part.colour}"></span>${part.text}`).join(" ");
+  }
+  return `${row.core + row.extra} / ${row.goal} XP${row.weekly ? " this week" : ""}`;
+}
+
+// Rows are { name, core, extra, goal, weekly? }, or { name, parts } for a split ring,
+// where each part is { core, extra, goal, colour, text }.
 function ringsHtml(rows) {
   const circles = rows.map((row, i) => {
     const r = 40 - i * 11;
+    if (row.parts) return ringPartsSvg(row.parts, r);
     const C = 2 * Math.PI * r;
     const coreShare = row.goal > 0 ? Math.min(row.core / row.goal, 1) : 0;
     const bonusShare = row.goal > 0 ? Math.min(row.extra / row.goal, 1 - coreShare) : 0;
@@ -31,7 +69,7 @@ function ringsHtml(rows) {
   const legend = rows.map(row => `
     <div class="legend-row">
       <span>${row.name}</span>
-      <span>${row.core + row.extra} / ${row.goal} XP${row.weekly ? " this week" : ""}</span>
+      <span>${legendValue(row)}</span>
     </div>`).join("");
 
   return `

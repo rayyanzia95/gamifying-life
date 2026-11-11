@@ -92,10 +92,11 @@ const EXERCISE = {
 };
 
 // period "week": the Home ring fills over the week instead of each day.
+// period "mixed": the ring is split into a daily part and a weekly part (healthParts).
 const BRANCHES = [
   { id: "deen", name: "Deen", page: "deen.html" },
   { id: "chores", name: "Chores", page: "chores.html", period: "week" },
-  { id: "health", name: "Health", page: "health.html" },
+  { id: "health", name: "Health", page: "health.html", period: "mixed" },
 ];
 
 const PRAYERS = [
