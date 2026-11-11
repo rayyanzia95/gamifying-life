@@ -70,45 +70,7 @@ function drawStudy(events) {
 
 // ---- Deadlines ----
 
-// Tick: add an event dated today. Untick: remove every tick for that deadline.
-function toggleDeadline(id) {
-  const events = loadEvents();
-  const isTicked = events.some(e => isDeadlineTick(e) && e.deadline === id);
-  saveEvents(isTicked
-    ? events.filter(e => !(isDeadlineTick(e) && e.deadline === id))
-    : [...events, { date: todayString(), activity: "deadline", deadline: id }]);
-  render();
-}
-
-// The tick + title + kind on the left, the time on the right, a note underneath.
-function deadlineRow(deadline, ticked) {
-  const id = deadlineId(deadline);
-  const isDone = ticked.has(id);
-  const label = makeCheckbox(`${courseShort(deadline.course)} ${deadline.title}`,
-    isDone, () => toggleDeadline(id));
-  if (isDone) label.classList.add("done");
-  const kind = document.createElement("span");
-  kind.className = "kind-tag";
-  kind.textContent = deadline.kind;
-  label.append(kind);
-
-  const when = document.createElement("span");
-  when.className = "muted";
-  when.textContent = deadline.time;
-
-  const line = document.createElement("div");
-  line.className = "quest";
-  line.append(label, when);
-  const row = document.createElement("li");
-  row.append(line);
-  if (deadline.note) {
-    const note = document.createElement("div");
-    note.className = "muted deadline-note";
-    note.textContent = deadline.note;
-    row.append(note);
-  }
-  return row;
-}
+// Deadline rows and their ticks are in deadline-list.js.
 
 // "Next week: ASTRO Quiz: Modules 7–8, CMPUT Assignment 3, PHYS Midterm 2 and 4 more".
 // Exams first, then assignments, so the big ones get named.

@@ -8,7 +8,7 @@
   <script src="js/theme.js"></script>
   <script src="js/settings.js"></script>
 </head>
-<body>
+<body class="wide">
   <div class="corner">
     <a class="icon-button" href="settings.html" aria-label="Settings">⚙︎</a>
     <button class="icon-button" id="theme-toggle" type="button"></button>
@@ -26,7 +26,10 @@
     <button type="button" id="next-day" aria-label="Forward">→</button>
     <span class="muted" id="nav-label"></span>
   </div>
-  <section class="card" id="day"></section>
+  <div class="day-layout" id="day-view">
+    <section class="card" id="day"></section>
+    <section class="card" id="day-side"></section>
+  </div>
   <div id="week"></div>
   <div id="month"></div>
 
@@ -34,6 +37,7 @@
   <script src="js/scoring.js"></script>
   <script src="js/storage.js"></script>
   <script src="js/ui.js"></script>
+  <script src="js/deadline-list.js"></script>
   <script src="js/schedule.js"></script>
   <script src="js/planner-week.js"></script>
   <script src="js/planner-month.js"></script>

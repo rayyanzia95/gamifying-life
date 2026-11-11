@@ -89,6 +89,25 @@ function drawDay(events) {
   document.getElementById("day").replaceChildren(heading, blocks.length > 0 ? list : empty);
 }
 
+// The sidebar beside the Day view, like the Planner's: what's due that day,
+// anything still open from before today (only when looking at today), and the
+// 7 days after. Rows tick like the Academics page (deadline-list.js).
+function drawDaySide(events) {
+  const today = todayString();
+  const ticked = tickedDeadlines(events);
+  const dueToday = deadlinesBetween(shownDate, shiftDate(shownDate, 1));
+  const next = deadlinesBetween(shiftDate(shownDate, 1), shiftDate(shownDate, 8));
+  const open = deadlinesBetween("", today).filter(d => !ticked.has(deadlineId(d))); // "" comes before every date
+
+  const sections = [
+    ...deadlineSection("Due this day", dueToday, ticked),
+    ...(shownDate === today && open.length > 0
+      ? deadlineSection("Still open from earlier", open, ticked, { withDate: true }) : []),
+    ...deadlineSection("Next 7 days", next, ticked, { withDate: true }),
+  ];
+  document.getElementById("day-side").replaceChildren(...sections);
+}
+
 // ---- Views: Day, Week (planner-week.js) or Month (planner-month.js) ----
 
 let view = "day";
@@ -119,11 +138,13 @@ function render() {
   const today = todayString();
   document.querySelectorAll("[data-view]").forEach(tab =>
     tab.setAttribute("aria-selected", String(tab.dataset.view === view)));
-  for (const name of ["day", "week", "month"]) document.getElementById(name).hidden = view !== name;
+  const containers = { day: "day-view", week: "week", month: "month" };
+  for (const [name, id] of Object.entries(containers)) document.getElementById(id).hidden = view !== name;
 
   if (view === "week") return drawWeek(events, today);
   if (view === "month") return drawMonth(events, today);
   drawDay(events);
+  drawDaySide(events);
   document.getElementById("nav-label").textContent = "";
   document.getElementById("go-today").disabled = shownDate === today;
 }

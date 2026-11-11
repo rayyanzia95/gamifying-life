@@ -1267,3 +1267,55 @@ button.week-block {
     display: none;
   }
 }
+
+/* Planner: wider page on a computer, so the Day sidebar can sit on the right.
+   On a phone the sidebar stacks under the day. */
+body.wide {
+  max-width: 1000px;
+}
+
+.day-layout {
+  display: grid;
+  gap: 0 16px;
+  align-items: start;
+}
+
+@media (min-width: 820px) {
+  .day-layout {
+    grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+  }
+}
+
+.list-heading {
+  display: flex;
+  justify-content: space-between;
+  margin: 14px 0 4px;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.list-heading:first-child {
+  margin-top: 0;
+}
+
+.list-heading .muted {
+  font-size: 13px;
+  font-weight: 400;
+}
+
+.deadline-when {
+  font-size: 13px;
+  text-align: right;
+}
+
+/* In the narrow sidebar, the date and time go under the title. */
+#day-side .quest {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0;
+}
+
+#day-side .deadline-when {
+  margin-left: 24px;
+  text-align: left;
+}
