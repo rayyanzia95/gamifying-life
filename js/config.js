@@ -91,6 +91,26 @@ const EXERCISE = {
   xp: 25,
 };
 
+// Health: Diet. One event per day: each meal rated, glasses of water, a creatine tick.
+// Junk is still logged, it just earns nothing. All core; the daily goal is 40.
+// A day counts toward the streak once it has streakXp.
+const DIET = {
+  branch: "health",
+  meals: [
+    { id: "breakfast", name: "Breakfast" },
+    { id: "lunch", name: "Lunch" },
+    { id: "dinner", name: "Dinner" },
+  ],
+  ratings: [
+    { id: "healthy", name: "Healthy", xp: 10 },
+    { id: "okay", name: "Okay", xp: 5 },
+    { id: "junk", name: "Junk", xp: 0 },
+  ],
+  water: { glasses: 8, xp: 5 },
+  creatineXp: 5,
+  streakXp: 30,
+};
+
 // period "week": the Home ring fills over the week instead of each day.
 // period "mixed": the ring is split into a daily part and a weekly part (healthParts).
 const BRANCHES = [

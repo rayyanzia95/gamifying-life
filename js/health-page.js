@@ -1,5 +1,5 @@
 // Renders health.html: the Health level beside the week of nights (sleep-week.js),
-// the bar (sleep today + sessions this week), the Sleep card and the Exercise card.
+// the bar (sleep and diet today + sessions this week), the Sleep, Diet and Exercise cards.
 // Last night is saved as one event dated this morning:
 // { date, activity: "sleep", bed: "22:40", wake: "07:10", fajrGap: 20 }
 
@@ -169,6 +169,96 @@ function drawExercise(events) {
   );
 }
 
+// ---- Diet: one event per day, like sleep ----
+// { date, activity: "diet", breakfast: "healthy", lunch: "okay", water: 6, creatine: true }
+
+function todayDiet(events) {
+  const today = todayString();
+  return events.find(e => isDiet(e) && e.date === today) ?? { date: today, activity: "diet" };
+}
+
+function saveDiet(changes) {
+  const events = loadEvents();
+  const updated = { ...todayDiet(events), ...changes };
+  const others = events.filter(e => !(isDiet(e) && e.date === updated.date));
+  saveEvents([...others, updated]);
+  render();
+}
+
+// A day counts once it reaches DIET.streakXp. Forgiving like sleep.
+function dietStreak(events) {
+  const days = events.filter(e => isDiet(e) && scoreDiet(e).core >= DIET.streakXp).map(e => e.date);
+  return dayStreak(new Set(days));
+}
+
+// Healthy / Okay / Junk buttons for one meal. Tapping the picked one again clears it.
+// aria-pressed tells screen readers which button is on.
+function mealRow(meal, picked) {
+  const buttons = DIET.ratings.map(rating => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.textContent = rating.name;
+    button.setAttribute("aria-pressed", String(rating.id === picked));
+    button.addEventListener("click", () =>
+      saveDiet({ [meal.id]: rating.id === picked ? undefined : rating.id }));
+    return button;
+  });
+  const group = document.createElement("div");
+  group.className = "rating";
+  group.setAttribute("role", "group");
+  group.setAttribute("aria-label", meal.name);
+  group.append(...buttons);
+  const row = document.createElement("div");
+  row.className = "field";
+  row.append(meal.name, group);
+  return row;
+}
+
+function waterStepper(glasses) {
+  const onStep = delta => saveDiet({ water: Math.max(glasses + delta, 0) });
+  const stepper = makeStepper("", glasses, Infinity, onStep,
+    { step: 1, target: DIET.water.glasses, unit: "glasses" });
+  const row = document.createElement("div");
+  row.className = "field";
+  row.append("Water (glasses)", stepper);
+  return row;
+}
+
+// "25 / 40 XP · dinner not logged yet"
+function dietSummary(day) {
+  const { core } = scoreDiet(day);
+  const missing = DIET.meals.filter(meal => !day[meal.id]).map(meal => meal.name.toLowerCase());
+  const note = missing.length > 0 ? ` · ${missing.join(", ")} not logged yet` : "";
+  return `${core} / ${dietGoal()} XP${note}`;
+}
+
+function drawDiet(events) {
+  const day = todayDiet(events);
+  const streak = dietStreak(events);
+
+  const title = document.createElement("div");
+  title.className = "card-row";
+  const heading = document.createElement("h2");
+  heading.textContent = "Diet";
+  title.append(heading, streak.days > 0 ? streakBadge(streak) : "");
+
+  const creatine = makeCheckbox("Creatine", Boolean(day.creatine),
+    event => saveDiet({ creatine: event.target.checked || undefined }));
+  creatine.className = "field-tick";
+
+  const summary = document.createElement("p");
+  summary.className = "muted";
+  summary.textContent = dietSummary(day);
+
+  document.getElementById("diet").replaceChildren(
+    title,
+    ...DIET.meals.map(meal => mealRow(meal, day[meal.id])),
+    waterStepper(day.water ?? 0),
+    creatine,
+    summary,
+  );
+}
+
 function render() {
   const events = loadEvents();
   const today = todayString();
@@ -176,16 +266,18 @@ function render() {
   document.getElementById("levels").innerHTML = badgeHtml("Health", levelInfo(xp, 1));
   document.getElementById("sleep-week").innerHTML = sleepWeekHtml(events, today);
 
-  // The bar mixes sleep today with this week's sessions.
-  const { sleep, exercise } = healthParts(events, today);
-  const core = sleep.core + exercise.core;
-  const extra = sleep.extra + exercise.extra;
-  const goal = sleep.goal + exercise.goal;
+  // The bar mixes sleep and diet today with this week's sessions.
+  const parts = Object.values(healthParts(events, today));
+  const sum = key => parts.reduce((total, part) => total + part[key], 0);
+  const core = sum("core");
+  const extra = sum("extra");
+  const goal = sum("goal");
   fillBar(core, extra, goal);
   document.getElementById("progress-label").textContent =
-    `${core + extra} / ${goal} XP · sleep today + sessions this week`;
+    `${core + extra} / ${goal} XP · sleep and diet today + sessions this week`;
 
   drawSleep(events);
+  drawDiet(events);
   drawExercise(events);
 }
 

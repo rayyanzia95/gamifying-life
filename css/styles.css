@@ -18,6 +18,7 @@
   --now: #d85a30;
   --gold: #c8901a;
   --sleep: #4a63c9;
+  --diet: #c9507a;
 }
 
 /* Dark values. Used when the device is in dark mode (unless you picked light),
@@ -42,6 +43,7 @@
     --now: #ef7a4f;
     --gold: #e8b64c;
     --sleep: #7b8fe6;
+    --diet: #e57ea3;
   }
 }
 
@@ -64,6 +66,7 @@
   --now: #ef7a4f;
   --gold: #e8b64c;
   --sleep: #7b8fe6;
+  --diet: #e57ea3;
 }
 
 body {
@@ -235,7 +238,7 @@ h1 {
 }
 
 /* A split Home ring (Health): each part in its own colour, over a faint
-   track in that colour. Sleep is night blue, exercise the usual green. */
+   track in that colour. Sleep is night blue, diet rose, exercise the usual green. */
 .ring-part,
 .ring-part-track {
   fill: none;
@@ -254,6 +257,11 @@ h1 {
 .part-exercise {
   stroke: var(--accent);
   background: var(--accent);
+}
+
+.part-diet {
+  stroke: var(--diet);
+  background: var(--diet);
 }
 
 .legend-dot {
@@ -587,6 +595,7 @@ h1 {
 
 /* Health: the Sleep card. A label on the left, its time or counter on the right. */
 #sleep h2,
+#diet h2,
 #exercise h2 {
   font-size: 16px;
   font-weight: 500;
@@ -608,6 +617,34 @@ h1 {
   border: 1px solid var(--control-border);
   border-radius: 6px;
   padding: 4px 8px;
+}
+
+/* Diet: Healthy / Okay / Junk for each meal. The picked one is filled green. */
+.rating {
+  display: flex;
+  gap: 4px;
+}
+
+.rating button {
+  font: inherit;
+  font-size: 13px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  border: 1px solid var(--control-border);
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+}
+
+.rating button[aria-pressed="true"] {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+.field-tick {
+  display: block;
+  padding: 6px 0;
 }
 
 #sleep .sleep-summary {

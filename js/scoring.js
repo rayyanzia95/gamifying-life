@@ -68,6 +68,7 @@ function scoreEvent(event, events) {
   if (event.activity === "chore") return scoreChore(event, events);
   if (event.activity === "sleep") return scoreSleep(event, events);
   if (isExercise(event)) return scoreExercise(event, events);
+  if (isDiet(event)) return scoreDiet(event);
   if (!isCounted(event, events)) return null;
   const prayer = PRAYERS.find(p => p.id === event.prayer);
   const set = prayer.sets.find(s => s.id === event.set);
@@ -287,13 +288,40 @@ function exerciseWeek(events, week) {
   };
 }
 
-// Health mixes a daily part with a weekly one: sleep counts today,
-// sessions count over the week. Used by the Health bar (and later the Home ring).
+// ---- Diet: one event per day ----
+// { date, activity: "diet", breakfast: "healthy", lunch: "okay", water: 6, creatine: true }
+
+function isDiet(event) {
+  return event.activity === "diet";
+}
+
+function mealXp(ratingId) {
+  return DIET.ratings.find(r => r.id === ratingId)?.xp ?? 0;
+}
+
+function scoreDiet(event) {
+  const meals = DIET.meals.reduce((sum, meal) => sum + mealXp(event[meal.id]), 0);
+  const water = (event.water ?? 0) >= DIET.water.glasses ? DIET.water.xp : 0;
+  const creatine = event.creatine ? DIET.creatineXp : 0;
+  return { branch: DIET.branch, core: meals + water + creatine, extra: 0 };
+}
+
+// Best rating for every meal, plus water and creatine: 40.
+function dietGoal() {
+  const best = Math.max(...DIET.ratings.map(r => r.xp));
+  return DIET.meals.length * best + DIET.water.xp + DIET.creatineXp;
+}
+
+// Health mixes daily parts with a weekly one: sleep and diet count today,
+// sessions count over the week. Used by the Health bar and the Home ring.
 function healthParts(events, today) {
   const night = events.find(e => isSleep(e) && e.date === today);
   const sleep = night ? scoreSleep(night, events) : { core: 0, extra: 0 };
+  const day = events.find(e => isDiet(e) && e.date === today);
+  const diet = day ? scoreDiet(day) : { core: 0, extra: 0 };
   return {
     sleep: { core: sleep.core, extra: sleep.extra, goal: sleepGoal() },
+    diet: { core: diet.core, extra: diet.extra, goal: dietGoal() },
     exercise: exerciseWeek(events, weekStart(today)),
   };
 }
@@ -321,6 +349,7 @@ function branchGoal(branchId) {
   if (QURAN.branch === branchId) total += QURAN.dailyTarget * QURAN.xpPerJuz;
   if (DUA.branch === branchId) total += DUA.adhkar.length * DUA.adhkarXp;
   if (SLEEP.branch === branchId) total += sleepGoal();
+  if (DIET.branch === branchId) total += dietGoal();
   return total;
 }
 
