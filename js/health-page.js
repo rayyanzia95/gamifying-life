@@ -1,5 +1,5 @@
 // Renders health.html: the Health level beside the week of nights (sleep-week.js),
-// today's bar and the Sleep card.
+// the bar (sleep today + sessions this week), the Sleep card and the Exercise card.
 // Last night is saved as one event dated this morning:
 // { date, activity: "sleep", bed: "22:40", wake: "07:10", fajrGap: 20 }
 
@@ -103,18 +103,90 @@ function drawSleep(events) {
   );
 }
 
+// ---- Exercise: one weekly counter for gym and climbing ----
+
+function addSession() {
+  saveEvents([...loadEvents(), { date: todayString(), activity: "exercise" }]);
+  render();
+}
+
+// Undo this week's latest session. findLast searches from the end of the array.
+function removeSession() {
+  const events = loadEvents();
+  const week = weekStart(todayString());
+  const last = events.findLast(e => isExercise(e) && e.date >= week);
+  if (!last) return;
+  saveEvents(events.filter(e => e !== last));
+  render();
+}
+
+const WEEKDAY_LETTERS = ["S", "M", "T", "W", "T", "F", "S"];
+
+// Sun–Sat dots: filled on days with a session, outlined for today.
+// Screen readers get one summary instead of seven dots.
+function sessionDots(dates, week, today) {
+  const days = WEEKDAY_LETTERS.map((letter, i) => {
+    const date = shiftDate(week, i);
+    const dot = document.createElement("span");
+    dot.className = ["session-dot", dates.includes(date) ? "done" : "", date === today ? "today" : ""]
+      .join(" ").trim();
+    const day = document.createElement("div");
+    day.append(dot, letter);
+    return day;
+  });
+  const row = document.createElement("div");
+  row.className = "session-days";
+  row.setAttribute("role", "img");
+  row.setAttribute("aria-label", `Sessions on ${new Set(dates).size} days this week`);
+  row.append(...days);
+  return row;
+}
+
+// "2 to go · 4 days left", "1 to go · last day", or "Target met · +1 bonus".
+function sessionHint(count, week, today) {
+  const left = EXERCISE.perWeek - count;
+  if (left <= 0) return left < 0 ? `Target met · +${-left} bonus` : "Target met for the week";
+  const daysLeft = 7 - daysBetween(week, today);
+  return `${left} to go · ${daysLeft === 1 ? "last day" : daysLeft + " days left"}`;
+}
+
+function drawExercise(events) {
+  const today = todayString();
+  const week = weekStart(today);
+  const dates = sessionDates(events, week);
+
+  const heading = document.createElement("h2");
+  heading.textContent = "Exercise";
+  const onStep = delta => (delta > 0 ? addSession() : removeSession());
+  const stepper = makeStepper("this week", dates.length, Infinity, onStep,
+    { step: 1, target: EXERCISE.perWeek, unit: "sessions" });
+  const hint = document.createElement("p");
+  hint.className = "muted";
+  hint.textContent = sessionHint(dates.length, week, today);
+
+  document.getElementById("exercise").replaceChildren(
+    heading, stepper, sessionDots(dates, week, today), hint,
+  );
+}
+
 function render() {
   const events = loadEvents();
+  const today = todayString();
   const xp = xpByBranch(events)[SLEEP.branch] || 0;
   document.getElementById("levels").innerHTML = badgeHtml("Health", levelInfo(xp, 1));
-  document.getElementById("sleep-week").innerHTML = sleepWeekHtml(events, todayString());
+  document.getElementById("sleep-week").innerHTML = sleepWeekHtml(events, today);
 
-  const { core, extra } = todayXp(events, SLEEP.branch);
-  const goal = branchGoal(SLEEP.branch);
+  // The bar mixes sleep today with this week's sessions.
+  const { sleep, exercise } = healthParts(events, today);
+  const core = sleep.core + exercise.core;
+  const extra = sleep.extra + exercise.extra;
+  const goal = sleep.goal + exercise.goal;
   fillBar(core, extra, goal);
-  document.getElementById("progress-label").textContent = `${core + extra} / ${goal} XP today`;
+  document.getElementById("progress-label").textContent =
+    `${core + extra} / ${goal} XP · sleep today + sessions this week`;
 
   drawSleep(events);
+  drawExercise(events);
 }
 
 render();

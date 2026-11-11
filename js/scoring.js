@@ -67,6 +67,7 @@ function scoreEvent(event, events) {
   }
   if (event.activity === "chore") return scoreChore(event, events);
   if (event.activity === "sleep") return scoreSleep(event, events);
+  if (isExercise(event)) return scoreExercise(event, events);
   if (!isCounted(event, events)) return null;
   const prayer = PRAYERS.find(p => p.id === event.prayer);
   const set = prayer.sets.find(s => s.id === event.set);
@@ -130,16 +131,21 @@ function choreCount(events, choreId, from, to) {
   return events.filter(e => isChore(e, choreId) && e.date >= from && e.date < to).length;
 }
 
+// How many matching events since `from` came before this one: earlier days,
+// or earlier in the list on the same day. Shared by chores and exercise.
+function earlierMatches(events, event, from, matches) {
+  const index = events.indexOf(event);
+  return events.filter((e, i) =>
+    matches(e) && e.date >= from &&
+    (e.date < event.date || (e.date === event.date && i < index))
+  ).length;
+}
+
 function scoreChore(event, events) {
   const chore = CHORES.list.find(c => c.id === event.chore);
   if (!chore) return null;
   const from = choreWindowStart(chore, weekStart(event.date));
-  // Ticks in the window that came before this one: earlier days, or earlier in the list today.
-  const index = events.indexOf(event);
-  const before = events.filter((e, i) =>
-    isChore(e, chore.id) && e.date >= from &&
-    (e.date < event.date || (e.date === event.date && i < index))
-  ).length;
+  const before = earlierMatches(events, event, from, e => isChore(e, chore.id));
   const isCore = before < choreTarget(chore);
   return { branch: CHORES.branch, core: isCore ? chore.xp : 0, extra: isCore ? 0 : chore.xp };
 }
@@ -247,6 +253,49 @@ function scoreSleep(event, events) {
 
 function sleepGoal() {
   return Object.values(SLEEP.xp).reduce((sum, xp) => sum + xp, 0);
+}
+
+// ---- Exercise: weekly sessions ----
+// One event per session: { date, activity: "exercise" }. The first EXERCISE.perWeek
+// sessions of a week (Sun–Sat) are core XP; any more are bonus.
+
+function isExercise(event) {
+  return event.activity === "exercise";
+}
+
+function scoreExercise(event, events) {
+  const before = earlierMatches(events, event, weekStart(event.date), isExercise);
+  const isCore = before < EXERCISE.perWeek;
+  return { branch: EXERCISE.branch, core: isCore ? EXERCISE.xp : 0, extra: isCore ? 0 : EXERCISE.xp };
+}
+
+// The dates of this week's sessions, oldest first (a date repeats for two sessions in a day).
+function sessionDates(events, week) {
+  const end = shiftDate(week, 7);
+  return events.filter(e => isExercise(e) && e.date >= week && e.date < end).map(e => e.date);
+}
+
+// The week's sessions for the bar and the Home ring: { count, core, extra, goal }.
+function exerciseWeek(events, week) {
+  const count = sessionDates(events, week).length;
+  const coreCount = Math.min(count, EXERCISE.perWeek);
+  return {
+    count,
+    core: coreCount * EXERCISE.xp,
+    extra: (count - coreCount) * EXERCISE.xp,
+    goal: EXERCISE.perWeek * EXERCISE.xp,
+  };
+}
+
+// Health mixes a daily part with a weekly one: sleep counts today,
+// sessions count over the week. Used by the Health bar (and later the Home ring).
+function healthParts(events, today) {
+  const night = events.find(e => isSleep(e) && e.date === today);
+  const sleep = night ? scoreSleep(night, events) : { core: 0, extra: 0 };
+  return {
+    sleep: { core: sleep.core, extra: sleep.extra, goal: sleepGoal() },
+    exercise: exerciseWeek(events, weekStart(today)),
+  };
 }
 
 function levelInfo(xp, multiplier) {

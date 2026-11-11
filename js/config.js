@@ -83,6 +83,14 @@ const SLEEP = {
   xp: { bedtime: 15, hours: 15, consistent: 10 },
 };
 
+// Health: Exercise. One counter for gym and climbing together, counted over the
+// week (Sun–Sat). Sessions up to the weekly target are core XP; more are bonus.
+const EXERCISE = {
+  branch: "health",
+  perWeek: 3,
+  xp: 25,
+};
+
 // period "week": the Home ring fills over the week instead of each day.
 const BRANCHES = [
   { id: "deen", name: "Deen", page: "deen.html" },
