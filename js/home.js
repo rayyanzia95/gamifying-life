@@ -52,8 +52,35 @@ function personalRow(name) {
   };
 }
 
+// People's ring: checked in today (green), then calls home this week (gold).
+function peopleRow(name) {
+  const { today, week } = peopleParts(events, todayString());
+  return {
+    name,
+    parts: [
+      { ...today, colour: "exercise", text: today.checkedIn ? "checked in" : "not yet" },
+      { ...week, colour: "due", text: `${week.count} / ${PEOPLE.callsHomePerWeek} calls home` },
+    ],
+  };
+}
+
 // Which function draws each mixed branch's split ring.
-const MIXED_ROWS = { health: healthRow, academics: academicsRow, money: moneyRow, personal: personalRow };
+const MIXED_ROWS = {
+  health: healthRow, academics: academicsRow, money: moneyRow, personal: personalRow, people: peopleRow,
+};
+
+// One quiet line when a birthday or the anniversary is close and not wished yet:
+// "Birthday in 3 days". No name on Home, only the kind of date.
+function drawPeopleNote() {
+  const today = todayString();
+  const wished = d => events.some(e => isWished(e) && e.label === d.label && e.on === d.on);
+  const next = upcomingDates(events, today).find(d => d.days <= PEOPLE.homeNoteDays && !wished(d));
+  const note = document.getElementById("people-note");
+  note.hidden = !next;
+  if (!next) return;
+  const kind = PEOPLE.dateKinds.find(k => k.id === next.kind)?.name ?? "A date";
+  note.textContent = `${kind} ${countdownLabel(today, next.on)}`;
+}
 
 // A weekly branch (Chores) fills its ring over the week, a mixed one (Health,
 // Academics) is split into daily and weekly parts, and the rest fill each day.
@@ -72,6 +99,7 @@ const rows = BRANCHES.map(branch => {
   };
 });
 document.getElementById("rings").innerHTML = ringsHtml(rows);
+drawPeopleNote();
 
 document.getElementById("branches").innerHTML = BRANCHES.map(branch =>
   `<a class="branch-link" href="${branch.page}">${branch.name}</a>`
