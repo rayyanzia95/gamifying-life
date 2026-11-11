@@ -20,6 +20,11 @@
   --sleep: #4a63c9;
   --diet: #c9507a;
   --study: #5b5bd6;
+  --phys: #2563c9;
+  --cmput: #16865a;
+  --econ: #b86a0b;
+  --astro: #7a4cc2;
+  --skills: #5f6b7a;
 }
 
 /* Dark values. Used when the device is in dark mode (unless you picked light),
@@ -46,6 +51,11 @@
     --sleep: #7b8fe6;
     --diet: #e57ea3;
   --study: #8f8ff0;
+  --phys: #6fa0f2;
+  --cmput: #4cc28f;
+  --econ: #e3a24a;
+  --astro: #a989e6;
+  --skills: #9aa5b4;
   }
 }
 
@@ -70,6 +80,11 @@
   --sleep: #7b8fe6;
   --diet: #e57ea3;
   --study: #8f8ff0;
+  --phys: #6fa0f2;
+  --cmput: #4cc28f;
+  --econ: #e3a24a;
+  --astro: #a989e6;
+  --skills: #9aa5b4;
 }
 
 body {
@@ -976,4 +991,149 @@ label.done {
 .plan-class .plan-note,
 .plan-exam .plan-note {
   margin-left: 0;
+}
+
+/* Planner: Day | Week tabs. */
+.view-tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 10px;
+}
+
+.view-tabs button {
+  padding: 6px 14px;
+  border: 1px solid var(--control-border);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.view-tabs button[aria-selected="true"] {
+  background: var(--text);
+  border-color: var(--text);
+  color: var(--bg);
+}
+
+.day-nav {
+  align-items: center;
+}
+
+/* Planner: course colours (from the Fall 2026 Planner). */
+.course-phys  { --course: var(--phys); }
+.course-cmput { --course: var(--cmput); }
+.course-econ  { --course: var(--econ); }
+.course-astro { --course: var(--astro); }
+.course-study { --course: var(--skills); }
+.course-none  { --course: var(--muted); }
+
+/* Planner: the week grid. Scrolls sideways on a phone. */
+.week-scroll {
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+}
+
+.week-grid {
+  display: grid;
+  grid-template-columns: 28px repeat(7, minmax(92px, 1fr));
+  min-width: 700px;
+}
+
+.week-head {
+  padding: 8px 4px;
+  border: 0;
+  border-left: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  background: none;
+  color: var(--text);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.week-head.today,
+.week-col.today {
+  background-color: var(--disabled-bg);
+}
+
+.week-gutter {
+  position: relative;
+}
+
+.week-gutter span {
+  position: absolute;
+  right: 4px;
+  transform: translateY(-50%);
+  font-size: 10px;
+  color: var(--muted);
+}
+
+.week-col {
+  position: relative;
+  border-left: 1px solid var(--line);
+  background-image: repeating-linear-gradient(to bottom, var(--line) 0 1px, transparent 1px var(--hour));
+}
+
+.week-block {
+  position: absolute;
+  left: 2px;
+  right: 2px;
+  overflow: hidden;
+  padding: 2px 4px;
+  border: 0;
+  border-left: 3px solid var(--course);
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--course) 18%, var(--surface));
+  color: var(--text);
+  font: inherit;
+  font-size: 11px;
+  line-height: 1.25;
+  text-align: left;
+}
+
+button.week-block {
+  cursor: pointer;
+}
+
+.week-block.plan-class {
+  background: var(--disabled-bg);
+  color: var(--muted);
+}
+
+.week-block.plan-exam {
+  border-left-color: var(--now);
+  background: color-mix(in srgb, var(--now) 18%, var(--surface));
+  color: var(--now);
+  font-weight: 600;
+}
+
+.week-block.done {
+  opacity: 0.5;
+}
+
+.week-eve-label {
+  padding: 6px 4px;
+  border-top: 1px solid var(--line);
+  font-size: 10px;
+  color: var(--muted);
+  text-align: right;
+}
+
+.week-eve {
+  display: grid;
+  gap: 2px;
+  align-content: start;
+  min-height: 30px;
+  padding: 4px 2px;
+  border-top: 1px solid var(--line);
+  border-left: 1px solid var(--line);
+}
+
+.week-block.week-chip {
+  position: static;
 }

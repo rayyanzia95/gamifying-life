@@ -1,4 +1,4 @@
-// Renders planner.html: one day of the academic plan (schedule.js).
+// Renders planner.html: one day of the academic plan (schedule.js), or the week grid.
 // Ticking a planned study block logs it as 30-min study blocks for its course,
 // one event each, all tagged with the block's id so unticking removes exactly those:
 // { date, activity: "study", course: "phys", block: "b.2026-11-12.phys-midterm-2-prep" }
@@ -88,9 +88,30 @@ function drawDay(events) {
   document.getElementById("day").replaceChildren(heading, blocks.length > 0 ? list : empty);
 }
 
+// ---- Views: Day or Week (planner-week.js) ----
+
+let view = "day";
+const VIEW_STEP = { day: 1, week: 7 }; // how far the arrows move
+
 function render() {
-  drawDay(loadEvents());
-  document.getElementById("go-today").disabled = shownDate === todayString();
+  const events = loadEvents();
+  const today = todayString();
+  const week = weekStart(shownDate);
+  document.querySelectorAll("[data-view]").forEach(tab =>
+    tab.setAttribute("aria-selected", String(tab.dataset.view === view)));
+  document.getElementById("day").hidden = view !== "day";
+  document.getElementById("week").hidden = view !== "week";
+
+  if (view === "day") {
+    drawDay(events);
+    document.getElementById("nav-label").textContent = "";
+    document.getElementById("go-today").disabled = shownDate === today;
+  } else {
+    document.getElementById("week").innerHTML = weekGridHtml(events, week, today);
+    document.getElementById("nav-label").textContent =
+      `${dayLabel(week, { month: "short", day: "numeric" })} – ${dayLabel(shiftDate(week, 6), { month: "short", day: "numeric" })}`;
+    document.getElementById("go-today").disabled = week === weekStart(today);
+  }
 }
 
 function showDate(date) {
@@ -98,8 +119,29 @@ function showDate(date) {
   render();
 }
 
-document.getElementById("prev-day").addEventListener("click", () => showDate(shiftDate(shownDate, -1)));
-document.getElementById("next-day").addEventListener("click", () => showDate(shiftDate(shownDate, 1)));
+function showView(name) {
+  view = name;
+  render();
+}
+
+// In the week grid: a day name opens that day, a study block ticks.
+function onWeekClick(event) {
+  const target = event.target.closest("button");
+  if (!target) return;
+  if (target.dataset.day) {
+    shownDate = target.dataset.day;
+    showView("day");
+    return;
+  }
+  const block = scheduleFor(target.dataset.date).find(b => b.id === target.dataset.block);
+  if (block) toggleBlock(target.dataset.date, block);
+}
+
+document.getElementById("prev-day").addEventListener("click", () => showDate(shiftDate(shownDate, -VIEW_STEP[view])));
+document.getElementById("next-day").addEventListener("click", () => showDate(shiftDate(shownDate, VIEW_STEP[view])));
 document.getElementById("go-today").addEventListener("click", () => showDate(todayString()));
+document.querySelectorAll("[data-view]").forEach(tab =>
+  tab.addEventListener("click", () => showView(tab.dataset.view)));
+document.getElementById("week").addEventListener("click", onWeekClick);
 
 render();
