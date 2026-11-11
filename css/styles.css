@@ -804,7 +804,8 @@ h1 {
 
 /* Academics: the Study today card and this week's deadlines. */
 #study h2,
-#this-week h2 {
+#this-week h2,
+#bosses h2 {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
@@ -815,7 +816,8 @@ h1 {
 }
 
 #study h2 .muted,
-#this-week h2 .muted {
+#this-week h2 .muted,
+#bosses h2 .muted {
   font-size: 13px;
   font-weight: 400;
 }
@@ -858,4 +860,56 @@ label.done {
 .deadline-note {
   font-size: 13px;
   margin-left: 24px;
+}
+
+/* Academics: exams as bosses. A continuous HP bar that empties as you study. */
+#boss-lineup {
+  min-width: 0;
+}
+
+.boss {
+  padding: 6px 0;
+}
+
+.boss + .boss {
+  border-top: 1px solid var(--line);
+}
+
+.boss-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+  font-size: 14px;
+}
+
+.boss-top .muted {
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.boss-name {
+  font-weight: 500;
+}
+
+.hp-bar {
+  height: 8px;
+  margin: 5px 0 2px;
+  border-radius: 4px;
+  background: var(--line);
+  overflow: hidden;
+}
+
+.hp-fill {
+  height: 100%;
+  background: var(--now);
+}
+
+.boss-status {
+  font-size: 12px;
+}
+
+.boss.slain .boss-name,
+.boss.slain .boss-status {
+  color: var(--accent);
 }

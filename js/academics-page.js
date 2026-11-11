@@ -1,5 +1,6 @@
-// Renders academics.html: the Academics level, the bar (study today + deadlines
-// this week), the Study today card and this week's deadlines.
+// Renders academics.html: the Academics level beside the boss lineup (bosses.js),
+// the bar (study today + deadlines this week), the Study today card, this week's
+// deadlines and the Bosses card.
 // Each 30-min block is one event: { date, activity: "study", course: "phys" }
 // Each ticked deadline is one event: { date, activity: "deadline", deadline: "phys-lab-7-report" }
 
@@ -77,17 +78,6 @@ function toggleDeadline(id) {
     ? events.filter(e => !(isDeadlineTick(e) && e.deadline === id))
     : [...events, { date: todayString(), activity: "deadline", deadline: id }]);
   render();
-}
-
-// "2026-11-10" → "Tue, Nov 10"
-function dayLabel(date) {
-  const [year, month, day] = date.split("-").map(Number);
-  return new Date(year, month - 1, day)
-    .toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" });
-}
-
-function courseShort(courseId) {
-  return ACADEMICS.courses.find(c => c.id === courseId)?.short ?? courseId;
 }
 
 // The tick + title + kind on the left, the time on the right, a note underneath.
@@ -171,11 +161,14 @@ function drawThisWeek(events) {
 
 function render() {
   const events = loadEvents();
+  const today = todayString();
   const xp = xpByBranch(events)[ACADEMICS.branch] || 0;
   document.getElementById("levels").innerHTML = badgeHtml("Academics", levelInfo(xp, 1));
+  document.getElementById("boss-lineup").innerHTML = bossLineupHtml(events, today);
+  document.getElementById("bosses").innerHTML = bossListHtml(events, today);
 
   // The bar mixes study today with this week's deadlines.
-  const { study, deadlines } = academicsParts(events, todayString());
+  const { study, deadlines } = academicsParts(events, today);
   const core = study.core + deadlines.core;
   const extra = study.extra + deadlines.extra;
   const goal = study.goal + deadlines.goal;

@@ -127,20 +127,25 @@ const ACADEMICS = {
   blockXp: 10,
   blocksPerDay: 4,       // daily goal: 4 blocks = 2 hours = 40 XP
   deadlineXp: { quiz: 10, lab: 15, assignment: 25, task: 5, exam: 40 },
+  // Exams are bosses. Each study block for the exam's course, from windowDays before
+  // up to the exam day, takes 1 HP off (an exam's hp is set on its row in DEADLINES).
+  // Tick the exam with the boss at 0 HP for bonusXp on top of the exam's own XP.
+  boss: { windowDays: 14, bonusXp: 30 },
 };
 
 // Fall 2026 deadlines, copied from the Fall 2026 Planner (Canvas, Oct 1).
 // Edit a row here when a date moves; its tick is kept, because a deadline is
 // known by its course + title, not its date. kind is one of ACADEMICS.deadlineXp.
+// Exams carry hp: midterms 10, in-person quizzes 4.
 const DEADLINES = [
   { date: "2026-11-10", time: "11:00 a.m.", course: "phys",  kind: "lab",        title: "Lab 6 report" },
   { date: "2026-11-13", time: "This week",  course: "study", kind: "task",       title: "Book your last Fresh Start session" },
   { date: "2026-11-15", time: "Sun night",  course: "study", kind: "assignment", title: "November Assignment #3" },
   { date: "2026-11-16", time: "12:55 p.m.", course: "astro", kind: "quiz",       title: "Knowledge Check 8" },
-  { date: "2026-11-16", time: "5:00 p.m.",  course: "astro", kind: "exam",       title: "Quiz: Modules 7–8", note: "In person, CCIS L2-200" },
+  { date: "2026-11-16", time: "5:00 p.m.",  course: "astro", kind: "exam",       title: "Quiz: Modules 7–8", hp: 4, note: "In person, CCIS L2-200" },
   { date: "2026-11-16", time: "Mon night",  course: "cmput", kind: "assignment", title: "Assignment 3" },
   { date: "2026-11-17", time: "2:00 p.m.",  course: "cmput", kind: "lab",        title: "Lab 6 demo" },
-  { date: "2026-11-19", time: "6:00 p.m.",  course: "phys",  kind: "exam",       title: "Midterm 2", note: "6:00–7:30 p.m., room TBA" },
+  { date: "2026-11-19", time: "6:00 p.m.",  course: "phys",  kind: "exam",       title: "Midterm 2", hp: 10, note: "6:00–7:30 p.m., room TBA" },
   { date: "2026-11-20", time: "Time TBC",   course: "cmput", kind: "lab",        title: "Lab 7 due" },
   { date: "2026-11-22", time: "Sun night",  course: "study", kind: "quiz",       title: "Learn Strategically Quiz" },
   { date: "2026-11-23", time: "9:30 a.m.",  course: "phys",  kind: "quiz",       title: "Reading Quiz 8" },
@@ -152,11 +157,11 @@ const DEADLINES = [
   { date: "2026-11-29", time: "Sun night",  course: "study", kind: "assignment", title: "Reflection Letter" },
   { date: "2026-11-30", time: "9:30 a.m.",  course: "phys",  kind: "quiz",       title: "Reading Quiz 9" },
   { date: "2026-11-30", time: "12:55 p.m.", course: "astro", kind: "quiz",       title: "Knowledge Check 10" },
-  { date: "2026-11-30", time: "Time TBC",   course: "astro", kind: "exam",       title: "Quiz: Modules 9–10" },
+  { date: "2026-11-30", time: "Time TBC",   course: "astro", kind: "exam",       title: "Quiz: Modules 9–10", hp: 4 },
   { date: "2026-12-01", time: "11:00 a.m.", course: "phys",  kind: "lab",        title: "Lab 8 report" },
   { date: "2026-12-01", time: "2:00 p.m.",  course: "cmput", kind: "lab",        title: "Labs 7 + 8 demo" },
   { date: "2026-12-03", time: "Thu night",  course: "phys",  kind: "quiz",       title: "Content Quiz 9" },
-  { date: "2026-12-07", time: "In class",   course: "cmput", kind: "exam",       title: "Midterm 3" },
+  { date: "2026-12-07", time: "In class",   course: "cmput", kind: "exam",       title: "Midterm 3", hp: 10 },
   { date: "2026-12-07", time: "Mon night",  course: "phys",  kind: "quiz",       title: "Content Quiz 10" },
   { date: "2026-12-08", time: "12:00 p.m.", course: "phys",  kind: "task",       title: "Redo lab selection" },
   { date: "2026-12-13", time: "Sun night",  course: "study", kind: "task",       title: "Student Evaluation Form" },

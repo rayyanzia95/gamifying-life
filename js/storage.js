@@ -44,6 +44,13 @@ function weekStart(date) {
   return shiftDate(date, -new Date(year, month - 1, day).getDay());
 }
 
+// "2026-11-10" → "Tue, Nov 10". Pass other toLocaleDateString options for
+// other shapes, e.g. { month: "short", day: "numeric" } → "Nov 10".
+function dayLabel(date, options = { weekday: "short", month: "short", day: "numeric" }) {
+  const [year, month, day] = date.split("-").map(Number);
+  return new Date(year, month - 1, day).toLocaleDateString("en-US", options);
+}
+
 // ---- Times of day, as minutes after midnight ----
 
 const MINUTES_PER_DAY = 24 * 60;

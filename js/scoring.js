@@ -109,6 +109,8 @@ function xpByBranch(events) {
   }
   const bonus = choreBonusXp(events);
   if (bonus > 0) totals[CHORES.branch] = (totals[CHORES.branch] || 0) + bonus;
+  const bossBonus = bossBonusXp(events, DEADLINES);
+  if (bossBonus > 0) totals[ACADEMICS.branch] = (totals[ACADEMICS.branch] || 0) + bossBonus;
   return totals;
 }
 
@@ -347,6 +349,11 @@ function deadlineId(deadline) {
   return `${deadline.course}-${slug}`;
 }
 
+// "phys" → "PHYS"
+function courseShort(courseId) {
+  return ACADEMICS.courses.find(c => c.id === courseId)?.short ?? courseId;
+}
+
 function deadlineXp(deadline) {
   return ACADEMICS.deadlineXp[deadline.kind] ?? 0;
 }
@@ -400,10 +407,38 @@ function academicsParts(events, today) {
       count: done.length,
       total: due.length,
       core: sum(done, deadlineXp),
-      extra: 0,
+      extra: bossBonusXp(events, due),
       goal: sum(due, deadlineXp),
     },
   };
+}
+
+// ---- Academics: exams as bosses ----
+// A boss's HP is its exam's hp. Every study block for that course from windowDays
+// before the exam up to the exam day knocks off 1 HP. Nothing is stored: HP is
+// worked out from the study events each time.
+
+function isBoss(deadline) {
+  return deadline.kind === "exam" && deadline.hp > 0;
+}
+
+// { hp, left, opens, beaten, ticked }. opens = the first day blocks count.
+// beaten = ticked with no HP left, which earns the bonus.
+function bossState(events, exam, ticked) {
+  const opens = shiftDate(exam.date, -ACADEMICS.boss.windowDays);
+  const hits = events.filter(e =>
+    isStudy(e) && e.course === exam.course && e.date >= opens && e.date <= exam.date
+  ).length;
+  const left = Math.max(exam.hp - hits, 0);
+  const isTicked = ticked.has(deadlineId(exam));
+  return { hp: exam.hp, left, opens, ticked: isTicked, beaten: isTicked && left === 0 };
+}
+
+// Bonus XP for every beaten boss among these deadlines.
+function bossBonusXp(events, deadlines) {
+  const ticked = tickedDeadlines(events);
+  const beaten = deadlines.filter(d => isBoss(d) && bossState(events, d, ticked).beaten);
+  return beaten.length * ACADEMICS.boss.bonusXp;
 }
 
 function levelInfo(xp, multiplier) {
