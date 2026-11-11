@@ -7,11 +7,12 @@ document.getElementById("overall").innerHTML =
 
 // Health's ring in two colours: sleep today, then this week's sessions.
 function healthRow(name) {
-  const { sleep, exercise } = healthParts(events, todayString());
+  const { sleep, diet, exercise } = healthParts(events, todayString());
   return {
     name,
     parts: [
       { ...sleep, colour: "sleep", text: `${sleep.core + sleep.extra} / ${sleep.goal} sleep` },
+      { ...diet, colour: "diet", text: `${diet.core + diet.extra} / ${diet.goal} diet` },
       { ...exercise, colour: "exercise", text: `${exercise.count} / ${EXERCISE.perWeek} sessions` },
     ],
   };
