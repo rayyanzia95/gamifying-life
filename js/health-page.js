@@ -1,4 +1,5 @@
-// Renders health.html: the Health level, today's bar and the Sleep card.
+// Renders health.html: the Health level beside the week of nights (sleep-week.js),
+// today's bar and the Sleep card.
 // Last night is saved as one event dated this morning:
 // { date, activity: "sleep", bed: "22:40", wake: "07:10", fajrGap: 20 }
 
@@ -106,6 +107,7 @@ function render() {
   const events = loadEvents();
   const xp = xpByBranch(events)[SLEEP.branch] || 0;
   document.getElementById("levels").innerHTML = badgeHtml("Health", levelInfo(xp, 1));
+  document.getElementById("sleep-week").innerHTML = sleepWeekHtml(events, todayString());
 
   const { core, extra } = todayXp(events, SLEEP.branch);
   const goal = branchGoal(SLEEP.branch);
