@@ -1433,3 +1433,158 @@ body.wide {
 .guide-fold a {
   color: var(--text);
 }
+
+/* Money: budget-left ring with the savings ring inside, the log card, budget and savings. */
+.money-top {
+  text-align: center;
+}
+
+.money-rings {
+  width: 140px;
+  max-width: 100%;
+}
+
+.money-left-track,
+.money-saved-track {
+  fill: none;
+  stroke: var(--line);
+}
+
+.money-left-track,
+.money-left-ring {
+  stroke-width: 7;
+}
+
+.money-saved-track,
+.money-saved-ring {
+  stroke-width: 4;
+}
+
+.money-left-ring {
+  fill: none;
+  stroke: var(--accent);
+}
+
+.money-saved-ring {
+  fill: none;
+  stroke: var(--gold);
+}
+
+.money-left {
+  font-size: 15px;
+  font-weight: 500;
+  fill: var(--text);
+}
+
+.money-sub {
+  font-size: 7px;
+  fill: var(--muted);
+}
+
+.money-saved {
+  fill: var(--gold);
+}
+
+.session-dot.no-spend {
+  background: var(--gold);
+  border-color: var(--gold);
+}
+
+#log h2,
+#week h2,
+#savings h2 {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+  font-size: 16px;
+  font-weight: 500;
+  margin: 0 0 8px;
+}
+
+#log h2 .muted,
+#week h2 .muted,
+#savings h2 .muted {
+  font-size: 13px;
+  font-weight: 400;
+}
+
+.money-input {
+  flex: 1;
+  min-width: 0;
+  font: inherit;
+  padding: 6px 10px;
+  border: 1px solid var(--control-border);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--text);
+}
+
+.amount-input {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  font-size: 22px;
+}
+
+#log .filters {
+  margin: 10px 0;
+}
+
+.money-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.money-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.money-remove {
+  border: 0;
+  background: none;
+  color: var(--muted);
+  font: inherit;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.money-categories {
+  margin-top: 6px;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.money-hint {
+  font-size: 13px;
+  margin: 8px 0 0;
+}
+
+/* .card .money-error, so it wins over .card p's muted colour. */
+.card .money-error {
+  width: 100%;
+  margin: 4px 0 0;
+  font-size: 13px;
+  color: var(--now);
+}
+
+.money-fold summary {
+  margin-top: 8px;
+  font-size: 13px;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.money-goal {
+  margin: 0;
+  font-weight: 500;
+}
+
+.money-saved-fill {
+  background: var(--gold);
+}
