@@ -54,15 +54,16 @@ const PRAYER_METHOD = {
 // times = how many per week (default 1). everyWeeks: 2 means once every two weeks:
 // doing it this week or last week covers it. hint is a usual day, shown only as a hint.
 // Doing a chore more than its target still earns XP, as bonus.
+// short is the label on the quest wheel, when the name is too long to fit.
 const CHORES = {
   branch: "chores",
   weekBonus: 50,         // when every quest is covered for the week
   list: [
     { id: "laundry",  name: "Laundry",         xp: 20, hint: "Fri" },
-    { id: "folding",  name: "Folding clothes", xp: 10, hint: "Sat" },
-    { id: "room",     name: "Clean room",      xp: 20 },
-    { id: "desk",     name: "Clean desk",      xp: 10 },
-    { id: "washroom", name: "Clean washroom",  xp: 20, hint: "Sat" },
+    { id: "folding",  name: "Folding clothes", short: "Folding",  xp: 10, hint: "Sat" },
+    { id: "room",     name: "Clean room",      short: "Room",     xp: 20 },
+    { id: "desk",     name: "Clean desk",      short: "Desk",     xp: 10 },
+    { id: "washroom", name: "Clean washroom",  short: "Washroom", xp: 20, hint: "Sat" },
     { id: "dishes",   name: "Dishes",          xp: 10, times: 3 },
     { id: "ironing",  name: "Ironing",         xp: 20, everyWeeks: 2 },
     { id: "dusting",  name: "Dusting",         xp: 15, everyWeeks: 2 },

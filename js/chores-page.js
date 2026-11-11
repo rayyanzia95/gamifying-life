@@ -80,8 +80,19 @@ function render() {
   const week = weekStart(todayString());
   const xp = xpByBranch(events)[CHORES.branch] || 0;
   document.getElementById("levels").innerHTML = badgeHtml("Chores", levelInfo(xp, 1));
+  drawWheel(events);
   drawWeekBar(choreWeek(events, week));
   drawQuests(events, week);
+}
+
+// The wheel's done slices from the last draw, so only new ticks animate.
+// null until the first draw, which shows everything without animating.
+let lastWheel = null;
+
+function drawWheel(events) {
+  const today = todayString();
+  document.getElementById("wheel").innerHTML = choreWheelHtml(events, today, lastWheel);
+  lastWheel = doneSliceKeys(events, today);
 }
 
 render();

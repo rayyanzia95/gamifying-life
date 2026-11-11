@@ -297,14 +297,17 @@ h1 {
 }
 
 /* Prayer names around the dial. Position and anchoring come from dial.js. */
-.dial-label {
+.dial-label,
+.wheel-label {
   font-size: 12px;
   font-weight: 500;
   letter-spacing: 0.04em;
   fill: var(--muted);
 }
 
-.dial-label.prayed {
+.dial-label.prayed,
+.wheel-label.done,
+.wheel-heading.done {
   fill: var(--accent);
 }
 
@@ -365,7 +368,17 @@ h1 {
   from { stroke-dasharray: var(--from) var(--length); }
 }
 
+/* Chores quest wheel: a newly done slice fades in from a thicker stroke. */
+.wheel-slice.fresh {
+  animation: slice-in 0.5s ease-out;
+}
+
+@keyframes slice-in {
+  from { opacity: 0; stroke-width: 20; }
+}
+
 @media (prefers-reduced-motion: reduce) {
+  .wheel-slice.fresh,
   .pop,
   .dua-halo.grow {
     animation: none;
@@ -378,14 +391,16 @@ h1 {
   stroke-linecap: round;
 }
 
-.dial-now {
+.dial-now,
+.wheel-heading {
   font-size: 18px;
   font-weight: 500;
   fill: var(--text);
   text-anchor: middle;
 }
 
-.dial-next {
+.dial-next,
+.wheel-sub {
   font-size: 12px;
   fill: var(--muted);
   text-anchor: middle;
@@ -643,4 +658,29 @@ h1 {
 .week-dot.met {
   fill: var(--gold);
   stroke: var(--gold);
+}
+
+/* Chores quest wheel, beside the level badge. Sized and styled like the Deen dial. */
+.chore-wheel {
+  display: block;
+  width: 100%;
+  max-width: 300px;
+  height: auto;
+  margin: 0 auto;
+}
+
+.wheel-slice {
+  fill: none;
+  stroke-width: 14;
+  stroke: var(--line);
+}
+
+.wheel-slice.done,
+.wheel-slice.covered {
+  stroke: var(--accent);
+}
+
+/* Covered by last week's tick (every-two-weeks chores). */
+.wheel-slice.covered {
+  stroke-dasharray: 4 3;
 }
