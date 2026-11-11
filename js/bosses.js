@@ -12,25 +12,28 @@ function bossCountdown(exam, today) {
   return days > 0 ? `in ${days} days` : `${-days} days ago`;
 }
 
-// The line under the HP bar.
+// The line under the damage bar.
 function bossStatus(state, today) {
   if (state.beaten) return `✓ Beaten · +${ACADEMICS.boss.bonusXp} XP`;
-  if (state.ticked) return `✓ Done · ${state.left} HP left`;
-  const hp = `${state.left} / ${state.hp} HP`;
-  if (today < state.opens) return `${hp} · window opens ${dayLabel(state.opens, { month: "short", day: "numeric" })}`;
-  return hp;
+  const damage = `${state.hp - state.left} / ${state.hp} damage`;
+  if (state.ticked) return `✓ Done · ${damage}`;
+  if (state.left === 0) return `Ready · tick it after the exam for +${ACADEMICS.boss.bonusXp}`;
+  if (today < state.opens) return `${damage} · window opens ${dayLabel(state.opens, { month: "short", day: "numeric" })}`;
+  return damage;
 }
 
-// One boss: name and when on top, a continuous HP bar, then its status.
+// One boss: name and when on top, a continuous bar that fills with the damage
+// you've dealt (each study block = 1), then its status.
 // The full card shows the date too; the lineup beside the badge only the countdown.
 function bossHtml(exam, state, today, { withDate = false } = {}) {
   const name = `${courseShort(exam.course)} ${exam.title}`;
   const when = withDate ? `${dayLabel(exam.date)} · ${bossCountdown(exam, today)}` : bossCountdown(exam, today);
-  const share = (state.left / state.hp) * 100;
+  const dealt = state.hp - state.left;
+  const share = (dealt / state.hp) * 100;
   return `
     <div class="boss${state.ticked ? " slain" : ""}">
       <div class="boss-top"><span class="boss-name">${name}</span><span class="muted">${when}</span></div>
-      <div class="hp-bar" role="img" aria-label="${name}: ${state.left} of ${state.hp} HP left">
+      <div class="hp-bar" role="img" aria-label="${name}: ${dealt} of ${state.hp} damage dealt">
         <div class="hp-fill" style="width: ${share}%"></div>
       </div>
       <div class="muted boss-status">${bossStatus(state, today)}</div>
