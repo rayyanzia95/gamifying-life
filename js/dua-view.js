@@ -1,5 +1,5 @@
 // Dua screens on the Deen page: the tile and the detail card.
-// Uses makeTile, makeCheckbox, makeStepper, saveTodayAmount, streakBadge, streakLabel
+// Uses makeCheckbox and makeStepper from ui.js, and makeTile, saveTodayAmount, streakBadge, streakLabel
 // and render from deen.js. Fine, because they only run after every script loads.
 
 // Dua tile (full row): adhkar and personal dua ticks, plus the after-prayers counter.

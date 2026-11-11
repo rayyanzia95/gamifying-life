@@ -38,3 +38,40 @@ function ringsHtml(rows) {
     <svg class="rings" viewBox="0 0 100 100" role="img" aria-label="Today's progress">${circles}</svg>
     <div class="legend">${legend}</div>`;
 }
+// Shared form controls, used by the Deen page and (soon) the Chores page.
+
+function makeCheckbox(text, checked, onChange) {
+  const label = document.createElement("label");
+  const box = document.createElement("input");
+  box.type = "checkbox";
+  box.checked = checked;
+  box.addEventListener("change", onChange);
+  label.append(box, " ", text);
+  return label;
+}
+
+// The options object has defaults, so the rakah stepper can keep calling it
+// with just four arguments.
+function makeStepper(text, current, max, onStep, { step = 2, target = max, unit = "rakah" } = {}) {
+  const row = document.createElement("div");
+  row.className = "stepper";
+
+  const minus = document.createElement("button");
+  minus.textContent = "−";
+  minus.setAttribute("aria-label", "Less " + unit);
+  minus.disabled = current <= 0;
+  minus.addEventListener("click", () => onStep(-step));
+
+  const value = document.createElement("span");
+  value.className = "stepper-value";
+  value.textContent = current + " / " + target;
+
+  const plus = document.createElement("button");
+  plus.textContent = "+";
+  plus.setAttribute("aria-label", "More " + unit);
+  plus.disabled = current >= max;
+  plus.addEventListener("click", () => onStep(step));
+
+  row.append(minus, value, plus, " ", text);
+  return row;
+}
