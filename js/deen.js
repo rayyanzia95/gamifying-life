@@ -195,7 +195,8 @@ function render() {
 }
 
 // Which detail shows under the tiles: "prayers" or "quran".
-let selectedView = "prayers";
+// Starts on the one you picked in Settings.
+let selectedView = loadSettings().deenView;
 
 function selectView(view) {
   selectedView = view;

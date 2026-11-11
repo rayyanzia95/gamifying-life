@@ -304,10 +304,20 @@ h1 {
   text-anchor: middle;
 }
 
-.theme-toggle {
+/* Top-right buttons: settings gear and theme toggle. */
+.corner {
   position: absolute;
   top: 16px;
   right: 16px;
+  display: flex;
+  gap: 8px;
+}
+
+.icon-button {
+  display: grid;
+  place-items: center;
+  box-sizing: border-box;
+  text-decoration: none;
   width: 32px;
   height: 32px;
   border: 1px solid var(--control-border);
@@ -373,4 +383,22 @@ h1 {
 .tile p {
   margin: 2px 0 8px;
   color: var(--muted);
+}
+
+/* Settings: one borderless group per choice. */
+.choice {
+  border: 0;
+  margin: 0 0 16px;
+  padding: 0;
+}
+
+.choice legend {
+  font-weight: 500;
+  margin-bottom: 8px;
+  padding: 0;
+}
+
+.choice label {
+  display: block;
+  padding: 6px 0;
 }
