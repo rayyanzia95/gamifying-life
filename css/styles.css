@@ -1619,3 +1619,101 @@ body.wide {
 .bar-part-fill {
   transition: width 0.3s;
 }
+
+/* Personal: plum for today (journal + reading), teal for this week (time alone +
+   friends), on the Home ring and the Personal bar. */
+:root {
+  --plum: #9a4f9e;
+  --teal: #1f8a8a;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --plum: #c784cb;
+    --teal: #4cbcbc;
+  }
+}
+
+:root[data-theme="dark"] {
+  --plum: #c784cb;
+  --teal: #4cbcbc;
+}
+
+.part-plum {
+  stroke: var(--plum);
+  background: var(--plum);
+}
+
+.part-teal {
+  stroke: var(--teal);
+  background: var(--teal);
+}
+
+/* Personal page: current book beside the badge, then this week's counts. */
+.personal-top {
+  flex: 1;
+  min-width: 0;
+}
+
+.personal-book {
+  font-weight: 500;
+}
+
+.personal-book-bar {
+  height: 8px;
+  margin: 6px 0 2px;
+  border-radius: 4px;
+  background: var(--line);
+  overflow: hidden;
+}
+
+.personal-book-bar span {
+  display: block;
+  height: 100%;
+  background: var(--plum);
+}
+
+.personal-counts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+  margin-top: 8px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.personal-counts b {
+  color: var(--text);
+  font-weight: 500;
+}
+
+.card .personal-sub {
+  margin: 14px 0 4px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.book-title {
+  font-weight: 500;
+}
+
+.book-pages {
+  flex: 0 0 80px;
+}
+
+.personal-counter + .personal-counter {
+  margin-top: 12px;
+}
+
+/* The quiet session tick: small and muted at the very bottom. */
+.personal-quiet {
+  font-size: 13px;
+  color: var(--muted);
+  padding: 0 4px;
+}
+
+.personal-card h2 {
+  font-size: 16px;
+  font-weight: 500;
+  margin: 0 0 8px;
+}
