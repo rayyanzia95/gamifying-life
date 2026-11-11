@@ -2,13 +2,6 @@
 // Same shape as a PRAYER_TIMES entry, so the dial can't tell the difference.
 // Uses PRAYER_METHOD (config.js) and the sun maths in sun.js.
 
-// 1083.4 minutes -> "18:03"
-function minutesToHhmm(minutes) {
-  const rounded = Math.round(minutes);
-  const pad = n => String(n).padStart(2, "0");
-  return `${pad(Math.floor(rounded / 60))}:${pad(rounded % 60)}`;
-}
-
 function calculatedPrayerTimes(date) {
   const method = PRAYER_METHOD;
   const { noon, declination } = solarDay(date);

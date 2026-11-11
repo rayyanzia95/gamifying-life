@@ -65,10 +65,7 @@ function drawQuests(events, week) {
 }
 
 function drawWeekBar({ core, extra, goal, done }) {
-  const corePercent = Math.min((core / goal) * 100, 100);
-  const bonusPercent = Math.min((extra / goal) * 100, 100 - corePercent);
-  document.getElementById("bar-fill").style.width = corePercent + "%";
-  document.getElementById("bonus-fill").style.width = bonusPercent + "%";
+  fillBar(core, extra, goal);
   document.getElementById("progress-label").textContent = `${core + extra} / ${goal} XP this week`;
 
   const fullWeek = done

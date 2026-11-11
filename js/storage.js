@@ -43,3 +43,27 @@ function weekStart(date) {
   const [year, month, day] = date.split("-").map(Number);
   return shiftDate(date, -new Date(year, month - 1, day).getDay());
 }
+
+// ---- Times of day, as minutes after midnight ----
+
+const MINUTES_PER_DAY = 24 * 60;
+
+// "22:40" -> 1360
+function toMinutes(hhmm) {
+  const [hours, minutes] = hhmm.split(":").map(Number);
+  return hours * 60 + minutes;
+}
+
+// 1083.4 minutes -> "18:03"
+function minutesToHhmm(minutes) {
+  const rounded = Math.round(minutes);
+  const pad = n => String(n).padStart(2, "0");
+  return `${pad(Math.floor(rounded / 60))}:${pad(rounded % 60)}`;
+}
+
+// 95 -> "1 h 35 min"
+function durationLabel(minutes) {
+  const hours = Math.floor(minutes / 60);
+  const rest = Math.round(minutes % 60);
+  return hours > 0 ? `${hours} h ${rest} min` : `${rest} min`;
+}

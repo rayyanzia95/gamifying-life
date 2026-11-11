@@ -1,5 +1,5 @@
 // Quran screens on the Deen page: the tile, the detail card and the top bar.
-// Uses makeStepper from ui.js, and makeTile, streakBadge, streakLabel and render from deen.js.
+// Uses makeStepper and streakBadge from ui.js, and makeTile, streakLabel and render from deen.js.
 // That works because these functions only run after every script has loaded.
 
 function quranTile(events) {

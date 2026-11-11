@@ -1,15 +1,9 @@
 // The 24-hour prayer dial on the Deen page.
 // Midnight is at the top and the day runs clockwise. Times are minutes after midnight.
 
-const MINUTES_PER_DAY = 24 * 60;
 // size is the drawing area; extra room past the ring keeps the prayer names inside it.
 // labelRadius is where a name starts: just clear of the ring's outer edge (radius + 7).
 const DIAL = { size: 300, radius: 80, labelRadius: 93, gapMinutes: 3 };
-
-function toMinutes(hhmm) {
-  const [hours, minutes] = hhmm.split(":").map(Number);
-  return hours * 60 + minutes;
-}
 
 // Each prayer's window for a date (masjid times, or calculated ones past the timetable).
 function prayerWindows(date) {
@@ -58,12 +52,6 @@ function arcPath(radius, start, end) {
 
 function prayerName(id) {
   return PRAYERS.find(p => p.id === id).name;
-}
-
-function durationLabel(minutes) {
-  const hours = Math.floor(minutes / 60);
-  const rest = Math.round(minutes % 60);
-  return hours > 0 ? `${hours} h ${rest} min` : `${rest} min`;
 }
 
 function clockLabel(minutes) {

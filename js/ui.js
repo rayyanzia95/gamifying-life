@@ -38,7 +38,7 @@ function ringsHtml(rows) {
     <svg class="rings" viewBox="0 0 100 100" role="img" aria-label="Today's progress">${circles}</svg>
     <div class="legend">${legend}</div>`;
 }
-// Shared form controls, used by the Deen page and (soon) the Chores page.
+// Shared controls, used by the Deen, Chores and Health pages.
 
 function makeCheckbox(text, checked, onChange) {
   const label = document.createElement("label");
@@ -51,8 +51,10 @@ function makeCheckbox(text, checked, onChange) {
 }
 
 // The options object has defaults, so the rakah stepper can keep calling it
-// with just four arguments.
-function makeStepper(text, current, max, onStep, { step = 2, target = max, unit = "rakah" } = {}) {
+// with just four arguments. format turns the numbers into the label in the middle.
+function makeStepper(text, current, max, onStep, {
+  step = 2, target = max, unit = "rakah", format = (n, of) => n + " / " + of,
+} = {}) {
   const row = document.createElement("div");
   row.className = "stepper";
 
@@ -64,7 +66,7 @@ function makeStepper(text, current, max, onStep, { step = 2, target = max, unit 
 
   const value = document.createElement("span");
   value.className = "stepper-value";
-  value.textContent = current + " / " + target;
+  value.textContent = format(current, target);
 
   const plus = document.createElement("button");
   plus.textContent = "+";
@@ -74,4 +76,21 @@ function makeStepper(text, current, max, onStep, { step = 2, target = max, unit 
 
   row.append(minus, value, plus, " ", text);
   return row;
+}
+
+// "🔥 5", dimmed while the streak is paused.
+function streakBadge({ days, paused }) {
+  const badge = document.createElement("span");
+  badge.className = paused ? "streak paused" : "streak";
+  badge.textContent = `🔥 ${days}`;
+  badge.setAttribute("aria-label", `${days}-day streak${paused ? ", paused" : ""}`);
+  return badge;
+}
+
+// Fills the page's XP bar (#bar-fill and #bonus-fill): core first, bonus after it.
+function fillBar(core, extra, goal) {
+  const corePercent = goal > 0 ? Math.min((core / goal) * 100, 100) : 0;
+  const bonusPercent = goal > 0 ? Math.min((extra / goal) * 100, 100 - corePercent) : 0;
+  document.getElementById("bar-fill").style.width = corePercent + "%";
+  document.getElementById("bonus-fill").style.width = bonusPercent + "%";
 }

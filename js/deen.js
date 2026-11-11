@@ -148,10 +148,7 @@ function render() {
 
   const { core, extra } = todayXp(events, "deen");
   const total = core + extra;
-  const corePercent = Math.min((core / goal) * 100, 100);
-  const bonusPercent = Math.min((extra / goal) * 100, 100 - corePercent);
-  document.getElementById("bar-fill").style.width = corePercent + "%";
-  document.getElementById("bonus-fill").style.width = bonusPercent + "%";
+  fillBar(core, extra, goal);
   document.getElementById("progress-label").textContent = total + " / " + goal + " XP today";
   document.getElementById("bonus").textContent = extra > 0 ? "includes " + extra + " bonus XP" : "";
 
@@ -221,15 +218,6 @@ function drawTiles(events) {
   document.getElementById("tiles").replaceChildren(
     prayerTile(events), quranTile(events), duaTile(events)
   );
-}
-
-// "🔥 5", dimmed while the streak is paused.
-function streakBadge({ days, paused }) {
-  const badge = document.createElement("span");
-  badge.className = paused ? "streak paused" : "streak";
-  badge.textContent = `🔥 ${days}`;
-  badge.setAttribute("aria-label", `${days}-day streak${paused ? ", paused" : ""}`);
-  return badge;
 }
 
 // action is what keeps the streak going, e.g. "Revise" or "Make dua".
