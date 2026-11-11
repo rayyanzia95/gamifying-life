@@ -1,6 +1,14 @@
 const STORAGE_KEY = "gamifying-life-events";
 
-function loadEvents() {
+// Every event carries a hidden random `id`, so sync can tell "edited" (same id, new fields)
+// from "added" (new id) and "removed" (id gone). Pages never need to look at it: editing with
+// { ...e, field } copies the id along. Events from before ids existed get one the first time
+// they're loaded, and that's saved straight away so the id stays the same on every reload.
+function withIds(events) {
+  return events.map(e => (e.id ? e : { ...e, id: crypto.randomUUID() }));
+}
+
+function readStoredEvents() {
   try {
     return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
   } catch {
@@ -8,8 +16,15 @@ function loadEvents() {
   }
 }
 
+function loadEvents() {
+  const stored = readStoredEvents();
+  const events = withIds(stored);
+  if (events.some((e, i) => e !== stored[i])) localStorage.setItem(STORAGE_KEY, JSON.stringify(events));
+  return events;
+}
+
 function saveEvents(events) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(events));
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(withIds(events)));
 }
 
 function dateString(d) {
