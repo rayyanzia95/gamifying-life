@@ -167,6 +167,31 @@ const DEADLINES = [
   { date: "2026-12-13", time: "Sun night",  course: "study", kind: "task",       title: "Student Evaluation Form" },
 ];
 
+// Study guides, crash courses, cheat sheets and lab reports: links to his own
+// Claude artifacts, which only open for him. Newest first within each course.
+const STUDY_GUIDES = [
+  { course: "phys",  title: "Lab Report 13: Springs II",                        url: "https://claude.ai/artifact/EAWsLeXs3mpMEk1VeYcU6R" },
+  { course: "phys",  title: "Lab Report 12: Hooke's Law and SHM",               url: "https://claude.ai/artifact/AK8QuNDZz73DKghQg57YoN" },
+  { course: "phys",  title: "Human Arm Statics Lab: Worksheet Solutions",       url: "https://claude.ai/artifact/LCpbpx31EH9ChHwy1ohuqv" },
+  { course: "phys",  title: "Physics Exam Notes: Walker Ch. 1–6",               url: "https://claude.ai/artifact/BWezzUvVVH4nitiobjV2c9" },
+  { course: "phys",  title: "Midterm 1 Revision Notes",                         url: "https://claude.ai/artifact/My9GL4CTjuyTv7d3MxJAJ6" },
+  { course: "phys",  title: "Midterm Sprint",                                   url: "https://claude.ai/artifact/6XnAQjXB2AsZCWFjqcB5Ne" },
+  { course: "phys",  title: "Midterm 1 Study Guide",                            url: "https://claude.ai/artifact/SgcJ73wVs21PvQ7yFo9M7K" },
+  { course: "cmput", title: "Midterm Prep",                                     url: "https://claude.ai/artifact/PsYfeWvD9QfLQ3GsW3Bf1N" },
+  { course: "cmput", title: "Midterm 2 & 3 Game Plan",                          url: "https://claude.ai/artifact/667nxsHxxKVhKrZ3sZNXwH" },
+  { course: "cmput", title: "Exam Study Guide & Cheat Sheet",                   url: "https://claude.ai/artifact/8FVeWPCvVZH6sD5tXXXyJi" },
+  { course: "cmput", title: "Midterm 2 Study Guide",                            url: "https://claude.ai/artifact/3ivRtJS7tzP1jCVTzZAjBu" },
+  { course: "cmput", title: "Midterm 1 Cheat Sheet",                            url: "https://claude.ai/artifact/9zVfP48hV3qaDoFe5s3gfD" },
+  { course: "cmput", title: "Midterm 1 Study Guide",                            url: "https://claude.ai/artifact/TGDWxdydwNmAjnEfN7orWa" },
+  { course: "cmput", title: "Midterm 1 Study Guide (first version)",            url: "https://claude.ai/artifact/NpChdvWyknAt4PRpCPxdS1" },
+  { course: "econ",  title: "Midterm Study Guide & Plan",                       url: "https://claude.ai/artifact/8w2LbFT3BmtzTRZKa7prya" },
+  { course: "econ",  title: "Midterm Study Guide",                              url: "https://claude.ai/artifact/YHRsiDXBheJHkVGCDSfCg3" },
+  { course: "astro", title: "Quiz Crash Course: Modules 5–6",                   url: "https://claude.ai/artifact/KtN4sRkC8ovxL3g9rTifcm" },
+  { course: "astro", title: "Quiz 2 Study Guide (Modules 3–4)",                 url: "https://claude.ai/artifact/Up8z5RThHc9aVovBF9Qgr6" },
+  { course: "astro", title: "Modules 3–4 Study Guide",                          url: "https://claude.ai/artifact/XYk9J63wKsKjcmd4jiwC5t" },
+  { course: "study", title: "October Assignment: Plan, Practice, Adapt",        url: "https://claude.ai/artifact/Cwbo8zY7kMLn6kNB7qWGYp" },
+];
+
 // period "week": the Home ring fills over the week instead of each day.
 // period "mixed": the ring is split into a daily part and a weekly part (healthParts).
 const BRANCHES = [

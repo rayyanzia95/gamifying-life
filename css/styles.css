@@ -826,6 +826,7 @@ h1 {
 #study h2,
 #this-week h2,
 #bosses h2,
+#guides h2,
 #day h2 {
   display: flex;
   justify-content: space-between;
@@ -1402,4 +1403,33 @@ body.wide {
 .exam-chip b {
   font-weight: 600;
   color: var(--now);
+}
+
+/* Academics: study guides, one fold per course with its colour. */
+.guide-fold {
+  border-top: 1px solid var(--line);
+}
+
+.guide-fold summary {
+  padding: 8px 0;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.guide-fold summary::before {
+  content: "";
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  margin-right: 8px;
+  border-radius: 50%;
+  background: var(--course);
+}
+
+.guide-fold ul {
+  margin: 0 0 8px 17px;
+}
+
+.guide-fold a {
+  color: var(--text);
 }
