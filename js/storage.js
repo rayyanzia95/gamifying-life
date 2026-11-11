@@ -51,6 +51,14 @@ function dayLabel(date, options = { weekday: "short", month: "short", day: "nume
   return new Date(year, month - 1, day).toLocaleDateString("en-US", options);
 }
 
+// From today to a date: "in 5 days", "tomorrow", "today", or "3 days ago".
+function countdownLabel(today, date) {
+  const days = daysBetween(today, date);
+  if (days === 0) return "today";
+  if (days === 1) return "tomorrow";
+  return days > 0 ? `in ${days} days` : `${-days} days ago`;
+}
+
 // ---- Times of day, as minutes after midnight ----
 
 const MINUTES_PER_DAY = 24 * 60;

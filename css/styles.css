@@ -1372,3 +1372,34 @@ body.wide {
   color: var(--muted);
   scroll-margin-top: 12px;
 }
+
+/* Planner: the next exams across the top, with a countdown. Scrolls sideways if it must. */
+.exam-strip {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+  overflow-x: auto;
+}
+
+.exam-strip:empty {
+  display: none;
+}
+
+.exam-chip {
+  flex: 0 0 auto;
+  padding: 5px 10px;
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--course);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  font-size: 13px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.exam-chip b {
+  font-weight: 600;
+  color: var(--now);
+}

@@ -108,6 +108,28 @@ function drawDaySide(events) {
   document.getElementById("day-side").replaceChildren(...sections);
 }
 
+const EXAM_STRIP_SIZE = 3;
+
+// Across the top, like the Planner's header: the next few exams not ticked yet,
+// with a countdown. Each is a button (data-day) that opens that day.
+function drawExamStrip(events, today) {
+  const ticked = tickedDeadlines(events);
+  const next = deadlinesBetween(today, "9999")
+    .filter(d => d.kind === "exam" && !ticked.has(deadlineId(d)))
+    .slice(0, EXAM_STRIP_SIZE);
+  const chips = next.map(exam => {
+    const chip = document.createElement("button");
+    chip.type = "button";
+    chip.className = `exam-chip course-${exam.course}`;
+    chip.dataset.day = exam.date;
+    const countdown = document.createElement("b");
+    countdown.textContent = countdownLabel(today, exam.date);
+    chip.append(countdown, ` ${courseShort(exam.course)} ${exam.title}`);
+    return chip;
+  });
+  document.getElementById("exam-strip").replaceChildren(...chips);
+}
+
 // ---- Views: Day, Week (planner-week.js) or Month (planner-month.js) ----
 
 let view = "day";
@@ -136,6 +158,7 @@ function drawMonth(events, today) {
 function render() {
   const events = loadEvents();
   const today = todayString();
+  drawExamStrip(events, today);
   document.querySelectorAll("[data-view]").forEach(tab =>
     tab.setAttribute("aria-selected", String(tab.dataset.view === view)));
   const containers = { day: "day-view", week: "week", month: "month", deadlines: "deadlines" };
@@ -161,7 +184,8 @@ function showView(name) {
   render();
 }
 
-// In the week or month grid: a day (data-day) opens that day, a study block ticks.
+// In the week grid, month calendar or exam strip: a day (data-day) opens that day,
+// a study block ticks.
 function onGridClick(event) {
   const target = event.target.closest("button");
   if (!target) return;
@@ -181,5 +205,6 @@ document.querySelectorAll("[data-view]").forEach(tab =>
   tab.addEventListener("click", () => showView(tab.dataset.view)));
 document.getElementById("week").addEventListener("click", onGridClick);
 document.getElementById("month").addEventListener("click", onGridClick);
+document.getElementById("exam-strip").addEventListener("click", onGridClick);
 
 render();

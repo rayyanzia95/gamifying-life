@@ -4,14 +4,6 @@
 
 const BOSS_LINEUP_SIZE = 3;
 
-// "in 5 days", "tomorrow", "today", or "3 days ago".
-function bossCountdown(exam, today) {
-  const days = daysBetween(today, exam.date);
-  if (days === 0) return "today";
-  if (days === 1) return "tomorrow";
-  return days > 0 ? `in ${days} days` : `${-days} days ago`;
-}
-
 // The line under the damage bar.
 function bossStatus(state, today) {
   if (state.beaten) return `✓ Beaten · +${ACADEMICS.boss.bonusXp} XP`;
@@ -27,7 +19,8 @@ function bossStatus(state, today) {
 // The full card shows the date too; the lineup beside the badge only the countdown.
 function bossHtml(exam, state, today, { withDate = false } = {}) {
   const name = `${courseShort(exam.course)} ${exam.title}`;
-  const when = withDate ? `${dayLabel(exam.date)} · ${bossCountdown(exam, today)}` : bossCountdown(exam, today);
+  const countdown = countdownLabel(today, exam.date);
+  const when = withDate ? `${dayLabel(exam.date)} · ${countdown}` : countdown;
   const dealt = state.hp - state.left;
   const share = (dealt / state.hp) * 100;
   return `
