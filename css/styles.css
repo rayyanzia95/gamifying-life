@@ -805,7 +805,8 @@ h1 {
 /* Academics: the Study today card and this week's deadlines. */
 #study h2,
 #this-week h2,
-#bosses h2 {
+#bosses h2,
+#day h2 {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
@@ -817,7 +818,8 @@ h1 {
 
 #study h2 .muted,
 #this-week h2 .muted,
-#bosses h2 .muted {
+#bosses h2 .muted,
+#day h2 .muted {
   font-size: 13px;
   font-weight: 400;
 }
@@ -912,4 +914,66 @@ label.done {
 .boss.slain .boss-name,
 .boss.slain .boss-status {
   color: var(--accent);
+}
+
+/* Planner: day arrows, then the day's blocks with the time on the left. */
+.day-nav {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.day-nav button {
+  min-width: 40px;
+  padding: 6px 12px;
+  border: 1px solid var(--control-border);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.day-nav button:disabled {
+  color: var(--disabled-text);
+  cursor: default;
+}
+
+.plan-row {
+  display: grid;
+  grid-template-columns: 92px 1fr;
+  gap: 8px;
+  align-items: start;
+}
+
+.plan-time {
+  font-size: 13px;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  padding-top: 1px;
+}
+
+.plan-title {
+  font-size: 15px;
+}
+
+.plan-class .plan-title {
+  color: var(--muted);
+}
+
+.plan-exam .plan-title {
+  color: var(--now);
+  font-weight: 500;
+}
+
+.plan-note {
+  font-size: 13px;
+  margin: 2px 0 0 24px;
+}
+
+.plan-class .plan-note,
+.plan-exam .plan-note {
+  margin-left: 0;
 }
