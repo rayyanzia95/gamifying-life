@@ -27,8 +27,21 @@ function academicsRow(name) {
   return { name, parts: deadlines.goal > 0 ? [studyPart, duePart] : [studyPart] };
 }
 
+// Money's ring: today logged (green), then the payout this week is on track for (gold).
+// No dollars on Home: only XP and whether today is logged.
+function moneyRow(name) {
+  const { today, week } = moneyParts(events, todayString());
+  return {
+    name,
+    parts: [
+      { ...today, colour: "exercise", text: today.logged ? "logged today" : "not logged" },
+      { ...week, colour: "due", text: `${week.core} / ${week.goal} payout` },
+    ],
+  };
+}
+
 // Which function draws each mixed branch's split ring.
-const MIXED_ROWS = { health: healthRow, academics: academicsRow };
+const MIXED_ROWS = { health: healthRow, academics: academicsRow, money: moneyRow };
 
 // A weekly branch (Chores) fills its ring over the week, a mixed one (Health,
 // Academics) is split into daily and weekly parts, and the rest fill each day.
