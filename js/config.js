@@ -171,6 +171,39 @@ const PERSONAL = {
   sessionXp: 20,         // bonus, first session of a week
 };
 
+// People / Family: a check-in each day plus calls home over the week (Sun–Sat).
+// Names and dates are typed in on the page, so they stay on the device.
+const PEOPLE = {
+  branch: "people",
+  checkInXp: 15,         // core: talked to anyone today (call, text or visit)
+  homeGroup: "lahore",   // calls to this group are "calls home"
+  callsHomePerWeek: 2,
+  homeCallXp: 20,        // core: each of the first 2 calls home of a week
+  callXp: 10,            // bonus: further calls home, and calls to anyone else
+  textXp: 2,             // bonus: each text after the day's first contact...
+  textXpPerDay: 10,      // ...up to this much a day
+  visitXp: 30,           // bonus: visiting relatives
+  wishedXp: 25,          // bonus: birthday / anniversary wished or gift done, on time
+  wishWindowDays: 14,    // the "Wished" tick shows from 14 days before
+  homeNoteDays: 7,       // Home mentions a date from 7 days before
+  home: { name: "Lahore", utcOffset: 5, awakeFrom: "10:00", awakeTo: "22:00" }, // UTC+5, no DST
+  groups: [
+    { id: "lahore", name: "Lahore" },
+    { id: "family", name: "Family here", visits: true },
+    { id: "friends", name: "Friends" },
+  ],
+  kinds: [
+    { id: "call", name: "Call" },
+    { id: "text", name: "Text" },
+    { id: "visit", name: "Visit" },
+  ],
+  dateKinds: [
+    { id: "birthday", name: "Birthday" },
+    { id: "anniversary", name: "Anniversary" },
+    { id: "other", name: "Other" },
+  ],
+};
+
 // Fall 2026 deadlines, copied from the Fall 2026 Planner (Canvas, Oct 1).
 // Edit a row here when a date moves; its tick is kept, because a deadline is
 // known by its course + title, not its date. kind is one of ACADEMICS.deadlineXp.
