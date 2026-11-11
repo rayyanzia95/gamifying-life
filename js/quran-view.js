@@ -1,0 +1,56 @@
+// Quran screens on the Deen page: the tile, the detail card and the top bar.
+// Uses makeTile, makeStepper, streakBadge, streakLabel and render from deen.js.
+// That works because these functions only run after every script has loaded.
+
+function quranTile(events) {
+  const stepper = makeStepper("juz", todayRevision(events), QURAN.total,
+    delta => stepRevision(delta), { step: 1, target: QURAN.dailyTarget, unit: "juz" });
+  const next = "Next: " + juzLabel(nextJuz(events));
+  const streak = revisionStreak(events);
+  const summary = streak.days > 0 ? [next + " · ", streakBadge(streak)] : [next];
+  return makeTile("quran", "Quran", summary, [stepper]);
+}
+
+// Save today's juz count as one event, replacing any earlier one for today.
+function stepRevision(delta) {
+  const events = loadEvents();
+  const next = todayRevision(events) + delta;
+  if (next < 0 || next > QURAN.total) return;
+  const today = todayString();
+  const others = events.filter(e => !(isRevision(e) && e.date === today));
+  const updated = next > 0
+    ? [...others, { date: today, activity: "quran", amount: next }]
+    : others;
+  saveEvents(updated);
+  render();
+}
+
+// Quran detail: Ramadan countdown, streak, and the pace needed to finish.
+function drawRevision(events) {
+  const { done, completed } = revisionProgress(events);
+  const daysLeft = daysBetween(todayString(), RAMADAN_START);
+  const countdown = daysLeft > 0 ? `${daysLeft} days to Ramadan` : "Ramadan Mubarak";
+  const finished = completed > 0
+    ? ` · ${completed} full revision${completed > 1 ? "s" : ""} done`
+    : "";
+
+  document.getElementById("revision").innerHTML = `
+    <div class="card-row">
+      <span class="card-title">Quran revision</span>
+      <span class="muted">${countdown}</span>
+    </div>
+    <p>${streakLabel(revisionStreak(events), "Revise")}</p>
+    <p>Next: ${juzLabel(nextJuz(events))}${finished}</p>
+    <p>${paceLabel(QURAN.total - done, daysLeft)}</p>`;
+}
+
+// Top card: a bar toward finishing this revision of all 30 juz.
+function drawQuranProgress(events) {
+  const { done } = revisionProgress(events);
+  document.getElementById("quran-progress").innerHTML = `
+    <div class="card-row">
+      <span class="summary-label">Quran</span>
+      <span class="muted">${done} / ${QURAN.total} juz</span>
+    </div>
+    <div class="bar"><div class="bar-fill" style="width: ${(done / QURAN.total) * 100}%"></div></div>`;
+}

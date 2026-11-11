@@ -198,7 +198,7 @@ function render() {
   document.getElementById("view-dua").hidden = selectedView !== "dua";
 }
 
-// Which detail shows under the tiles: "prayers" or "quran".
+// Which detail shows under the tiles: "prayers", "quran" or "dua".
 // Starts on the one you picked in Settings.
 let selectedView = loadSettings().deenView;
 
@@ -248,13 +248,11 @@ function prayerTile(events) {
   return makeTile("prayers", "Prayers", summary, [tick]);
 }
 
-function quranTile(events) {
-  const stepper = makeStepper("juz", todayRevision(events), QURAN.total,
-    delta => stepRevision(delta), { step: 1, target: QURAN.dailyTarget, unit: "juz" });
-  const next = "Next: " + juzLabel(nextJuz(events));
-  const streak = revisionStreak(events);
-  const summary = streak.days > 0 ? [next + " · ", streakBadge(streak)] : [next];
-  return makeTile("quran", "Quran", summary, [stepper]);
+// quranTile lives in quran-view.js, duaTile in dua-view.js.
+function drawTiles(events) {
+  document.getElementById("tiles").replaceChildren(
+    prayerTile(events), quranTile(events), duaTile(events)
+  );
 }
 
 // "🔥 5", dimmed while the streak is paused.
@@ -271,138 +269,6 @@ function streakLabel({ days, paused }, action) {
   if (days === 0) return `${action} today to start a streak`;
   const text = `🔥 ${days}-day streak`;
   return paused ? `${text} · paused, ${action.toLowerCase()} today to keep it` : text;
-}
-
-// Dua tile: both adhkar ticks right on the tile.
-function duaTile(events) {
-  const done = `${adhkarDoneToday(events)} / ${DUA.adhkar.length} adhkar`;
-  const streak = duaStreak(events);
-  const summary = streak.days > 0 ? [done + " · ", streakBadge(streak)] : [done];
-  return makeTile("dua", "Dua", summary, adhkarTicks(events));
-}
-
-function adhkarTicks(events) {
-  return DUA.adhkar.map(a => makeCheckbox(a.name, Boolean(todayEvent(events, e => isAdhkar(e, a.id))),
-    () => toggleToday(e => isAdhkar(e, a.id), { activity: "adhkar", time: a.id })));
-}
-
-function drawTiles(events) {
-  document.getElementById("tiles").replaceChildren(
-    prayerTile(events), quranTile(events), duaTile(events)
-  );
-}
-
-// Tick or untick a once-a-day activity for today, without changing the old list.
-function toggleToday(matches, newEvent) {
-  const events = loadEvents();
-  const today = todayString();
-  const isToday = e => e.date === today && matches(e);
-  const updated = events.some(isToday)
-    ? events.filter(e => !isToday(e))
-    : [...events, { date: today, ...newEvent }];
-  saveEvents(updated);
-  render();
-}
-
-function togglePersonalLong() {
-  const today = todayString();
-  const updated = loadEvents().map(e =>
-    e.date === today && isPersonalDua(e) ? { ...e, long: !e.long } : e
-  );
-  saveEvents(updated);
-  render();
-}
-
-// Dua detail: adhkar, dua after each prayer (same tick as the prayer list), personal dua.
-function drawDua(events) {
-  const card = document.getElementById("dua");
-  const streak = duaStreak(events);
-
-  const header = document.createElement("div");
-  header.className = "card-row";
-  header.innerHTML = `<span class="card-title">Dua</span>`;
-  const streakText = document.createElement("span");
-  streakText.className = "muted";
-  streakText.textContent = streakLabel(streak, "Make dua");
-  header.append(streakText);
-
-  const afterPrayers = PRAYERS.filter(p => !p.bonus).map(prayer => {
-    const event = findEvent(events, prayer.id, mainSet(prayer).id);
-    const tick = makeCheckbox(prayer.name, Boolean(event && event.dua),
-      () => toggleFlag(prayer.id, mainSet(prayer).id, "dua"));
-    tick.querySelector("input").disabled = !event; // pray it first
-    return tick;
-  });
-
-  const personal = todayEvent(events, isPersonalDua);
-  const personalTicks = [makeCheckbox("Made my own dua", Boolean(personal),
-    () => toggleToday(isPersonalDua, { activity: "dua" }))];
-  if (personal) {
-    personalTicks.push(makeCheckbox("10+ min", Boolean(personal.long), togglePersonalLong));
-  }
-
-  card.replaceChildren(
-    header,
-    duaGroup(`Adhkar · ${DUA.adhkarXp} XP each`, adhkarTicks(events)),
-    duaGroup(`After prayers · ${DUA.afterFardXp} XP each`, afterPrayers),
-    duaGroup(`Personal dua · ${DUA.personal.base} XP, +${DUA.personal.long} for 10+ min`, personalTicks)
-  );
-}
-
-function duaGroup(title, ticks) {
-  const group = document.createElement("div");
-  group.className = "dua-group";
-  const heading = document.createElement("p");
-  heading.textContent = title;
-  const row = document.createElement("div");
-  row.className = "tick-row";
-  row.append(...ticks);
-  group.append(heading, row);
-  return group;
-}
-
-// Save today's juz count as one event, replacing any earlier one for today.
-function stepRevision(delta) {
-  const events = loadEvents();
-  const next = todayRevision(events) + delta;
-  if (next < 0 || next > QURAN.total) return;
-  const today = todayString();
-  const others = events.filter(e => !(isRevision(e) && e.date === today));
-  const updated = next > 0
-    ? [...others, { date: today, activity: "quran", amount: next }]
-    : others;
-  saveEvents(updated);
-  render();
-}
-
-// Quran detail: Ramadan countdown, streak, and the pace needed to finish.
-function drawRevision(events) {
-  const { done, completed } = revisionProgress(events);
-  const daysLeft = daysBetween(todayString(), RAMADAN_START);
-  const countdown = daysLeft > 0 ? `${daysLeft} days to Ramadan` : "Ramadan Mubarak";
-  const finished = completed > 0
-    ? ` · ${completed} full revision${completed > 1 ? "s" : ""} done`
-    : "";
-
-  document.getElementById("revision").innerHTML = `
-    <div class="card-row">
-      <span class="card-title">Quran revision</span>
-      <span class="muted">${countdown}</span>
-    </div>
-    <p>${streakLabel(revisionStreak(events), "Revise")}</p>
-    <p>Next: ${juzLabel(nextJuz(events))}${finished}</p>
-    <p>${paceLabel(QURAN.total - done, daysLeft)}</p>`;
-}
-
-// Top card: a bar toward finishing this revision of all 30 juz.
-function drawQuranProgress(events) {
-  const { done } = revisionProgress(events);
-  document.getElementById("quran-progress").innerHTML = `
-    <div class="card-row">
-      <span class="summary-label">Quran</span>
-      <span class="muted">${done} / ${QURAN.total} juz</span>
-    </div>
-    <div class="bar"><div class="bar-fill" style="width: ${(done / QURAN.total) * 100}%"></div></div>`;
 }
 
 function drawDial(events) {
