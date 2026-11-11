@@ -19,6 +19,7 @@
   --gold: #c8901a;
   --sleep: #4a63c9;
   --diet: #c9507a;
+  --study: #5b5bd6;
 }
 
 /* Dark values. Used when the device is in dark mode (unless you picked light),
@@ -44,6 +45,7 @@
     --gold: #e8b64c;
     --sleep: #7b8fe6;
     --diet: #e57ea3;
+  --study: #8f8ff0;
   }
 }
 
@@ -67,6 +69,7 @@
   --gold: #e8b64c;
   --sleep: #7b8fe6;
   --diet: #e57ea3;
+  --study: #8f8ff0;
 }
 
 body {
@@ -262,6 +265,17 @@ h1 {
 .part-diet {
   stroke: var(--diet);
   background: var(--diet);
+}
+
+/* Academics: study blocks today in indigo, this week's deadlines in gold. */
+.part-study {
+  stroke: var(--study);
+  background: var(--study);
+}
+
+.part-due {
+  stroke: var(--gold);
+  background: var(--gold);
 }
 
 .legend-dot {

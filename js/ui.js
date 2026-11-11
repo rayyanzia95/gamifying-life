@@ -49,11 +49,18 @@ function legendValue(row) {
   return `${row.core + row.extra} / ${row.goal} XP${row.weekly ? " this week" : ""}`;
 }
 
+// The outer and inner ring radii. Rings are spread evenly between them,
+// at most 11 apart, so a fourth or fifth branch still leaves a hole in the middle.
+const RING_OUTER = 40;
+const RING_INNER = 10;
+const RING_MAX_SPACING = 11;
+
 // Rows are { name, core, extra, goal, weekly? }, or { name, parts } for a split ring,
 // where each part is { core, extra, goal, colour, text }.
 function ringsHtml(rows) {
+  const spacing = Math.min(RING_MAX_SPACING, (RING_OUTER - RING_INNER) / Math.max(rows.length - 1, 1));
   const circles = rows.map((row, i) => {
-    const r = 40 - i * 11;
+    const r = RING_OUTER - i * spacing;
     if (row.parts) return ringPartsSvg(row.parts, r);
     const C = 2 * Math.PI * r;
     const coreShare = row.goal > 0 ? Math.min(row.core / row.goal, 1) : 0;

@@ -18,10 +18,22 @@ function healthRow(name) {
   };
 }
 
-// A weekly branch (Chores) fills its ring over the week, a mixed one (Health)
-// is split into daily and weekly parts, and the rest fill each day.
+// Academics' ring: study blocks today, then this week's deadlines. A week with
+// nothing due has no deadline part (a part needs a goal to size it).
+function academicsRow(name) {
+  const { study, deadlines } = academicsParts(events, todayString());
+  const studyPart = { ...study, colour: "study", text: `${study.count} / ${ACADEMICS.blocksPerDay} blocks` };
+  const duePart = { ...deadlines, colour: "due", text: `${deadlines.count} / ${deadlines.total} due` };
+  return { name, parts: deadlines.goal > 0 ? [studyPart, duePart] : [studyPart] };
+}
+
+// Which function draws each mixed branch's split ring.
+const MIXED_ROWS = { health: healthRow, academics: academicsRow };
+
+// A weekly branch (Chores) fills its ring over the week, a mixed one (Health,
+// Academics) is split into daily and weekly parts, and the rest fill each day.
 const rows = BRANCHES.map(branch => {
-  if (branch.period === "mixed") return healthRow(branch.name);
+  if (branch.period === "mixed") return MIXED_ROWS[branch.id](branch.name);
   if (branch.period === "week") {
     const week = choreWeek(events, weekStart(todayString()));
     return { name: branch.name, core: week.core, extra: week.extra, goal: week.goal, weekly: true };
