@@ -87,6 +87,11 @@
   --skills: #9aa5b4;
 }
 
+/* hidden always hides, even on elements whose class sets display: flex or grid. */
+[hidden] {
+  display: none !important;
+}
+
 body {
   font-family: system-ui, sans-serif;
   position: relative;
@@ -1318,4 +1323,52 @@ body.wide {
 #day-side .deadline-when {
   margin-left: 24px;
   text-align: left;
+}
+
+/* Planner: the Deadlines tab. */
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 12px;
+}
+
+.filter-chip,
+.filter-button {
+  padding: 5px 11px;
+  border: 1px solid var(--control-border);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.filter-chip::before {
+  content: "";
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  margin-right: 6px;
+  border-radius: 50%;
+  background: var(--course);
+}
+
+.filter-chip[aria-pressed="false"] {
+  opacity: 0.45;
+}
+
+.filter-button[aria-pressed="true"] {
+  background: var(--text);
+  border-color: var(--text);
+  color: var(--bg);
+}
+
+.week-heading {
+  margin: 16px 0 6px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--muted);
+  scroll-margin-top: 12px;
 }

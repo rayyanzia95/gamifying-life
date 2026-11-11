@@ -1,5 +1,5 @@
-// Renders planner.html: one day of the academic plan (schedule.js), the week grid
-// or the month calendar.
+// Renders planner.html: one day of the academic plan (schedule.js) with its deadline
+// sidebar, the week grid, the month calendar or the Deadlines tab (planner-deadlines.js).
 // Ticking a planned study block logs it as 30-min study blocks for its course,
 // one event each, all tagged with the block's id so unticking removes exactly those:
 // { date, activity: "study", course: "phys", block: "b.2026-11-12.phys-midterm-2-prep" }
@@ -138,9 +138,11 @@ function render() {
   const today = todayString();
   document.querySelectorAll("[data-view]").forEach(tab =>
     tab.setAttribute("aria-selected", String(tab.dataset.view === view)));
-  const containers = { day: "day-view", week: "week", month: "month" };
+  const containers = { day: "day-view", week: "week", month: "month", deadlines: "deadlines" };
   for (const [name, id] of Object.entries(containers)) document.getElementById(id).hidden = view !== name;
+  document.getElementById("day-nav").hidden = view === "deadlines"; // the whole term, no arrows
 
+  if (view === "deadlines") return drawDeadlines(events);
   if (view === "week") return drawWeek(events, today);
   if (view === "month") return drawMonth(events, today);
   drawDay(events);
