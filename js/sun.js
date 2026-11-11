@@ -1,5 +1,6 @@
-// Sunrise for LOCATION, using NOAA's simplified solar equations.
+// Where the sun is for LOCATION, using NOAA's simplified solar equations.
 // Accurate to about a minute, which is plenty for drawing the dial.
+// All times are minutes after local midnight.
 
 function toRadians(degrees) {
   return (degrees * Math.PI) / 180;
@@ -9,8 +10,8 @@ function toDegrees(radians) {
   return (radians * 180) / Math.PI;
 }
 
-// Minutes after local midnight that the sun rises on a "YYYY-MM-DD" date.
-function sunriseMinutes(date) {
+// Solar noon and the sun's declination for a "YYYY-MM-DD" date.
+function solarDay(date) {
   const [year, month, day] = date.split("-").map(Number);
   const dayOfYear = (Date.UTC(year, month - 1, day) - Date.UTC(year, 0, 0)) / 86400000;
   const g = ((2 * Math.PI) / 365) * (dayOfYear - 1);
@@ -24,13 +25,30 @@ function sunriseMinutes(date) {
     - 0.006758 * Math.cos(2 * g) + 0.000907 * Math.sin(2 * g)
     - 0.002697 * Math.cos(3 * g) + 0.00148 * Math.sin(3 * g);
 
-  // 90.833° = sun's centre just below the horizon, allowing for refraction.
-  const lat = toRadians(LOCATION.lat);
-  const hourAngle = Math.acos(
-    Math.cos(toRadians(90.833)) / (Math.cos(lat) * Math.cos(declination))
-    - Math.tan(lat) * Math.tan(declination)
-  );
+  const noon = 720 - 4 * LOCATION.lng - equationOfTime + LOCATION.utcOffset * 60;
+  return { noon, declination };
+}
 
-  const sunriseUtc = 720 - 4 * (LOCATION.lng + toDegrees(hourAngle)) - equationOfTime;
-  return sunriseUtc + LOCATION.utcOffset * 60;
+// Minutes between solar noon and the sun being at `altitude` degrees
+// (negative = below the horizon). NaN if the sun never gets there that day,
+// e.g. 18° below the horizon on an Edmonton summer night.
+function minutesFromNoon(altitude, declination) {
+  const lat = toRadians(LOCATION.lat);
+  const cosHourAngle = (Math.sin(toRadians(altitude)) - Math.sin(lat) * Math.sin(declination))
+    / (Math.cos(lat) * Math.cos(declination));
+  if (cosHourAngle < -1 || cosHourAngle > 1) return NaN;
+  return 4 * toDegrees(Math.acos(cosHourAngle));
+}
+
+// -0.833° = sun's top edge on the horizon, allowing for refraction.
+const HORIZON = -0.833;
+
+function sunriseMinutes(date) {
+  const { noon, declination } = solarDay(date);
+  return noon - minutesFromNoon(HORIZON, declination);
+}
+
+function sunsetMinutes(date) {
+  const { noon, declination } = solarDay(date);
+  return noon + minutesFromNoon(HORIZON, declination);
 }

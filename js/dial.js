@@ -9,17 +9,14 @@ function toMinutes(hhmm) {
   return hours * 60 + minutes;
 }
 
-// Each prayer's window for a date, or null if the timetable doesn't cover it.
+// Each prayer's window for a date (masjid times, or calculated ones past the timetable).
 function prayerWindows(date) {
-  const times = PRAYER_TIMES[date];
-  if (!times) return null;
   const t = Object.fromEntries(
-    Object.entries(times).map(([id, hhmm]) => [id, toMinutes(hhmm)])
+    Object.entries(prayerTimesFor(date)).map(([id, hhmm]) => [id, toMinutes(hhmm)])
   );
 
   // Tahajjud: last third of the night that ends at today's Fajr.
-  const yesterday = PRAYER_TIMES[shiftDate(date, -1)];
-  const lastMaghrib = yesterday ? toMinutes(yesterday.maghrib) : t.maghrib;
+  const lastMaghrib = toMinutes(prayerTimesFor(shiftDate(date, -1)).maghrib);
   const night = t.fajr + MINUTES_PER_DAY - lastMaghrib;
 
   return [

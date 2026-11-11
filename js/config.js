@@ -36,6 +36,20 @@ const RAMADAN_START = "2027-02-08";
 
 // Edmonton. Alberta stays on UTC-6 all year.
 const LOCATION = { lat: 53.5461, lng: -113.4938, utcOffset: -6 };
+
+// How to calculate prayer times on days the masjid timetable doesn't cover.
+// Worked out from Markaz Ul Islam's own 2026 times (Muslim World League angles);
+// matches them within about 2 minutes from October to December.
+const PRAYER_METHOD = {
+  fajrAngle: 18,        // sun 18° below the horizon
+  ishaAngle: 17,
+  asrShadow: 1,         // standard Asr: shadow = object length (Hanafi would be 2)
+  dhuhrDelay: 5,        // minutes after solar noon
+  // High-latitude rules, so summer nights that never get properly dark still work:
+  ishaNightPortion: 1 / 7,  // Isha no later than sunset + 1/7 of the night (the masjid's rule)
+  fajrNightPortion: 18 / 60, // Fajr no earlier than sunrise − 18/60 of the night ("angle-based"),
+                             // which keeps Fajr from jumping in May and August
+};
 const BRANCHES = [
   { id: "deen", name: "Deen", page: "deen.html" },
 ];

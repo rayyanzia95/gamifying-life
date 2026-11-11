@@ -242,8 +242,7 @@ function prayerTile(events) {
   const prayed = daily.filter(p => findEvent(events, p.id, mainSet(p).id)).length;
   const summary = [`${prayed} / ${daily.length} today`];
 
-  const windows = prayerWindows(todayString());
-  const current = windows && currentWindow(windows, nowMinutes());
+  const current = currentWindow(prayerWindows(todayString()), nowMinutes());
   if (!current) return makeTile("prayers", "Prayers", summary, []);
 
   const prayer = PRAYERS.find(p => p.id === current.id);
@@ -283,10 +282,6 @@ let lastDialDua = null;
 function drawDial(events) {
   const box = document.getElementById("dial");
   const windows = prayerWindows(todayString());
-  if (!windows) {
-    box.innerHTML = "<p>No prayer times for today yet. Add the next timetable to js/prayer-times.js.</p>";
-    return;
-  }
   const prayedIds = PRAYERS
     .filter(prayer => findEvent(events, prayer.id, mainSet(prayer).id))
     .map(prayer => prayer.id);
