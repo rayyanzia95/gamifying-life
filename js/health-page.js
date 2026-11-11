@@ -224,12 +224,13 @@ function waterStepper(glasses) {
   return row;
 }
 
-// "25 / 40 XP · dinner not logged yet"
+// "25 / 40 XP · +4 water bonus · dinner not logged yet"
 function dietSummary(day) {
-  const { core } = scoreDiet(day);
+  const { core, extra } = scoreDiet(day);
+  const bonus = extra > 0 ? ` · +${extra} water bonus` : "";
   const missing = DIET.meals.filter(meal => !day[meal.id]).map(meal => meal.name.toLowerCase());
   const note = missing.length > 0 ? ` · ${missing.join(", ")} not logged yet` : "";
-  return `${core} / ${dietGoal()} XP${note}`;
+  return `${core} / ${dietGoal()} XP${bonus}${note}`;
 }
 
 function drawDiet(events) {

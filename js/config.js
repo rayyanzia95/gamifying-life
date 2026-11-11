@@ -106,7 +106,7 @@ const DIET = {
     { id: "okay", name: "Okay", xp: 5 },
     { id: "junk", name: "Junk", xp: 0 },
   ],
-  water: { glasses: 8, xp: 5 },
+  water: { glasses: 8, xp: 5, bonusXp: 2, bonusUpTo: 12 }, // each glass past 8 is +2 bonus, up to 12
   creatineXp: 5,
   streakXp: 30,
 };

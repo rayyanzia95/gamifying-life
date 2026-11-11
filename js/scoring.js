@@ -312,9 +312,16 @@ function mealXp(ratingId) {
 
 function scoreDiet(event) {
   const meals = DIET.meals.reduce((sum, meal) => sum + mealXp(event[meal.id]), 0);
-  const water = (event.water ?? 0) >= DIET.water.glasses ? DIET.water.xp : 0;
+  const glasses = event.water ?? 0;
+  const water = glasses >= DIET.water.glasses ? DIET.water.xp : 0;
+  // Glasses past the target are bonus, counted only up to bonusUpTo.
+  const extraGlasses = Math.min(glasses, DIET.water.bonusUpTo) - DIET.water.glasses;
   const creatine = event.creatine ? DIET.creatineXp : 0;
-  return { branch: DIET.branch, core: meals + water + creatine, extra: 0 };
+  return {
+    branch: DIET.branch,
+    core: meals + water + creatine,
+    extra: Math.max(extraGlasses, 0) * DIET.water.bonusXp,
+  };
 }
 
 // Best rating for every meal, plus water and creatine: 40.
