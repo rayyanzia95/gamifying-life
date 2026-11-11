@@ -69,6 +69,8 @@ function scoreEvent(event, events) {
   if (event.activity === "sleep") return scoreSleep(event, events);
   if (isExercise(event)) return scoreExercise(event, events);
   if (isDiet(event)) return scoreDiet(event);
+  if (isStudy(event)) return scoreStudy(event, events);
+  if (isDeadlineTick(event)) return scoreDeadline(event);
   if (!isCounted(event, events)) return null;
   const prayer = PRAYERS.find(p => p.id === event.prayer);
   const set = prayer.sets.find(s => s.id === event.set);
@@ -323,6 +325,84 @@ function healthParts(events, today) {
     sleep: { core: sleep.core, extra: sleep.extra, goal: sleepGoal() },
     diet: { core: diet.core, extra: diet.extra, goal: dietGoal() },
     exercise: exerciseWeek(events, weekStart(today)),
+  };
+}
+
+// ---- Academics: study blocks and deadlines ----
+// A study block: { date, activity: "study", course: "phys" }, one event per 30 minutes.
+// A ticked deadline: { date, activity: "deadline", deadline: "phys-midterm-2" },
+// dated the day you ticked it.
+
+function isStudy(event) {
+  return event.activity === "study";
+}
+
+function isDeadlineTick(event) {
+  return event.activity === "deadline";
+}
+
+// { course: "phys", title: "Lab 7 report" } → "phys-lab-7-report".
+function deadlineId(deadline) {
+  const slug = deadline.title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+  return `${deadline.course}-${slug}`;
+}
+
+function deadlineXp(deadline) {
+  return ACADEMICS.deadlineXp[deadline.kind] ?? 0;
+}
+
+// The first blocksPerDay blocks of a day are core, any after that are bonus.
+function scoreStudy(event, events) {
+  const before = earlierMatches(events, event, event.date, isStudy);
+  const isCore = before < ACADEMICS.blocksPerDay;
+  const xp = ACADEMICS.blockXp;
+  return { branch: ACADEMICS.branch, core: isCore ? xp : 0, extra: isCore ? 0 : xp };
+}
+
+// A tick for a deadline that's no longer in DEADLINES scores nothing.
+function scoreDeadline(event) {
+  const deadline = DEADLINES.find(d => deadlineId(d) === event.deadline);
+  if (!deadline) return null;
+  return { branch: ACADEMICS.branch, core: deadlineXp(deadline), extra: 0 };
+}
+
+// Ids of every deadline you've ticked, as a Set for quick has() checks.
+function tickedDeadlines(events) {
+  return new Set(events.filter(isDeadlineTick).map(e => e.deadline));
+}
+
+// Deadlines due from `from` up to (not including) `to`, in date order.
+function deadlinesBetween(from, to) {
+  return DEADLINES
+    .filter(d => d.date >= from && d.date < to)
+    .sort((a, b) => a.date.localeCompare(b.date));
+}
+
+// The two parts of Academics' goal: study blocks today, and the XP of every
+// deadline due this week (Sun–Sat), so a busy week has a bigger goal.
+function academicsParts(events, today) {
+  const blocks = events.filter(e => isStudy(e) && e.date === today);
+  const scores = blocks.map(e => scoreStudy(e, events));
+  const sum = (items, value) => items.reduce((total, item) => total + value(item), 0);
+
+  const week = weekStart(today);
+  const due = deadlinesBetween(week, shiftDate(week, 7));
+  const ticked = tickedDeadlines(events);
+  const done = due.filter(d => ticked.has(deadlineId(d)));
+  return {
+    study: {
+      count: blocks.length,
+      core: sum(scores, s => s.core),
+      extra: sum(scores, s => s.extra),
+      goal: ACADEMICS.blocksPerDay * ACADEMICS.blockXp,
+    },
+    deadlines: {
+      count: done.length,
+      total: due.length,
+      core: sum(done, deadlineXp),
+      extra: 0,
+      goal: sum(due, deadlineXp),
+    },
   };
 }
 

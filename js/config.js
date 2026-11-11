@@ -111,6 +111,57 @@ const DIET = {
   streakXp: 30,
 };
 
+// Academics: uni courses only. Study is logged in 30-minute blocks, each tagged
+// with a course. The first blocksPerDay blocks of a day are core XP; more are bonus.
+// Ticking a deadline earns XP by its kind, and a late tick still counts in full.
+const ACADEMICS = {
+  branch: "academics",
+  courses: [
+    { id: "phys",  name: "PHYS 124",     short: "PHYS" },
+    { id: "cmput", name: "CMPUT 175",    short: "CMPUT" },
+    { id: "econ",  name: "ECON 101",     short: "ECON" },
+    { id: "astro", name: "ASTRO 101",    short: "ASTRO" },
+    { id: "study", name: "Study Skills", short: "Study Skills" },
+  ],
+  blockMinutes: 30,
+  blockXp: 10,
+  blocksPerDay: 4,       // daily goal: 4 blocks = 2 hours = 40 XP
+  deadlineXp: { quiz: 10, lab: 15, assignment: 25, task: 5, exam: 40 },
+};
+
+// Fall 2026 deadlines, copied from the Fall 2026 Planner (Canvas, Oct 1).
+// Edit a row here when a date moves; its tick is kept, because a deadline is
+// known by its course + title, not its date. kind is one of ACADEMICS.deadlineXp.
+const DEADLINES = [
+  { date: "2026-11-10", time: "11:00 a.m.", course: "phys",  kind: "lab",        title: "Lab 6 report" },
+  { date: "2026-11-13", time: "This week",  course: "study", kind: "task",       title: "Book your last Fresh Start session" },
+  { date: "2026-11-15", time: "Sun night",  course: "study", kind: "assignment", title: "November Assignment #3" },
+  { date: "2026-11-16", time: "12:55 p.m.", course: "astro", kind: "quiz",       title: "Knowledge Check 8" },
+  { date: "2026-11-16", time: "5:00 p.m.",  course: "astro", kind: "exam",       title: "Quiz: Modules 7–8", note: "In person, CCIS L2-200" },
+  { date: "2026-11-16", time: "Mon night",  course: "cmput", kind: "assignment", title: "Assignment 3" },
+  { date: "2026-11-17", time: "2:00 p.m.",  course: "cmput", kind: "lab",        title: "Lab 6 demo" },
+  { date: "2026-11-19", time: "6:00 p.m.",  course: "phys",  kind: "exam",       title: "Midterm 2", note: "6:00–7:30 p.m., room TBA" },
+  { date: "2026-11-20", time: "Time TBC",   course: "cmput", kind: "lab",        title: "Lab 7 due" },
+  { date: "2026-11-22", time: "Sun night",  course: "study", kind: "quiz",       title: "Learn Strategically Quiz" },
+  { date: "2026-11-23", time: "9:30 a.m.",  course: "phys",  kind: "quiz",       title: "Reading Quiz 8" },
+  { date: "2026-11-23", time: "12:55 p.m.", course: "astro", kind: "quiz",       title: "Knowledge Check 9" },
+  { date: "2026-11-24", time: "11:00 a.m.", course: "phys",  kind: "lab",        title: "Lab 7 report" },
+  { date: "2026-11-24", time: "2:00 p.m.",  course: "cmput", kind: "lab",        title: "Assignment 3 demo" },
+  { date: "2026-11-26", time: "Thu night",  course: "phys",  kind: "quiz",       title: "Content Quiz 8" },
+  { date: "2026-11-27", time: "Time TBC",   course: "cmput", kind: "lab",        title: "Lab 8 due" },
+  { date: "2026-11-29", time: "Sun night",  course: "study", kind: "assignment", title: "Reflection Letter" },
+  { date: "2026-11-30", time: "9:30 a.m.",  course: "phys",  kind: "quiz",       title: "Reading Quiz 9" },
+  { date: "2026-11-30", time: "12:55 p.m.", course: "astro", kind: "quiz",       title: "Knowledge Check 10" },
+  { date: "2026-11-30", time: "Time TBC",   course: "astro", kind: "exam",       title: "Quiz: Modules 9–10" },
+  { date: "2026-12-01", time: "11:00 a.m.", course: "phys",  kind: "lab",        title: "Lab 8 report" },
+  { date: "2026-12-01", time: "2:00 p.m.",  course: "cmput", kind: "lab",        title: "Labs 7 + 8 demo" },
+  { date: "2026-12-03", time: "Thu night",  course: "phys",  kind: "quiz",       title: "Content Quiz 9" },
+  { date: "2026-12-07", time: "In class",   course: "cmput", kind: "exam",       title: "Midterm 3" },
+  { date: "2026-12-07", time: "Mon night",  course: "phys",  kind: "quiz",       title: "Content Quiz 10" },
+  { date: "2026-12-08", time: "12:00 p.m.", course: "phys",  kind: "task",       title: "Redo lab selection" },
+  { date: "2026-12-13", time: "Sun night",  course: "study", kind: "task",       title: "Student Evaluation Form" },
+];
+
 // period "week": the Home ring fills over the week instead of each day.
 // period "mixed": the ring is split into a daily part and a weekly part (healthParts).
 const BRANCHES = [
