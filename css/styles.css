@@ -423,3 +423,29 @@ h1 {
 .streak.paused {
   opacity: 0.45;
 }
+
+/* A lone last tile (3 tiles in 2 columns) stretches across the row. */
+.tile:last-child:nth-child(odd) {
+  grid-column: 1 / -1;
+}
+
+.tile label {
+  display: inline-block;
+  margin-right: 12px;
+}
+
+.dua-group {
+  margin-top: 14px;
+}
+
+.tick-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+  margin-top: 6px;
+  font-size: 14px;
+}
+
+.tick-row label:has(input:disabled) {
+  color: var(--disabled-text);
+}

@@ -17,6 +17,19 @@ const QURAN = {
   cycleStart: "2026-11-10", // revision starts at Juz 1 on this day
 };
 
+// Dua. Adhkar count toward the daily goal; the rest is bonus XP.
+const DUA = {
+  branch: "deen",
+  adhkar: [
+    { id: "morning", name: "Morning" },
+    { id: "evening", name: "Evening" },
+  ],
+  adhkarXp: 15,          // each
+  afterFardXp: 2,        // per fard prayer, ticked as a "dua" flag on that prayer
+  personal: { base: 10, long: 5 }, // long = 10+ min
+  pausesPerWeek: 1,      // streak: one missed day a week (Sun–Sat) is forgiven
+};
+
 // Expected 1 Ramadan 1448. Update once the masjid announces the moon sighting.
 const RAMADAN_START = "2027-02-08";
 

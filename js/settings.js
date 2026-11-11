@@ -17,6 +17,7 @@ const SETTING_CHOICES = {
     options: [
       { value: "prayers", label: "Prayers" },
       { value: "quran", label: "Quran" },
+      { value: "dua", label: "Dua" },
     ],
   },
 };

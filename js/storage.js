@@ -37,3 +37,9 @@ function shiftDate(date, days) {
   const [year, month, day] = date.split("-").map(Number);
   return dateString(new Date(year, month - 1, day + days));
 }
+
+// The Sunday that starts this date's week. getDay() is 0 on Sunday.
+function weekStart(date) {
+  const [year, month, day] = date.split("-").map(Number);
+  return shiftDate(date, -new Date(year, month - 1, day).getDay());
+}

@@ -60,12 +60,24 @@ function isCounted(event, events) {
 // Core XP fills the daily goal; extra XP pushes the bar past it.
 function scoreEvent(event, events) {
   if (event.activity === "quran") return scoreRevision(event);
+  if (event.activity === "adhkar") return { branch: DUA.branch, core: DUA.adhkarXp, extra: 0 };
+  if (event.activity === "dua") return scorePersonalDua(event);
   if (!isCounted(event, events)) return null;
   const prayer = PRAYERS.find(p => p.id === event.prayer);
   const set = prayer.sets.find(s => s.id === event.set);
   const xp = setEarnedXp(set, event);
   const isExtra = Boolean(prayer.bonus || set.optional);
-  return { branch: prayer.branch, core: isExtra ? 0 : xp, extra: isExtra ? xp : 0 };
+  const afterDua = set.type === "fard" && event.dua ? DUA.afterFardXp : 0;
+  return {
+    branch: prayer.branch,
+    core: isExtra ? 0 : xp,
+    extra: (isExtra ? xp : 0) + afterDua,
+  };
+}
+
+function scorePersonalDua(event) {
+  const xp = DUA.personal.base + (event.long ? DUA.personal.long : 0);
+  return { branch: DUA.branch, core: 0, extra: xp };
 }
 
 function scoreRevision(event) {
@@ -109,6 +121,7 @@ function branchGoal(branchId) {
     }
   }
   if (QURAN.branch === branchId) total += QURAN.dailyTarget * QURAN.xpPerJuz;
+  if (DUA.branch === branchId) total += DUA.adhkar.length * DUA.adhkarXp;
   return total;
 }
 
