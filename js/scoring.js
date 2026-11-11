@@ -66,6 +66,7 @@ function scoreEvent(event, events) {
     return { branch: DUA.branch, core: 0, extra: event.amount * DUA.afterFardXp };
   }
   if (event.activity === "chore") return scoreChore(event, events);
+  if (event.activity === "sleep") return scoreSleep(event, events);
   if (!isCounted(event, events)) return null;
   const prayer = PRAYERS.find(p => p.id === event.prayer);
   const set = prayer.sets.find(s => s.id === event.set);
@@ -187,6 +188,67 @@ function choreWeek(events, week) {
   return { core, extra: extra + (done ? CHORES.weekBonus : 0), goal, done };
 }
 
+// ---- Sleep ----
+// A night belongs to the morning you wake. Bedtimes are measured from that
+// morning's midnight, so 22:40 is -80 and 00:15 is 15. Anything from noon on
+// counts as the evening before.
+
+function isSleep(event) {
+  return event.activity === "sleep";
+}
+
+function bedMinutes(hhmm) {
+  const minutes = toMinutes(hhmm);
+  return minutes >= MINUTES_PER_DAY / 2 ? minutes - MINUTES_PER_DAY : minutes;
+}
+
+// Minutes in bed, from bedtime to the final wake. null until both times are in.
+function minutesInBed(event) {
+  if (!event.bed || !event.wake) return null;
+  const minutes = toMinutes(event.wake) - bedMinutes(event.bed);
+  return minutes > 0 ? minutes : null;
+}
+
+// Minutes asleep: time in bed minus the time awake for Fajr.
+function minutesAsleep(event) {
+  const inBed = minutesInBed(event);
+  return inBed === null ? null : Math.max(inBed - (event.fajrGap ?? 0), 0);
+}
+
+// Average bedtime of the last few logged nights before `date`, or null with too few.
+// toSorted returns a sorted copy, so the events array isn't changed.
+function usualBedtime(events, date) {
+  const nights = events
+    .filter(e => isSleep(e) && e.bed && e.date < date)
+    .toSorted((a, b) => a.date.localeCompare(b.date))
+    .slice(-SLEEP.usual.nights);
+  if (nights.length < SLEEP.usual.minNights) return null;
+  return nights.reduce((sum, e) => sum + bedMinutes(e.bed), 0) / nights.length;
+}
+
+// Which of the night's goals it met, keyed like SLEEP.xp, plus the usual bedtime.
+function sleepChecks(event, events) {
+  const bed = event.bed ? bedMinutes(event.bed) : null;
+  const asleep = minutesAsleep(event);
+  const usual = usualBedtime(events, event.date);
+  return {
+    bedtime: bed !== null && bed <= bedMinutes(SLEEP.bedBy),
+    hours: asleep !== null && asleep >= SLEEP.hours * 60,
+    consistent: bed !== null && usual !== null && Math.abs(bed - usual) <= SLEEP.usual.withinMinutes,
+    usual,
+  };
+}
+
+function scoreSleep(event, events) {
+  const checks = sleepChecks(event, events);
+  const core = Object.entries(SLEEP.xp).reduce((sum, [goal, xp]) => sum + (checks[goal] ? xp : 0), 0);
+  return { branch: SLEEP.branch, core, extra: 0 };
+}
+
+function sleepGoal() {
+  return Object.values(SLEEP.xp).reduce((sum, xp) => sum + xp, 0);
+}
+
 function levelInfo(xp, multiplier) {
   let level = 1;
   let into = xp;
@@ -209,6 +271,7 @@ function branchGoal(branchId) {
   }
   if (QURAN.branch === branchId) total += QURAN.dailyTarget * QURAN.xpPerJuz;
   if (DUA.branch === branchId) total += DUA.adhkar.length * DUA.adhkarXp;
+  if (SLEEP.branch === branchId) total += sleepGoal();
   return total;
 }
 

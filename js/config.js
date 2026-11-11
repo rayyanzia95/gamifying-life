@@ -69,10 +69,24 @@ const CHORES = {
   ],
 };
 
+// Health: Sleep. A night belongs to the morning you wake, logged as bed and wake
+// times plus minutes awake for Fajr (subtracted from the total).
+// Each goal met earns its XP; all of it counts toward the daily goal.
+const SLEEP = {
+  branch: "health",
+  bedBy: "22:30",        // in bed by this time
+  hours: 7.5,            // enough sleep
+  usual: { nights: 7, minNights: 3, withinMinutes: 30 }, // consistent = within 30 min of
+                                                          // the average of the last 7 bedtimes
+  fajrStep: 10,          // the "awake for Fajr" counter moves in 10 min
+  xp: { bedtime: 15, hours: 15, consistent: 10 },
+};
+
 // period "week": the Home ring fills over the week instead of each day.
 const BRANCHES = [
   { id: "deen", name: "Deen", page: "deen.html" },
   { id: "chores", name: "Chores", page: "chores.html", period: "week" },
+  { id: "health", name: "Health", page: "health.html" },
 ];
 
 const PRAYERS = [

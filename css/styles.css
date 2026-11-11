@@ -536,3 +536,47 @@ h1 {
 .tick-row label:has(input:disabled) {
   color: var(--disabled-text);
 }
+
+/* Health: the Sleep card. A label on the left, its time or counter on the right. */
+#sleep h2 {
+  font-size: 16px;
+  font-weight: 500;
+  margin: 0 0 8px;
+}
+
+.field {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 0;
+}
+
+.field input[type="time"] {
+  font: inherit;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--control-border);
+  border-radius: 6px;
+  padding: 4px 8px;
+}
+
+#sleep .sleep-summary {
+  margin-top: 12px;
+  font-weight: 500;
+}
+
+.checks {
+  list-style: none;
+  padding: 0;
+  margin: 6px 0 0;
+  font-size: 14px;
+}
+
+.checks li {
+  padding: 2px 0;
+}
+
+.checks .met {
+  color: var(--accent);
+}
