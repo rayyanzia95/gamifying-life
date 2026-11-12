@@ -279,7 +279,16 @@ async function drawSyncCard() {
   if (!SUPABASE_ANON_KEY) return body.replaceChildren(syncText("Sync isn't set up yet: the anon key is missing in js/sync.js."));
   if (!syncClient) return body.replaceChildren(syncText("Can't reach the sync service right now. Your ticks are still saved on this device."));
   const email = await currentEmail();
-  body.replaceChildren(...(email ? signedInParts(email) : signedOutParts()));
+  if (email) {
+    delete body.dataset.step; // so signing out draws the email box again
+    return body.replaceChildren(...signedInParts(email)); // no text box, safe to redraw
+  }
+  // Signed out: rebuild only when the step changes (email ↔ code). Every sync cycle calls this,
+  // and rebuilding would wipe what's being typed in the box.
+  const step = pendingEmail ? `code:${pendingEmail}` : "email";
+  if (body.dataset.step === step) return;
+  body.dataset.step = step;
+  body.replaceChildren(...signedOutParts());
 }
 
 // ---- Start ----
