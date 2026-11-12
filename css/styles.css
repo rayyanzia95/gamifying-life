@@ -208,63 +208,95 @@ h1 {
   justify-content: space-around;
 }
 
-/* Home: badge and balance web side by side, a level bar per branch under them. */
-#overall.levels {
-  flex-direction: column;
-  gap: 12px;
-}
-
-.levels-top {
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
-  gap: 8px;
-}
-
-.web {
-  flex: 1;
-  min-width: 0;
-  max-width: 220px;
-  overflow: visible;
-}
-
-.web-grid {
-  fill: none;
-  stroke: var(--muted);
-  stroke-opacity: 0.35;
+/* Home: one card. Outer ring of today segments, the level web inside, a row per branch. */
+.home-hub {
+  display: block;
+  width: 100%;
+  max-width: 320px;
+  margin: 0 auto;
 }
 
 .web-shape {
   fill: var(--gold);
-  fill-opacity: 0.3;
+  fill-opacity: 0.16;
   stroke: var(--gold);
-  stroke-width: 2;
+  stroke-width: 1.5;
+  stroke-linejoin: round;
 }
 
 .web-label {
-  font-size: 9px;
+  font-size: 8.5px;
   fill: var(--muted);
+}
+
+.overall-level {
+  font-size: 17px;
+  font-weight: 800;
+  fill: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+
+.hub-key {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin: 4px 0 8px;
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.hub-key span::before {
+  content: "";
+  display: inline-block;
+  margin-right: 5px;
+  vertical-align: middle;
+  background: var(--muted);
+}
+
+.key-today::before {
+  width: 14px;
+  height: 4px;
+  border-radius: 2px;
+}
+
+.key-level::before {
+  width: 14px;
+  height: 6px;
+  border-radius: 3px;
 }
 
 .level-row {
   display: grid;
-  grid-template-columns: 84px 26px 1fr;
+  grid-template-columns: 84px 26px 1fr 22px;
   align-items: center;
   gap: 8px;
+  padding: 6px 0;
+  border-top: 1px solid var(--line);
+  color: inherit;
+  text-decoration: none;
   font-size: 14px;
-  padding: 4px 0;
+}
+
+.level-row:first-child {
+  border-top: 0;
+}
+
+.level-row:hover span:first-child {
+  text-decoration: underline;
 }
 
 .level-chip {
   text-align: center;
   font-size: 12px;
   font-weight: 700;
+  line-height: 18px;
   border-radius: 6px;
-  padding: 1px 0;
   color: var(--bg);
+  font-variant-numeric: tabular-nums;
 }
 
 .level-bar {
+  position: relative;
   height: 6px;
   background: var(--line);
   border-radius: 3px;
@@ -272,8 +304,8 @@ h1 {
 }
 
 .level-bar i {
-  display: block;
-  height: 100%;
+  position: absolute;
+  inset: 0 auto 0 0;
   border-radius: 3px;
 }
 
@@ -386,47 +418,6 @@ h1 {
 .part-due {
   stroke: var(--gold);
   background: var(--gold);
-}
-
-.legend-dot {
-  display: inline-block;
-  width: 9px;
-  height: 9px;
-  border-radius: 50%;
-  margin: 0 4px 0 8px;
-}
-
-.rings {
-  display: block;
-  width: 160px;
-  height: 160px;
-  margin: 0 auto 12px;
-}
-
-/* Home rings: one ring per branch in its own colour (stroke set inline from --<branch>). */
-.ring-branch {
-  fill: none;
-  stroke-width: 4.2;
-  stroke-linecap: round;
-}
-
-.ring-branch-track {
-  fill: none;
-  stroke: var(--line);
-  stroke-width: 4.2;
-}
-
-.legend-row .legend-name {
-  display: flex;
-  align-items: center;
-}
-
-.legend-row {
-  display: flex;
-  justify-content: space-between;
-  padding: 6px 0;
-  border-top: 1px solid var(--line);
-  font-size: 14px;
 }
 
 .branch-link {
@@ -2321,8 +2312,7 @@ body.nav-open #nav-backdrop {
   }
 
   .nav-toggle,
-  #nav-backdrop,
-  #branches {
+  #nav-backdrop {
     display: none !important;
   }
 

@@ -23,35 +23,6 @@ function badgeHtml(name, info) {
     </div>`;
 }
 
-// The outer and inner ring radii. Rings are spread evenly between them (mockup: r = 44 - i*6 for 7).
-const RING_OUTER = 44;
-const RING_INNER = 8;
-const RING_MAX_SPACING = 11;
-
-// Rows are { id, name, share } where share is 0..1 and id picks the branch colour.
-// One ring per branch, one colour each, with a legend of dot, name and percent.
-function ringsHtml(rows) {
-  const spacing = Math.min(RING_MAX_SPACING, (RING_OUTER - RING_INNER) / Math.max(rows.length - 1, 1));
-  const circles = rows.map((row, i) => {
-    const r = RING_OUTER - i * spacing;
-    const C = 2 * Math.PI * r;
-    return `
-      <circle class="ring-branch-track" cx="50" cy="50" r="${r}"/>
-      <circle class="ring-branch" cx="50" cy="50" r="${r}" style="stroke: var(--${row.id})"
-        transform="rotate(-90 50 50)" stroke-dasharray="${row.share * C} ${C}"/>`;
-  }).join("");
-
-  const legend = rows.map(row => `
-    <div class="legend-row">
-      <span class="legend-name"><span class="legend-dot" style="background: var(--${row.id})"></span>${row.name}</span>
-      <span>${Math.round(row.share * 100)}%</span>
-    </div>`).join("");
-
-  return `
-    <svg class="rings" viewBox="0 0 100 100" role="img" aria-label="Today's progress">${circles}</svg>
-    <div class="legend">${legend}</div>`;
-}
-
 // Shared controls, used by the Deen, Chores and Health pages.
 
 function makeCheckbox(text, checked, onChange) {
