@@ -3,6 +3,8 @@
 
 // The page link a file belongs to: the Planner is opened from Academics, so it highlights Academics.
 const NAV_PARENT = { "planner.html": "academics.html" };
+// Pages listed indented under a branch in the nav (each gets its own row).
+const NAV_CHILDREN = { academics: [{ name: "Study guides", page: "study.html" }] };
 
 function navItems() {
   const file = location.pathname.split("/").pop() || "index.html";
@@ -11,12 +13,15 @@ function navItems() {
   const overall = Object.values(totals).reduce((sum, xp) => sum + xp, 0);
   const items = [
     { name: "Home", page: "index.html", colour: "gold", level: levelInfo(overall, LEVELS.overallMultiplier).level },
-    ...BRANCHES.map(b => ({ name: b.name, page: b.page, colour: b.id, level: levelOf(totals, b.id).level })),
+    ...BRANCHES.flatMap(b => [
+      { name: b.name, page: b.page, colour: b.id, level: levelOf(totals, b.id).level },
+      ...(NAV_CHILDREN[b.id] ?? []).map(child => ({ ...child, colour: b.id, sub: true })),
+    ]),
     { name: "Rewards", page: "rewards.html", colour: "muted" },
     { name: "Settings", page: "settings.html", colour: "muted" },
   ];
   return items.map(item => `
-    <a href="${item.page}"${item.page === here ? ' class="on" aria-current="page"' : ""}>
+    <a href="${item.page}"${item.page === here ? ' class="on" aria-current="page"' : ""}${item.sub ? ' style="padding-left: 27px; font-size: 14px"' : ""}>
       <span class="nav-dot" style="background: var(--${item.colour})"></span>${item.name}
       ${item.level ? `<span class="nav-level">${item.level}</span>` : ""}
     </a>`).join("");

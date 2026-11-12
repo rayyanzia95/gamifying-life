@@ -1,6 +1,6 @@
 // Renders academics.html: the Academics level beside the boss lineup (bosses.js),
 // the bar (study today + deadlines this week), the Study today card, this week's
-// deadlines, the Bosses card and the Study guides card.
+// deadlines, and the Bosses card (study guides have their own page, study.html).
 // Each 30-min block is one event: { date, activity: "study", course: "phys" }
 // Each ticked deadline is one event: { date, activity: "deadline", deadline: "phys-lab-7-report" }
 
@@ -121,41 +121,6 @@ function drawThisWeek(events) {
   document.getElementById("this-week").replaceChildren(heading, ...groups, next);
 }
 
-// ---- Study guides ----
-// One fold per course (a native <details>, closed until tapped), each guide a
-// link that opens his artifact in a new tab.
-
-function guideLink(guide) {
-  const link = document.createElement("a");
-  link.href = guide.url;
-  link.target = "_blank";
-  link.rel = "noopener"; // the opened tab can't reach back into this page
-  link.textContent = guide.title;
-  const row = document.createElement("li");
-  row.append(link);
-  return row;
-}
-
-function drawGuides() {
-  const heading = document.createElement("h2");
-  heading.textContent = "Study guides";
-  const folds = ACADEMICS.courses
-    .map(course => ({ course, guides: STUDY_GUIDES.filter(g => g.course === course.id) }))
-    .filter(({ guides }) => guides.length > 0)
-    .map(({ course, guides }) => {
-      const fold = document.createElement("details");
-      fold.className = `guide-fold course-${course.id}`;
-      const summary = document.createElement("summary");
-      summary.textContent = `${course.name} · ${guides.length}`;
-      const list = document.createElement("ul");
-      list.className = "plain-list";
-      list.append(...guides.map(guideLink));
-      fold.append(summary, list);
-      return fold;
-    });
-  document.getElementById("guides").replaceChildren(heading, ...folds);
-}
-
 function render() {
   const events = loadEvents();
   const today = todayString();
@@ -175,7 +140,6 @@ function render() {
 
   drawStudy(events);
   drawThisWeek(events);
-  drawGuides();
 }
 
 render();
