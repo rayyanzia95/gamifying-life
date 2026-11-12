@@ -1790,3 +1790,16 @@ body.wide {
   margin: -4px 4px 12px;
   font-size: 13px;
 }
+
+/* Sync: status dot beside the light/dark button. Grey = not signed in, green = signed in. */
+.sync-dot::before {
+  content: "";
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--muted);
+}
+
+.sync-dot[data-state="synced"]::before {
+  background: var(--accent);
+}
