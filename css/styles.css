@@ -208,6 +208,75 @@ h1 {
   justify-content: space-around;
 }
 
+/* Home: badge and balance web side by side, a level bar per branch under them. */
+#overall.levels {
+  flex-direction: column;
+  gap: 12px;
+}
+
+.levels-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  gap: 8px;
+}
+
+.web {
+  flex: 1;
+  min-width: 0;
+  max-width: 220px;
+  overflow: visible;
+}
+
+.web-grid {
+  fill: none;
+  stroke: var(--muted);
+  stroke-opacity: 0.35;
+}
+
+.web-shape {
+  fill: var(--gold);
+  fill-opacity: 0.3;
+  stroke: var(--gold);
+  stroke-width: 2;
+}
+
+.web-label {
+  font-size: 9px;
+  fill: var(--muted);
+}
+
+.level-row {
+  display: grid;
+  grid-template-columns: 84px 26px 1fr;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  padding: 4px 0;
+}
+
+.level-chip {
+  text-align: center;
+  font-size: 12px;
+  font-weight: 700;
+  border-radius: 6px;
+  padding: 1px 0;
+  color: var(--bg);
+}
+
+.level-bar {
+  height: 6px;
+  background: var(--line);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.level-bar i {
+  display: block;
+  height: 100%;
+  border-radius: 3px;
+}
+
 .badge {
   text-align: center;
 }

@@ -2,8 +2,10 @@ const events = loadEvents();
 
 const totals = xpByBranch(events);
 const overallXp = Object.values(totals).reduce((sum, xp) => sum + xp, 0);
+const branchLevels = BRANCHES.map(b => ({ id: b.id, name: b.name, ...levelOf(totals, b.id) }));
 document.getElementById("overall").innerHTML =
-  badgeHtml("Overall", levelInfo(overallXp, LEVELS.overallMultiplier));
+  `<div class="levels-top">${badgeHtml("Overall", levelInfo(overallXp, LEVELS.overallMultiplier))}${balanceWebHtml(branchLevels)}</div>
+   <div class="level-rows">${levelBarsHtml(branchLevels)}</div>`;
 
 // A branch's share of today (0..1) is what its ring shows. A branch with parts adds each part's
 // (core + extra), capped at that part's goal, over the sum of the goals.
