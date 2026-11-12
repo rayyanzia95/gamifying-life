@@ -1,6 +1,7 @@
-// Sync with Supabase: signing in, sending this device's changes to the cloud, and the status dot
-// beside the light/dark button. Fetching the other device's changes comes in the next step.
+// Sync with Supabase: signing in, fetching the other device's changes, sending this device's,
+// and the status dot beside the light/dark button. The merge rules live in sync-merge.js.
 // Loads after the page's own scripts (with `defer`), right after the Supabase library.
+// localStorage stays the main copy: every tick saves there first, sync catches up when it can.
 
 const SUPABASE_URL = "https://byrxbtfzcnlbwhdptozg.supabase.co";
 
@@ -10,8 +11,11 @@ const SUPABASE_ANON_KEY = "sb_publishable_g10yJSSblSRm5F6PSLfDqg_yELaGDqw";
 
 // What the cloud already has, as far as this device knows: { id: JSON of the event }.
 const SYNCED_KEY = "gamifying-life-synced";
-const PUSH_DELAY_MS = 1500; // wait for a burst of ticks to finish, then send them together
+const SYNC_DELAY_MS = 1500; // wait for a burst of ticks to finish, then send them together
 const PUSH_CHUNK = 500;     // rows per request, so a first big upload isn't one huge request
+const PULLED_AT_KEY = "gamifying-life-pulled-at"; // server time of the newest row fetched
+const PULL_PAGE = 1000;     // Supabase returns at most 1000 rows per request
+const PULL_OVERLAP_MS = 60 * 1000;
 
 const SYNC_STATES = {
   synced: "Sync: all sent",
@@ -50,18 +54,13 @@ function loadSynced() {
   }
 }
 
-// The event without its id: that's the row's `data` column (the id has its own column).
-function eventData({ id, ...data }) {
-  return data;
-}
-
 // Rows the cloud doesn't have yet: new or edited events, plus a tombstone for each removed one.
 function unsentRows() {
   const events = loadEvents();
   const synced = loadSynced();
   const ids = new Set(events.map(e => e.id));
   const changed = events
-    .filter(e => synced[e.id] !== JSON.stringify(eventData(e)))
+    .filter(e => synced[e.id] !== canonical(eventData(e)))
     .map(e => ({ id: e.id, data: eventData(e), deleted: false }));
   const removed = Object.keys(synced)
     .filter(id => !ids.has(id))
@@ -71,17 +70,71 @@ function unsentRows() {
 
 // After the cloud accepted some rows, remember them (and forget the tombstoned ones).
 function markSent(rows) {
-  const sent = Object.fromEntries(rows.map(r => [r.id, r.deleted ? null : JSON.stringify(r.data)]));
+  const sent = Object.fromEntries(rows.map(r => [r.id, r.deleted ? null : canonical(r.data)]));
   const merged = { ...loadSynced(), ...sent };
-  const next = Object.fromEntries(Object.entries(merged).filter(([, json]) => json !== null));
-  localStorage.setItem(SYNCED_KEY, JSON.stringify(next));
+  saveSynced(Object.fromEntries(Object.entries(merged).filter(([, json]) => json !== null)));
+}
+
+function saveSynced(synced) {
+  localStorage.setItem(SYNCED_KEY, JSON.stringify(synced));
+}
+
+// ---- Fetching the other device's changes ----
+
+// Every row carries the server's updated_at; asking for "newer than the newest I've seen" keeps
+// fetches small. The overlap re-asks for the last minute in case two saves landed at the same
+// moment; applying a row twice changes nothing.
+async function fetchChangedRows(since) {
+  const rows = [];
+  for (let from = 0; ; from += PULL_PAGE) {
+    let query = syncClient.from("events").select("id, data, deleted, updated_at")
+      .order("updated_at").order("id").range(from, from + PULL_PAGE - 1);
+    if (since) query = query.gt("updated_at", new Date(Date.parse(since) - PULL_OVERLAP_MS).toISOString());
+    const { data, error } = await query;
+    if (error) throw new Error(error.message);
+    rows.push(...data);
+    if (data.length < PULL_PAGE) return rows;
+  }
+}
+
+// Fetch, merge into this device's events and merge duplicates. Returns true if events changed.
+// Events are saved BEFORE the snapshot: the other way round, closing the page in between would
+// leave rows "known to the cloud" but missing here, and the next send would delete them.
+async function pullEvents() {
+  const rows = await fetchChangedRows(localStorage.getItem(PULLED_AT_KEY));
+  const before = loadEvents();
+  const { events, synced } = applyRows(before, loadSynced(), rows);
+  const merged = mergeDuplicates(events);
+  const changed = canonicalList(merged) !== canonicalList(before);
+  if (changed) saveEvents(merged);
+  saveSynced(synced);
+  if (rows.length > 0) localStorage.setItem(PULLED_AT_KEY, rows[rows.length - 1].updated_at);
+  return changed;
+}
+
+function canonicalList(events) {
+  return events.map(e => canonical(e)).sort().join("\n");
+}
+
+// Pages with a render() redraw in place; Home draws once at load, so it reloads instead.
+// Settings shows no events, so it only needs the sync card redrawn.
+function redrawPage() {
+  if (typeof render === "function") return render();
+  if (!document.getElementById("sync-body")) location.reload();
 }
 
 let lastSyncError = null;
 let lastSentAt = null;
 
-async function sendUnsent() {
+// Fetch first, then send: fetching can merge duplicates, and those merges need sending too.
+async function syncOnce() {
   if (!syncClient || !navigator.onLine || !(await currentEmail())) return;
+  const changed = await pullEvents();
+  await sendUnsent();
+  if (changed) redrawPage(); // after sending, so Home's reload can't cut a send short
+}
+
+async function sendUnsent() {
   const rows = unsentRows();
   for (let i = 0; i < rows.length; i += PUSH_CHUNK) {
     const chunk = rows.slice(i, i + PUSH_CHUNK);
@@ -96,26 +149,26 @@ async function sendUnsent() {
   lastSentAt = new Date();
 }
 
-// Only one send at a time. Anything saved during a send goes in the next one.
-let pushing = null;
+// Only one sync at a time. Anything saved during a sync goes in the next one.
+let syncing = null;
 
-function pushEvents() {
-  if (pushing) return pushing;
-  pushing = sendUnsent()
+function syncEvents() {
+  if (syncing) return syncing;
+  syncing = syncOnce()
     .catch(error => { lastSyncError = error.message; }) // e.g. the network dropped mid-request
     .finally(() => {
-      pushing = null;
+      syncing = null;
       drawSync();
-      if (!lastSyncError && unsentRows().length > 0) schedulePush();
+      if (!lastSyncError && unsentRows().length > 0) scheduleSync();
     });
-  return pushing;
+  return syncing;
 }
 
-let pushTimer = null;
+let syncTimer = null;
 
-function schedulePush() {
-  clearTimeout(pushTimer);
-  pushTimer = setTimeout(pushEvents, PUSH_DELAY_MS);
+function scheduleSync() {
+  clearTimeout(syncTimer);
+  syncTimer = setTimeout(syncEvents, SYNC_DELAY_MS);
 }
 
 // ---- Status dot (every page that has the .corner buttons) ----
@@ -239,15 +292,19 @@ async function drawSync() {
 // storage.js announces every save; show gold right away and send shortly after.
 window.addEventListener("events-saved", () => {
   drawSync();
-  schedulePush();
+  scheduleSync();
 });
-window.addEventListener("online", pushEvents);
+window.addEventListener("online", syncEvents);
+// Coming back to the app (switching tabs, unlocking the phone) is when the other device's ticks matter.
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState === "visible") syncEvents();
+});
 
 // Fires on sign-in and sign-out, so everything redraws and a fresh sign-in sends at once.
 // setTimeout: Supabase asks not to call it again from inside its own callback.
 syncClient?.auth.onAuthStateChange(() => setTimeout(() => {
   drawSync();
-  pushEvents();
+  syncEvents();
 }));
 drawSync();
-pushEvents();
+syncEvents();
