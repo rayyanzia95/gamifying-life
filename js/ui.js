@@ -27,6 +27,7 @@ function badgeHtml(name, info) {
 
 function makeCheckbox(text, checked, onChange) {
   const label = document.createElement("label");
+  label.className = "tick"; // Settings → Ticks restyles these (styles.css)
   const box = document.createElement("input");
   box.type = "checkbox";
   box.checked = checked;

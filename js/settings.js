@@ -4,7 +4,8 @@
 const SETTINGS_KEY = "gamifying-life-settings";
 const OPENED_KEY = "gamifying-life-opened";
 
-const SETTING_CHOICES = {
+// Settings about where the app opens.
+const GENERAL_CHOICES = {
   startPage: {
     label: "Open the app on",
     options: [
@@ -22,6 +23,94 @@ const SETTING_CHOICES = {
   },
 };
 
+// The look of the whole app. Each one ends up as a data-* attribute on <html>
+// (applyAppearance below) and css/styles.css restyles everything from that.
+// "default" picks the default when it isn't the first option; "soon" = listed but not built yet.
+const PALETTES = [
+  { value: "classic", label: "Classic", mode: "both" },
+  { value: "ice", label: "Ice on graphite", mode: "dark" },
+  { value: "amber", label: "Amber terminal", mode: "dark" },
+  { value: "teal", label: "Cyan / teal", mode: "dark" },
+  { value: "multi", label: "Branch colours on dark", mode: "dark" },
+  { value: "neon", label: "Neon arcade", mode: "dark" },
+  { value: "hud", label: "Sci-fi HUD", mode: "dark" },
+  { value: "candle", label: "Candlelit RPG", mode: "dark" },
+  { value: "vapor", label: "Vaporwave", mode: "dark" },
+  { value: "jrpg", label: "JRPG blue", mode: "dark" },
+  { value: "paper", label: "Paper terminal", mode: "light" },
+  { value: "parch", label: "Parchment", mode: "light" },
+  { value: "glass", label: "Glass", mode: "light" },
+];
+
+const palettesFor = mode => PALETTES.filter(p => p.mode === mode || p.mode === "both");
+
+const APPEARANCE_CHOICES = {
+  paletteDark: { label: "Colours in dark mode", options: palettesFor("dark"), default: "ice" },
+  paletteLight: { label: "Colours in light mode", options: palettesFor("light") },
+  type: {
+    label: "Type",
+    default: "serif",
+    options: [
+      { value: "system", label: "System" },
+      { value: "mono", label: "Mono" },
+      { value: "grotesque", label: "Grotesque" },
+      { value: "rounded", label: "Rounded" },
+      { value: "serif", label: "Serif display" },
+    ],
+  },
+  bars: {
+    label: "Progress bars",
+    default: "seg",
+    options: [
+      { value: "cont", label: "Continuous" },
+      { value: "seg", label: "Segmented" },
+      { value: "block", label: "Block chars" },
+      { value: "orbs", label: "XP orbs" },
+    ],
+  },
+  ticks: {
+    label: "Ticks",
+    default: "pill",
+    options: [
+      { value: "checkbox", label: "Checkbox" },
+      { value: "term", label: "[x] terminal" },
+      { value: "pill", label: "Pill" },
+      { value: "stamp", label: "Stamp" },
+    ],
+  },
+  motion: {
+    label: "Motion",
+    default: "lively",
+    options: [
+      { value: "none", label: "None" },
+      { value: "subtle", label: "Subtle" },
+      { value: "lively", label: "Lively" },
+    ],
+  },
+  centre: {
+    label: "Home centrepiece",
+    options: [
+      { value: "ringweb", label: "Ring + web" },
+      { value: "starmap", label: "Star map", soon: true },
+      { value: "hex", label: "Hex grid", soon: true },
+      { value: "gauge", label: "Segmented gauge", soon: true },
+      { value: "sheet", label: "Stat block", soon: true },
+    ],
+  },
+  layout: {
+    label: "Layout",
+    options: [
+      { value: "card", label: "Card + sidebar" },
+      { value: "sheet", label: "Character sheet", soon: true },
+      { value: "dashboard", label: "Dashboard / HUD grid", soon: true },
+      { value: "terminal", label: "Terminal panes", soon: true },
+    ],
+  },
+};
+
+// Every setting in one object, so loading, saving and sync treat them all the same way.
+const SETTING_CHOICES = { ...GENERAL_CHOICES, ...APPEARANCE_CHOICES };
+
 function storedSettings() {
   try {
     return JSON.parse(localStorage.getItem(SETTINGS_KEY)) || {};
@@ -30,13 +119,15 @@ function storedSettings() {
   }
 }
 
+const defaultChoice = choice => choice.default ?? choice.options[0].value;
+
 // Every setting, with anything missing or no longer allowed replaced by its default.
 function loadSettings() {
   const stored = storedSettings();
   return Object.fromEntries(
-    Object.entries(SETTING_CHOICES).map(([key, { options }]) => {
-      const allowed = options.some(o => o.value === stored[key]);
-      return [key, allowed ? stored[key] : options[0].value];
+    Object.entries(SETTING_CHOICES).map(([key, choice]) => {
+      const allowed = choice.options.some(o => o.value === stored[key] && !o.soon);
+      return [key, allowed ? stored[key] : defaultChoice(choice)];
     })
   );
 }
@@ -49,6 +140,7 @@ function saveSetting(key, value) {
     // Private browsing can block storage; the choice lasts until reload.
   }
   saveSettingEvent(key, value); // the synced copy (storage.js)
+  applyAppearance();
 }
 
 // True only for the first page you open in this tab. sessionStorage is wiped
@@ -71,3 +163,40 @@ function goToStartPage() {
   const page = loadSettings().startPage;
   if (firstPageThisVisit && page !== "index.html") location.replace(page);
 }
+
+// ---- Appearance: settings → data-* attributes on <html> ----
+
+// Web fonts per type choice. Only the chosen one is fetched, so unused fonts cost nothing.
+const TYPE_FONTS = {
+  mono: "JetBrains+Mono:wght@400;700",
+  grotesque: "Bricolage+Grotesque:wght@500;700&family=Schibsted+Grotesk:wght@400;600",
+  rounded: "M+PLUS+Rounded+1c:wght@500;800&family=Nunito:wght@500;700",
+  serif: "Cinzel:wght@500;700&family=EB+Garamond:wght@400;600",
+};
+
+function loadTypeFont(type) {
+  const old = document.getElementById("type-font");
+  if (!TYPE_FONTS[type]) return old?.remove();
+  const href = `https://fonts.googleapis.com/css2?family=${TYPE_FONTS[type]}&display=swap`;
+  if (old?.getAttribute("href") === href) return;
+  const link = Object.assign(document.createElement("link"), { id: "type-font", rel: "stylesheet", href });
+  old ? old.replaceWith(link) : document.head.append(link);
+}
+
+// Two palette slots: light/dark (the toggle, or the device) decides which one shows.
+// currentTheme() is in theme.js, which loads just before this file.
+function applyAppearance() {
+  const s = loadSettings();
+  const palette = currentTheme() === "dark" ? s.paletteDark : s.paletteLight;
+  Object.assign(document.documentElement.dataset, {
+    palette, type: s.type, bars: s.bars, ticks: s.ticks, motion: s.motion,
+  });
+  loadTypeFont(s.type);
+}
+
+applyAppearance();
+
+// Re-apply when light/dark flips: the toggle (or sync) changes data-theme on <html>,
+// and the device can switch on its own at sunset.
+new MutationObserver(applyAppearance).observe(document.documentElement, { attributeFilter: ["data-theme"] });
+window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", applyAppearance);

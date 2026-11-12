@@ -245,7 +245,7 @@ function drawDiet(events) {
 
   const creatine = makeCheckbox("Creatine", Boolean(day.creatine),
     event => saveDiet({ creatine: event.target.checked || undefined }));
-  creatine.className = "field-tick";
+  creatine.classList.add("field-tick");
 
   const summary = document.createElement("p");
   summary.className = "muted";
