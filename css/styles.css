@@ -1963,3 +1963,20 @@ body.wide {
 .token.full {
   background: var(--sleep);
 }
+
+/* Level-up day: gold outer ring on the badge, and Home's quiet line with a gold dot. */
+.ring-gold {
+  fill: none;
+  stroke: var(--gold);
+  stroke-width: 2;
+}
+
+.level-note::before {
+  content: "";
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  margin-right: 6px;
+  border-radius: 50%;
+  background: var(--gold);
+}

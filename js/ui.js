@@ -1,16 +1,25 @@
+// True on the day this badge's level was reached ("Overall" is the overall level).
+function reachedLevelToday(name) {
+  const branch = BRANCHES.find(b => b.name === name)?.id ?? null;
+  return levelUpsToday(loadEvents()).some(up => up.branch === branch);
+}
+
+// On the day a level is reached the badge gets a thin gold outer ring and "Level N · today".
 function badgeHtml(name, info) {
   const C = 2 * Math.PI * 40;
   const filled = (info.into / info.cost) * C;
+  const isNew = reachedLevelToday(name);
   return `
     <div class="badge">
-      <svg viewBox="0 0 100 100" role="img" aria-label="${name} level ${info.level}">
+      <svg viewBox="0 0 100 100" role="img" aria-label="${name} level ${info.level}${isNew ? ", reached today" : ""}">
+        ${isNew ? '<circle class="ring-gold" cx="50" cy="50" r="47"/>' : ""}
         <circle class="ring-track" cx="50" cy="50" r="40"/>
         <circle class="ring-fill" cx="50" cy="50" r="40"
           transform="rotate(-90 50 50)" stroke-dasharray="${filled} ${C}"/>
         <text class="badge-level" x="50" y="60" text-anchor="middle">${info.level}</text>
       </svg>
       <div class="badge-name">${name}</div>
-      <div class="badge-xp">${info.into} / ${info.cost} XP</div>
+      <div class="badge-xp">${isNew ? `Level ${info.level} · today` : `${info.into} / ${info.cost} XP`}</div>
     </div>`;
 }
 

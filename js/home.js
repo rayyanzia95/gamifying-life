@@ -64,6 +64,21 @@ function peopleRow(name) {
   };
 }
 
+// One quiet line on the day a level is reached: "Health reached level 3 · reward: new shoes".
+// The reward is the perk set for that branch and level (the first one, if there are several).
+function levelUpLine(up) {
+  const name = up.branch ? BRANCHES.find(b => b.id === up.branch).name : "Overall";
+  const perk = events.find(e => e.activity === "perk" && e.branch === (up.branch ?? "overall") && e.level === up.level);
+  return `${name} reached level ${up.level}` + (perk ? ` · reward: ${perk.text}` : "");
+}
+
+function drawLevelNote() {
+  const note = document.getElementById("level-note");
+  const lines = levelUpsToday(events).map(levelUpLine);
+  note.hidden = lines.length === 0;
+  note.textContent = lines.join(" · ");
+}
+
 // Which function draws each mixed branch's split ring.
 const MIXED_ROWS = {
   health: healthRow, academics: academicsRow, money: moneyRow, personal: personalRow, people: peopleRow,
@@ -100,6 +115,7 @@ const rows = BRANCHES.map(branch => {
 });
 document.getElementById("rings").innerHTML = ringsHtml(rows);
 drawPeopleNote();
+drawLevelNote();
 
 document.getElementById("branches").innerHTML = BRANCHES.map(branch =>
   `<a class="branch-link" href="${branch.page}">${branch.name}</a>`
