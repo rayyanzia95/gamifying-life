@@ -86,8 +86,8 @@ function calendarGrid(events, today) {
   return grid;
 }
 
-// Category bars for the month, biggest first, each as wide as its share of the biggest.
-function monthCategoryBars(spends) {
+// Category bars (the month here, the week on the page),  biggest first, each as wide as its share of the biggest.
+function categoryBars(spends) {
   const rows = MONEY.categories
     .map(c => ({ name: c.name, cents: sumCents(spends.filter(e => e.category === c.id)) }))
     .filter(c => c.cents > 0)
@@ -130,6 +130,6 @@ function drawCalendar(events, today) {
   document.getElementById("calendar").replaceChildren(
     heading(monthTitle(calendarMonth), ""), legend.firstChild, calendarGrid(events, today),
     mutedLine(`Spent ${dollars(sumCents(spends))} · ${daysLogged} / ${daysSoFar} days logged · ${noSpendDays} no-spend`),
-    ...monthCategoryBars(spends));
+    ...categoryBars(spends));
   document.querySelector("#calendar h2 .muted").append(arrows);
 }

@@ -2328,3 +2328,44 @@ body.nav-open #nav-backdrop {
     --page-width: 1000px;
   }
 }
+
+/* ---- Money: the draining budget bar on This week ---- */
+.big-bar {
+  position: relative;
+  height: 16px;
+  background: var(--line);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.big-fill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 8px;
+}
+
+.big-fill.low {
+  background: var(--gold);
+}
+
+.big-tick {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--text);
+  opacity: 0.6;
+}
+
+.bar-legend {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 4px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.card .money-categories {
+  margin-top: 8px;
+}

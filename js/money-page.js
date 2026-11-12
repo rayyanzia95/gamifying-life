@@ -4,6 +4,7 @@
 // The event shapes are listed in scoring.js under "Money".
 
 const MAX_DOLLARS = 100000; // anything bigger is a typo
+const MONEY_LOW_SHARE = 0.2; // the budget bar turns gold under this share left
 
 // "8.50" or "$8.50" → 850. null if it isn't a positive amount.
 function parseCents(text) {
@@ -47,16 +48,6 @@ function removableRow(text, event) {
   remove.setAttribute("aria-label", "Remove " + text);
   remove.addEventListener("click", () => removeEvent(event));
   row.append(text, remove);
-  return row;
-}
-
-// "Left" … "$56.50"
-function valueRow(label, value) {
-  const row = document.createElement("li");
-  row.className = "money-row";
-  const amount = document.createElement("span");
-  amount.textContent = value;
-  row.append(label, amount);
   return row;
 }
 
@@ -262,14 +253,34 @@ function payoutHint(week) {
   return `On track for ${week.onTrack} XP · banked after Saturday`;
 }
 
-// "Food out $20.00" for each category spent on this week, biggest first.
-function categoryRows(events, week) {
-  const spends = events.filter(e => isSpend(e) && e.date >= week && e.date < shiftDate(week, 7));
-  return MONEY.categories
-    .map(c => ({ name: c.name, cents: sumCents(spends.filter(e => e.category === c.id)) }))
-    .filter(c => c.cents > 0)
-    .sort((a, b) => b.cents - a.cents)
-    .map(c => valueRow(c.name, dollars(c.cents)));
+// "$9.50 under pace" against an even spend across the 7 days. Information only.
+function paceLine(week, dayNumber) {
+  const gap = Math.round(week.budget * dayNumber / 7) - week.spent;
+  if (Math.abs(gap) < 50) return "On pace";
+  return `${dollars(Math.abs(gap))} ${gap > 0 ? "under" : "over"} pace`;
+}
+
+// The budget bar: how much is left, draining as he spends. Gold (never red) when low;
+// the tick marks where an even pace would have it today.
+function budgetBar(week, dayNumber) {
+  const leftShare = week.budget ? week.left / week.budget : 0;
+  const bar = document.createElement("div");
+  bar.className = "big-bar";
+  const fill = document.createElement("div");
+  fill.className = "big-fill" + (leftShare < MONEY_LOW_SHARE ? " low" : "");
+  fill.style.width = leftShare * 100 + "%";
+  const tick = document.createElement("div");
+  tick.className = "big-tick";
+  tick.style.left = (1 - dayNumber / 7) * 100 + "%";
+  bar.append(fill, tick);
+  const legend = document.createElement("div");
+  legend.className = "bar-legend";
+  const spans = [`${dollars(week.left)} left of ${dollars(week.budget)}`, `pace marker · day ${dayNumber}/7`]
+    .map(text => Object.assign(document.createElement("span"), { textContent: text }));
+  legend.append(...spans);
+  const box = document.createElement("div");
+  box.append(bar, legend);
+  return box;
 }
 
 function drawWeek(events, today) {
@@ -283,14 +294,16 @@ function drawWeek(events, today) {
       amountForm({ button: "Set budget", onSave: setBudget }));
     return;
   }
-  const totals = document.createElement("ul");
-  totals.className = "plain-list";
-  totals.append(valueRow("Budget", dollars(week.budget)), valueRow("Spent", dollars(week.spent)),
-    valueRow("Left", dollars(week.left)));
-  const byCategory = document.createElement("ul");
-  byCategory.className = "plain-list money-categories";
-  byCategory.append(...categoryRows(events, start));
-  card.replaceChildren(title, totals, byCategory, mutedLine(payoutHint(week)),
+  const dayNumber = daysBetween(start, today) + 1;
+  const spends = events.filter(e => isSpend(e) && e.date >= start && e.date < shiftDate(start, 7));
+  const byCategory = document.createElement("div");
+  byCategory.className = "money-categories";
+  byCategory.append(...categoryBars(spends));
+  // A budget set in an earlier week carries over; say so, and the form below starts from it.
+  const carried = latestSetting(events, "budget", shiftDate(start, 7)).date < start;
+  const budgetLine = `Budget ${dollars(week.budget)}${carried ? " · carried over from last week" : ""}`;
+  card.replaceChildren(title, budgetBar(week, dayNumber),
+    mutedLine(`${paceLine(week, dayNumber)} · ${payoutHint(week)}`), byCategory, mutedLine(budgetLine),
     foldedForm("Change budget", amountForm({ button: "Save", cents: week.budget, onSave: setBudget })));
 }
 
