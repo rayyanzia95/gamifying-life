@@ -103,4 +103,4 @@ drawPeopleNote();
 
 document.getElementById("branches").innerHTML = BRANCHES.map(branch =>
   `<a class="branch-link" href="${branch.page}">${branch.name}</a>`
-).join("");
+).join("") + `<a class="branch-link" href="rewards.html">Rewards</a>`;

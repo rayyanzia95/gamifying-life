@@ -1908,3 +1908,58 @@ body.wide {
 .token.full {
   background: var(--sleep);
 }
+
+/* Rewards page: perk rows, and the rest-day tokens. */
+.perk-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 0;
+}
+
+.perk-row.claimed {
+  opacity: 0.55;
+}
+
+.perk-level {
+  font-size: 13px;
+  color: var(--muted);
+  text-align: right;
+}
+
+.perk-level.open {
+  color: var(--gold);
+  font-weight: 500;
+}
+
+.perk-text-input {
+  flex: 1 1 100%;
+}
+
+.perk-select {
+  flex: 0 1 auto;
+}
+
+.perk-level-input {
+  flex: 0 0 64px;
+}
+
+.tokens {
+  display: inline-flex;
+  gap: 5px;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+
+.token {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid var(--sleep);
+  box-sizing: border-box;
+}
+
+.token.full {
+  background: var(--sleep);
+}
