@@ -48,6 +48,7 @@ function saveSetting(key, value) {
   } catch {
     // Private browsing can block storage; the choice lasts until reload.
   }
+  saveSettingEvent(key, value); // the synced copy (storage.js)
 }
 
 // True only for the first page you open in this tab. sessionStorage is wiped

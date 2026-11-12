@@ -33,6 +33,7 @@ function toggleTheme() {
     // Private browsing can block storage; the switch still works until reload.
   }
   updateButton();
+  saveSettingEvent("theme", next); // the synced copy (storage.js)
 }
 
 const initialTheme = savedTheme();

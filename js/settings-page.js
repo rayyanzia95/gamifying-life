@@ -37,7 +37,12 @@ function downloadEvents() {
 
 document.getElementById("backup").addEventListener("click", downloadEvents);
 
-const current = loadSettings();
-document.getElementById("settings").replaceChildren(
-  ...Object.entries(SETTING_CHOICES).map(([key, choice]) => choiceGroup(key, choice, current[key]))
-);
+// sync.js calls render() again when the other device changed a setting.
+function render() {
+  const current = loadSettings();
+  document.getElementById("settings").replaceChildren(
+    ...Object.entries(SETTING_CHOICES).map(([key, choice]) => choiceGroup(key, choice, current[key]))
+  );
+}
+
+render();

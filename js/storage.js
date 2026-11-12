@@ -30,6 +30,15 @@ function saveEvents(events) {
   window.dispatchEvent(new Event("events-saved"));
 }
 
+// A setting or the theme as an event, so sync carries it to the other device. One event per key:
+// choosing again edits it (same id), and `at` lets the later choice win when devices disagree.
+function saveSettingEvent(key, value) {
+  const events = loadEvents();
+  const old = events.find(e => e.activity === "setting" && e.key === key);
+  const next = { ...old, date: todayString(), activity: "setting", key, value, at: Date.now() };
+  saveEvents(old ? events.map(e => (e === old ? next : e)) : [...events, next]);
+}
+
 function dateString(d) {
   const month = String(d.getMonth() + 1).padStart(2, "0");
   const day = String(d.getDate()).padStart(2, "0");

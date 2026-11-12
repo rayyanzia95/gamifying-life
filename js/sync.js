@@ -104,12 +104,39 @@ async function pullEvents() {
   const rows = await fetchChangedRows(localStorage.getItem(PULLED_AT_KEY));
   const before = loadEvents();
   const { events, synced } = applyRows(before, loadSynced(), rows);
-  const merged = mergeDuplicates(events);
+  const seeded = withSettingSeeds(events, localSettingValues(), todayString());
+  const merged = mergeDuplicates(seeded);
   const changed = canonicalList(merged) !== canonicalList(before);
   if (changed) saveEvents(merged);
   saveSynced(synced);
+  const settingsChanged = applySettingValues(merged);
   if (rows.length > 0) localStorage.setItem(PULLED_AT_KEY, rows[rows.length - 1].updated_at);
-  return changed;
+  return changed || settingsChanged;
+}
+
+// ---- Settings and theme: events are the synced truth, localStorage the fast copy for <head> ----
+
+// What this device has saved itself (the theme only when chosen; no choice = follow the device).
+function localSettingValues() {
+  const theme = savedTheme();
+  return { ...storedSettings(), ...(theme ? { theme } : {}) };
+}
+
+// Copy the synced values into the fast copies and apply the theme now. True if anything changed.
+function applySettingValues(events) {
+  const { theme, ...rest } = settingValues(events);
+  const before = JSON.stringify(localSettingValues());
+  const choiceKeys = Object.keys(SETTING_CHOICES).filter(key => rest[key] !== undefined);
+  if (choiceKeys.length > 0) {
+    const next = { ...storedSettings(), ...Object.fromEntries(choiceKeys.map(key => [key, rest[key]])) };
+    localStorage.setItem(SETTINGS_KEY, JSON.stringify(next));
+  }
+  if (theme === "light" || theme === "dark") {
+    localStorage.setItem(THEME_KEY, theme);
+    document.documentElement.dataset.theme = theme;
+    updateButton();
+  }
+  return JSON.stringify(localSettingValues()) !== before;
 }
 
 function canonicalList(events) {

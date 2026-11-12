@@ -40,12 +40,19 @@ function applyRows(events, synced, rows) {
 
 // Kinds the app keeps one of per day. Chores, study blocks, exercise and spends really can
 // repeat, so they're never merged.
-const ONE_PER_DAY = ["sleep", "diet", "quran", "dua-after-prayers", "dua", "no-spend"];
+const ONE_PER_DAY = ["sleep", "diet", "quran", "dua-after-prayers", "dua", "no-spend", "journal"];
 
 function duplicateKey(e) {
   if (e.prayer) return `${e.date}|prayer|${e.prayer}|${e.set}`;
   if (e.activity === "adhkar") return `${e.date}|adhkar|${e.time}`;
   if (e.activity === "deadline") return `deadline|${e.deadline}`; // one tick per deadline, any day
+  if (e.activity === "read") return `${e.date}|read|${e.book}`;                   // one page per book per day
+  if (e.activity === "contact") return `${e.date}|contact|${e.name}|${e.kind}`;   // alone/friends/session can repeat
+  if (e.activity === "rest") return `${e.date}|rest|${e.streak}`;
+  if (e.activity === "wished") return `wished|${e.label}|${e.on}`;                // one tick per date per year
+  if (e.activity === "perk-claimed") return `perk-claimed|${e.perk}`;
+  if (e.activity === "person") return `person|${e.name}`;
+  if (e.activity === "setting") return `setting|${e.key}`;                        // latest wins, see mergeGroup
   if (ONE_PER_DAY.includes(e.activity)) return `${e.date}|${e.activity}`;
   return null;
 }
@@ -65,6 +72,13 @@ function mergeTwo(a, b) {
   }));
 }
 
+// A setting is one value, not a pile of fields: the copy chosen last (biggest `at`) wins whole.
+// Everything else merges field by field.
+function mergeGroup(sorted) {
+  if (sorted[0].activity !== "setting") return sorted.reduce(mergeTwo);
+  return sorted.reduce((latest, e) => ((e.at ?? 0) >= (latest.at ?? 0) ? e : latest));
+}
+
 // Each group of duplicates becomes one event that keeps the smallest id (the same on every
 // device). The other copies disappear, so sync sends them up as tombstones.
 function mergeDuplicates(events) {
@@ -78,9 +92,28 @@ function mergeDuplicates(events) {
   for (const group of groups.values()) {
     if (group.length < 2) continue;
     const sorted = [...group].sort((x, y) => (x.id < y.id ? -1 : 1));
-    const survivor = { ...sorted.reduce(mergeTwo), id: sorted[0].id };
+    const survivor = { ...mergeGroup(sorted), id: sorted[0].id };
     merged.set(survivor.id, survivor);
     sorted.slice(1).forEach(e => dropped.add(e.id));
   }
   return events.filter(e => !dropped.has(e.id)).map(e => merged.get(e.id) ?? e);
+}
+
+// ---- Settings and theme as events ----
+// { date, activity: "setting", key: "startPage" | "deenView" | "theme", value, at: ms }, one per key.
+// localStorage keeps a fast copy for <head> (theme.js / settings.js); events are the synced truth.
+
+// { key: value } of every setting event.
+function settingValues(events) {
+  return Object.fromEntries(events.filter(e => e.activity === "setting").map(e => [e.key, e.value]));
+}
+
+// Settings chosen on this device before they were events become events (at: 0, so any real
+// choice made anywhere beats them). `local` is { key: value } from the device's own copy.
+function withSettingSeeds(events, local, date) {
+  const have = settingValues(events);
+  const seeds = Object.entries(local)
+    .filter(([key]) => have[key] === undefined)
+    .map(([key, value]) => ({ date, activity: "setting", key, value, at: 0 }));
+  return seeds.length > 0 ? [...events, ...seeds] : events;
 }
