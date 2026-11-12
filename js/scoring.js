@@ -430,6 +430,15 @@ function deadlinesBetween(from, to) {
     .sort((a, b) => a.date.localeCompare(b.date));
 }
 
+// The next `count` exams from today that aren't ticked yet, soonest first
+// (the Planner's exam strip and the Study page both show these).
+function nextExams(events, today, count) {
+  const ticked = tickedDeadlines(events);
+  return deadlinesBetween(today, "9999")
+    .filter(d => d.kind === "exam" && !ticked.has(deadlineId(d)))
+    .slice(0, count);
+}
+
 // The two parts of Academics' goal: study blocks today, and the XP of every
 // deadline due this week (Sun–Sat), so a busy week has a bigger goal.
 function academicsParts(events, today) {

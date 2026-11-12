@@ -113,11 +113,7 @@ const EXAM_STRIP_SIZE = 3;
 // Across the top, like the Planner's header: the next few exams not ticked yet,
 // with a countdown. Each is a button (data-day) that opens that day.
 function drawExamStrip(events, today) {
-  const ticked = tickedDeadlines(events);
-  const next = deadlinesBetween(today, "9999")
-    .filter(d => d.kind === "exam" && !ticked.has(deadlineId(d)))
-    .slice(0, EXAM_STRIP_SIZE);
-  const chips = next.map(exam => {
+  const chips = nextExams(events, today, EXAM_STRIP_SIZE).map(exam => {
     const chip = document.createElement("button");
     chip.type = "button";
     chip.className = `exam-chip course-${exam.course}`;

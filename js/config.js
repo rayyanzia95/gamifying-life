@@ -252,28 +252,42 @@ const DEADLINES = [
 ];
 
 // Study guides, crash courses, cheat sheets and lab reports: links to his own
-// Claude artifacts, which only open for him. Newest first within each course.
+// Claude artifacts, which only open for him. kind is one of STUDY_GUIDE_KINDS;
+// updated ("YYYY-MM-DD") sorts the Study page newest first; exam (optional) is the
+// deadlineId of the exam a guide is for, when the title says so. Without one, the
+// Study page falls back to the newest guide for that exam's course.
+const STUDY_GUIDE_KINDS = [
+  { id: "crash", name: "Crash course" },
+  { id: "cheat", name: "Cheat sheet" },
+  { id: "guide", name: "Study guide" },
+  { id: "notes", name: "Notes" },
+  { id: "lab",   name: "Lab" },
+  { id: "plan",  name: "Plan" },
+];
+
 const STUDY_GUIDES = [
-  { course: "phys",  title: "Lab Report 13: Springs II",                        url: "https://claude.ai/artifact/EAWsLeXs3mpMEk1VeYcU6R" },
-  { course: "phys",  title: "Lab Report 12: Hooke's Law and SHM",               url: "https://claude.ai/artifact/AK8QuNDZz73DKghQg57YoN" },
-  { course: "phys",  title: "Human Arm Statics Lab: Worksheet Solutions",       url: "https://claude.ai/artifact/LCpbpx31EH9ChHwy1ohuqv" },
-  { course: "phys",  title: "Physics Exam Notes: Walker Ch. 1–6",               url: "https://claude.ai/artifact/BWezzUvVVH4nitiobjV2c9" },
-  { course: "phys",  title: "Midterm 1 Revision Notes",                         url: "https://claude.ai/artifact/My9GL4CTjuyTv7d3MxJAJ6" },
-  { course: "phys",  title: "Midterm Sprint",                                   url: "https://claude.ai/artifact/6XnAQjXB2AsZCWFjqcB5Ne" },
-  { course: "phys",  title: "Midterm 1 Study Guide",                            url: "https://claude.ai/artifact/SgcJ73wVs21PvQ7yFo9M7K" },
-  { course: "cmput", title: "Midterm Prep",                                     url: "https://claude.ai/artifact/PsYfeWvD9QfLQ3GsW3Bf1N" },
-  { course: "cmput", title: "Midterm 2 & 3 Game Plan",                          url: "https://claude.ai/artifact/667nxsHxxKVhKrZ3sZNXwH" },
-  { course: "cmput", title: "Exam Study Guide & Cheat Sheet",                   url: "https://claude.ai/artifact/8FVeWPCvVZH6sD5tXXXyJi" },
-  { course: "cmput", title: "Midterm 2 Study Guide",                            url: "https://claude.ai/artifact/3ivRtJS7tzP1jCVTzZAjBu" },
-  { course: "cmput", title: "Midterm 1 Cheat Sheet",                            url: "https://claude.ai/artifact/9zVfP48hV3qaDoFe5s3gfD" },
-  { course: "cmput", title: "Midterm 1 Study Guide",                            url: "https://claude.ai/artifact/TGDWxdydwNmAjnEfN7orWa" },
-  { course: "cmput", title: "Midterm 1 Study Guide (first version)",            url: "https://claude.ai/artifact/NpChdvWyknAt4PRpCPxdS1" },
-  { course: "econ",  title: "Midterm Study Guide & Plan",                       url: "https://claude.ai/artifact/8w2LbFT3BmtzTRZKa7prya" },
-  { course: "econ",  title: "Midterm Study Guide",                              url: "https://claude.ai/artifact/YHRsiDXBheJHkVGCDSfCg3" },
-  { course: "astro", title: "Quiz Crash Course: Modules 5–6",                   url: "https://claude.ai/artifact/KtN4sRkC8ovxL3g9rTifcm" },
-  { course: "astro", title: "Quiz 2 Study Guide (Modules 3–4)",                 url: "https://claude.ai/artifact/Up8z5RThHc9aVovBF9Qgr6" },
-  { course: "astro", title: "Modules 3–4 Study Guide",                          url: "https://claude.ai/artifact/XYk9J63wKsKjcmd4jiwC5t" },
-  { course: "study", title: "October Assignment: Plan, Practice, Adapt",        url: "https://claude.ai/artifact/Cwbo8zY7kMLn6kNB7qWGYp" },
+  { course: "phys",  kind: "lab",   updated: "2026-11-10", title: "Lab Report 13: Springs II",                  url: "https://claude.ai/artifact/EAWsLeXs3mpMEk1VeYcU6R" },
+  { course: "phys",  kind: "lab",   updated: "2026-11-03", title: "Lab Report 12: Hooke's Law and SHM",         url: "https://claude.ai/artifact/AK8QuNDZz73DKghQg57YoN" },
+  { course: "phys",  kind: "lab",   updated: "2026-10-27", title: "Human Arm Statics Lab: Worksheet Solutions", url: "https://claude.ai/artifact/LCpbpx31EH9ChHwy1ohuqv" },
+  { course: "phys",  kind: "notes", updated: "2026-10-06", title: "Physics Exam Notes: Walker Ch. 1–6",         url: "https://claude.ai/artifact/BWezzUvVVH4nitiobjV2c9" },
+  { course: "phys",  kind: "notes", updated: "2026-10-06", title: "Midterm 1 Revision Notes",                   url: "https://claude.ai/artifact/My9GL4CTjuyTv7d3MxJAJ6" },
+  { course: "phys",  kind: "crash", updated: "2026-10-05", title: "Midterm Sprint",                             url: "https://claude.ai/artifact/6XnAQjXB2AsZCWFjqcB5Ne" },
+  { course: "phys",  kind: "guide", updated: "2026-10-02", title: "Midterm 1 Study Guide",                      url: "https://claude.ai/artifact/SgcJ73wVs21PvQ7yFo9M7K" },
+  { course: "cmput", kind: "guide", updated: "2026-11-04", title: "Midterm Prep",                               url: "https://claude.ai/artifact/PsYfeWvD9QfLQ3GsW3Bf1N" },
+  { course: "cmput", kind: "plan",  updated: "2026-11-03", title: "Midterm 2 & 3 Game Plan",                    url: "https://claude.ai/artifact/667nxsHxxKVhKrZ3sZNXwH", exam: "cmput-midterm-3" },
+  { course: "cmput", kind: "cheat", updated: "2026-11-02", title: "Exam Study Guide & Cheat Sheet",             url: "https://claude.ai/artifact/8FVeWPCvVZH6sD5tXXXyJi" },
+  { course: "cmput", kind: "guide", updated: "2026-11-01", title: "Midterm 2 Study Guide",                      url: "https://claude.ai/artifact/3ivRtJS7tzP1jCVTzZAjBu" },
+  { course: "cmput", kind: "cheat", updated: "2026-10-14", title: "Midterm 1 Cheat Sheet",                      url: "https://claude.ai/artifact/9zVfP48hV3qaDoFe5s3gfD" },
+  { course: "cmput", kind: "guide", updated: "2026-10-13", title: "Midterm 1 Study Guide",                      url: "https://claude.ai/artifact/TGDWxdydwNmAjnEfN7orWa" },
+  { course: "cmput", kind: "guide", updated: "2026-10-02", title: "Midterm 1 Study Guide (first version)",      url: "https://claude.ai/artifact/NpChdvWyknAt4PRpCPxdS1" },
+  { course: "econ",  kind: "plan",  updated: "2026-10-27", title: "Midterm Study Guide & Plan",                 url: "https://claude.ai/artifact/8w2LbFT3BmtzTRZKa7prya" },
+  { course: "econ",  kind: "guide", updated: "2026-10-02", title: "Midterm Study Guide",                        url: "https://claude.ai/artifact/YHRsiDXBheJHkVGCDSfCg3" },
+  { course: "astro", kind: "crash", updated: "2026-10-26", title: "Quiz Crash Course: Modules 5–6",             url: "https://claude.ai/artifact/KtN4sRkC8ovxL3g9rTifcm" },
+  { course: "astro", kind: "guide", updated: "2026-10-19", title: "Quiz 2 Study Guide (Modules 3–4)",           url: "https://claude.ai/artifact/Up8z5RThHc9aVovBF9Qgr6" },
+  { course: "astro", kind: "guide", updated: "2026-10-02", title: "Modules 3–4 Study Guide",                    url: "https://claude.ai/artifact/XYk9J63wKsKjcmd4jiwC5t" },
+  { course: "study", kind: "notes", updated: "2026-10-04", title: "October Assignment: Plan, Practice, Adapt",  url: "https://claude.ai/artifact/Cwbo8zY7kMLn6kNB7qWGYp" },
+  { course: "study", kind: "plan",  updated: "2026-10-14", title: "Fall 2026 Study Plan",                       url: "https://claude.ai/artifact/CnhcwmrNcXiijodBf5kkL9" },
+  { course: "study", kind: "plan",  updated: "2026-10-14", title: "Fall 2026 Deadlines",                        url: "https://claude.ai/artifact/MCiKJ8UDLoL3GiHCHW6DAf" },
 ];
 
 // period "week": the Home ring fills over the week instead of each day.
