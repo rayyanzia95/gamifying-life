@@ -248,6 +248,7 @@ const DEADLINES = [
   // Jumu'ah) is confirmed; then change date/time/note here (the id stays the same).
   { date: "2026-12-14", time: "9:00 a.m.",  course: "econ",  kind: "exam",       title: "Final exam", hp: 10, note: "ED 3-106 · 2.5 h (room booked 9–12)" },
   { date: "2026-12-18", time: "1:00 p.m.",  course: "astro", kind: "exam",       title: "Final exam", hp: 10, note: "Pending accommodation (Jumu'ah) · ED Gym, odd rows 01–13 · 3 h" },
+  { date: "2026-12-22", time: "5:30 p.m.",  course: "phys",  kind: "exam",       title: "Final exam", hp: 10, note: "Van Vliet Pavilion, odd rows 01–21 · 3 h" },
 ];
 
 // Study guides, crash courses, cheat sheets and lab reports: links to his own
