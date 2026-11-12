@@ -27,7 +27,7 @@ function studyStreak(events) {
   const perDay = {};
   for (const e of events.filter(isStudy)) perDay[e.date] = (perDay[e.date] || 0) + 1;
   const goalDays = Object.keys(perDay).filter(date => perDay[date] >= ACADEMICS.blocksPerDay);
-  return dayStreak(new Set(goalDays));
+  return restStreak("study", new Set(goalDays), events);
 }
 
 // "1 more for today's goal", or "Goal met · +2 bonus" once past it.

@@ -111,7 +111,7 @@ function drawToday(events) {
   const today = todayString();
   const journalDays = new Set(events.filter(e => e.activity === "journal").map(e => e.date));
   const journal = makeCheckbox("Journalled today", journalDays.has(today), e => toggleJournal(e.target.checked));
-  journal.append(" ", streakBadge(dayStreak(journalDays)));
+  journal.append(" ", streakBadge(restStreak("journal", journalDays, events)));
 
   const byDay = pagesByDay(events);
   const readDays = new Set([...byDay].filter(([, pages]) => pages >= PERSONAL.reading.dayPages).map(([d]) => d));
@@ -124,7 +124,7 @@ function drawToday(events) {
   const readingHead = document.createElement("h3");
   readingHead.className = "personal-sub";
   readingHead.append(`Reading · ${pagesToday} / ${PERSONAL.reading.dayPages} pages today `,
-    streakBadge(dayStreak(readDays)));
+    streakBadge(restStreak("reading", readDays, events)));
 
   document.getElementById("today").replaceChildren(
     heading("Today"), journal, readingHead,

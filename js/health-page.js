@@ -22,7 +22,7 @@ function saveSleep(changes) {
 // Forgiving like Quran: one missed night pauses it, two in a row reset it.
 function sleepStreak(events) {
   const nights = events.filter(e => isSleep(e) && minutesInBed(e) !== null).map(e => e.date);
-  return dayStreak(new Set(nights));
+  return restStreak("sleep", new Set(nights), events);
 }
 
 // A labelled <input type="time">. An emptied field saves as no time at all.
@@ -87,7 +87,7 @@ function drawSleep(events) {
   title.className = "card-row";
   const heading = document.createElement("h2");
   heading.textContent = "Sleep";
-  title.append(heading, streak.days > 0 ? streakBadge(streak) : "");
+  title.append(heading, streak.days > 0 || streak.rest ? streakBadge(streak) : "");
 
   const summary = document.createElement("p");
   summary.className = "sleep-summary";
@@ -188,7 +188,7 @@ function saveDiet(changes) {
 // A day counts once it reaches DIET.streakXp. Forgiving like sleep.
 function dietStreak(events) {
   const days = events.filter(e => isDiet(e) && scoreDiet(e).core >= DIET.streakXp).map(e => e.date);
-  return dayStreak(new Set(days));
+  return restStreak("diet", new Set(days), events);
 }
 
 // Healthy / Okay / Junk buttons for one meal. Tapping the picked one again clears it.
@@ -241,7 +241,7 @@ function drawDiet(events) {
   title.className = "card-row";
   const heading = document.createElement("h2");
   heading.textContent = "Diet";
-  title.append(heading, streak.days > 0 ? streakBadge(streak) : "");
+  title.append(heading, streak.days > 0 || streak.rest ? streakBadge(streak) : "");
 
   const creatine = makeCheckbox("Creatine", Boolean(day.creatine),
     event => saveDiet({ creatine: event.target.checked || undefined }));

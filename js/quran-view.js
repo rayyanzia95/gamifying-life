@@ -7,7 +7,7 @@ function quranTile(events) {
     delta => stepRevision(delta), { step: QURAN.step, target: QURAN.dailyTarget, unit: "juz" });
   const next = "Next: " + juzLabel(nextJuz(events));
   const streak = revisionStreak(events);
-  const summary = streak.days > 0 ? [next + " · ", streakBadge(streak)] : [next];
+  const summary = streak.days > 0 || streak.rest ? [next + " · ", streakBadge(streak)] : [next];
   return makeTile("quran", "Quran", summary, [stepper]);
 }
 

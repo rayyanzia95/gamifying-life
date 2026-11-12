@@ -69,5 +69,5 @@ function duaStreak(events) {
       .filter(e => e.activity === "adhkar" || isPersonalDua(e) || isAfterPrayerDua(e) || e.dua === true)
       .map(e => e.date)
   );
-  return dayStreak(duaDays, DUA.pausesPerWeek);
+  return restStreak("dua", duaDays, events, DUA.pausesPerWeek);
 }

@@ -6,7 +6,7 @@
 function duaTile(events) {
   const done = `${adhkarDoneToday(events)} / ${DUA.adhkar.length} adhkar`;
   const streak = duaStreak(events);
-  const summary = streak.days > 0 ? [done + " · ", streakBadge(streak)] : [done];
+  const summary = streak.days > 0 || streak.rest ? [done + " · ", streakBadge(streak)] : [done];
   const controls = [...adhkarTicks(events), personalTick(events), afterPrayerStepper(events)];
   return makeTile("dua", "Dua", summary, controls);
 }

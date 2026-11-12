@@ -1980,3 +1980,15 @@ body.wide {
   border-radius: 50%;
   background: var(--gold);
 }
+
+/* Rest-day button beside a paused streak. */
+.rest-button {
+  padding: 2px 9px;
+  border: 1px solid var(--sleep);
+  border-radius: 999px;
+  background: none;
+  color: var(--sleep);
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}

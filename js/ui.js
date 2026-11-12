@@ -132,13 +132,27 @@ function makeStepper(text, current, max, onStep, {
   return row;
 }
 
-// "🔥 5", dimmed while the streak is paused.
-function streakBadge({ days, paused }) {
+// "🔥 5", dimmed while the streak is paused. A streak from restStreak (streak.js) also gets a
+// small button: "Use a rest day" when one would help (and you hold one), "Undo rest day" once
+// spent today. The page redraws itself with its own render().
+function streakBadge({ days, paused, id, rest }) {
   const badge = document.createElement("span");
   badge.className = paused ? "streak paused" : "streak";
   badge.textContent = `🔥 ${days}`;
   badge.setAttribute("aria-label", `${days}-day streak${paused ? ", paused" : ""}`);
-  return badge;
+  if (!rest) return badge;
+
+  const button = Object.assign(document.createElement("button"), {
+    type: "button", className: "rest-button", textContent: rest === "used" ? "Undo rest day" : "Use a rest day",
+  });
+  button.addEventListener("click", event => {
+    event.stopPropagation();
+    toggleRest(id);
+    render();
+  });
+  const wrap = Object.assign(document.createElement("span"), { className: "streak-wrap" });
+  wrap.append(badge, " ", button);
+  return wrap;
 }
 
 // Fills the page's XP bar (#bar-fill and #bonus-fill): core first, bonus after it.

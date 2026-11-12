@@ -52,5 +52,5 @@ function revisionStreak(events) {
   const revisedDays = new Set(
     events.filter(e => isRevision(e) && e.amount > 0).map(e => e.date)
   );
-  return dayStreak(revisedDays);
+  return restStreak("quran", revisedDays, events);
 }
