@@ -16,14 +16,12 @@
   <h1>Settings</h1>
   <section class="card">
     <form id="settings"></form>
-    <p>Saved on this device.</p>
+    <p>Saved on this device, and synced to your other devices once you sign in below.</p>
   </section>
-  <section class="card">
-    <div class="card-title">Appearance</div>
-    <div id="appearance-preview"></div>
-    <form id="appearance"></form>
-    <p>The light/dark button picks which of the two colour sets shows.</p>
-  </section>
+  <a class="card link-card" href="appearance.html">
+    <span class="card-title">Appearance</span>
+    <span class="muted">Colours, type, bars, ticks, icons, motion →</span>
+  </a>
   <section class="card" id="sync">
     <div class="card-title">Sync</div>
     <div id="sync-body"></div>
@@ -39,7 +37,10 @@
   <script src="js/scoring.js"></script>
   <script src="js/storage.js"></script>
   <script src="js/ui.js"></script>
+  <script src="js/icons.js"></script>
+  <script src="js/level-up.js"></script>
   <script src="js/nav.js"></script>
+  <script src="js/choice-form.js"></script>
   <script src="js/settings-page.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.js"
     integrity="sha384-TcHRA3zBbn+Lexh5n+Oil4guNPOS3rjNDpGRAN46u/s/mB2IZ50ceC6TYDU2yvgK" crossorigin="anonymous"></script>

@@ -1,0 +1,53 @@
+// Draws appearance.html: the look of the whole app, in grouped cards, with a live preview on top.
+// Picking an option saves it (choice-form.js → saveSetting) and applyAppearance restyles <html> at once,
+// so the preview needs no redraw of its own.
+
+// Cards on the page, in order: a title and the settings in it (keys of APPEARANCE_CHOICES).
+const APPEARANCE_GROUPS = [
+  { title: "Colours", note: "The light/dark button picks which of the two colour sets shows.", keys: ["paletteDark", "paletteLight", "tint"] },
+  { title: "Type and shape", keys: ["type", "size", "radius", "density"] },
+  { title: "Bars, ticks and icons", keys: ["bars", "ticks", "icons"] },
+  { title: "Motion", keys: ["motion", "levelUp"] },
+  { title: "Background", keys: ["texture"] },
+  { title: "Coming next", keys: ["centre", "layout"] },
+];
+
+function groupCard({ title, note, keys }, current) {
+  const card = Object.assign(document.createElement("section"), { className: "card" });
+  const heading = Object.assign(document.createElement("div"), { className: "card-title", textContent: title });
+  const form = Object.assign(document.createElement("form"), { className: "appearance-form" });
+  form.append(...groupsFor(keys, current));
+  const extra = note ? [Object.assign(document.createElement("p"), { className: "muted", textContent: note })] : [];
+  card.append(heading, form, ...extra);
+  return card;
+}
+
+// The preview is made of the real shared pieces (chip, bar, tick, icons), so it shows what the pages get.
+function appearancePreview() {
+  const preview = Object.assign(document.createElement("section"), { className: "card appearance-preview" });
+  preview.setAttribute("aria-label", "Preview");
+  preview.innerHTML = `
+    <div class="preview-icons">${BRANCHES.map(b =>
+      `<span style="color: var(--${b.id})" title="${b.name}"><span class="nav-dot" style="background: var(--${b.id})"></span>${iconSvg(b.id)}</span>`).join("")}</div>
+    <div class="preview-row">
+      <span class="level-chip" id="preview-chip" style="background: var(--deen)">7</span>
+      <div class="bar"><div class="bar-fill" style="width: 62%"></div><div class="bonus-fill" style="width: 14%"></div></div>
+    </div>`;
+  const tick = makeCheckbox("Sample tick", true, () => {});
+  const play = Object.assign(document.createElement("button"), { type: "button", className: "filter-button", textContent: "Play level-up" });
+  play.addEventListener("click", () => playLevelUp(document.getElementById("preview-chip"), "Deen · level 8"));
+  const row = Object.assign(document.createElement("div"), { className: "preview-actions" });
+  row.append(tick, play);
+  preview.append(row);
+  return preview;
+}
+
+// sync.js calls render() again when the other device changed a setting.
+function render() {
+  applyAppearance();
+  const current = loadSettings();
+  document.getElementById("appearance-groups").replaceChildren(...APPEARANCE_GROUPS.map(g => groupCard(g, current)));
+}
+
+document.getElementById("appearance-preview").replaceWith(appearancePreview());
+render();

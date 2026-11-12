@@ -70,7 +70,7 @@ function overallCentreHtml(overall) {
 // One row per branch, linking to its page: name, level chip, bar to the next level, today's mini ring.
 function branchRowHtml(b) {
   return `<a class="level-row" href="${b.page}">
-    <span>${b.name}</span>
+    <span><span class="row-icon" style="color: var(--${b.id})">${iconSvg(b.id)}</span>${b.name}</span>
     <span class="level-chip" style="background: var(--${b.id})">${b.level}</span>
     <span class="level-bar"><i style="width: ${(b.into / b.cost) * 100}%; background: var(--${b.id})"></i></span>
     <svg viewBox="0 0 26 26" width="20" role="img" aria-label="${percent(b.share)}% done today">${arcHtml(13, 13, 9, b.share, `var(--${b.id})`, 4)}</svg>

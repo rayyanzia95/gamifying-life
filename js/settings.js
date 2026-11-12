@@ -1,4 +1,4 @@
-// Your preferences, saved on this device. Loaded in <head> on every page.
+// Your preferences, saved on this device and synced as events (storage.js). Loaded in <head> on every page.
 // Each setting lists its allowed values; the first one is the default.
 
 const SETTINGS_KEY = "gamifying-life-settings";
@@ -85,6 +85,67 @@ const APPEARANCE_CHOICES = {
       { value: "none", label: "None" },
       { value: "subtle", label: "Subtle" },
       { value: "lively", label: "Lively" },
+    ],
+  },
+  size: {
+    label: "Text size",
+    default: "normal",
+    options: [
+      { value: "small", label: "Small" },
+      { value: "normal", label: "Normal" },
+      { value: "large", label: "Large" },
+    ],
+  },
+  radius: {
+    label: "Corners",
+    default: "slight",
+    options: [
+      { value: "square", label: "Square" },
+      { value: "slight", label: "Slight" },
+      { value: "round", label: "Round" },
+    ],
+  },
+  density: {
+    label: "Density",
+    default: "normal",
+    options: [
+      { value: "compact", label: "Compact" },
+      { value: "normal", label: "Normal" },
+      { value: "roomy", label: "Roomy" },
+    ],
+  },
+  levelUp: {
+    label: "Level-up effect",
+    default: "glow",
+    options: [
+      { value: "none", label: "Just the gold ring" },
+      { value: "glow", label: "Glow" },
+      { value: "burst", label: "Burst" },
+      { value: "banner", label: "Banner" },
+    ],
+  },
+  texture: {
+    label: "Background texture",
+    options: [
+      { value: "plain", label: "Plain" },
+      { value: "dots", label: "Dots" },
+      { value: "grid", label: "Grid" },
+      { value: "scan", label: "Scanlines" },
+    ],
+  },
+  icons: {
+    label: "Icons",
+    options: [
+      { value: "dots", label: "Colour dots" },
+      { value: "line", label: "Outline" },
+      { value: "filled", label: "Filled" },
+    ],
+  },
+  tint: {
+    label: "Page tint",
+    options: [
+      { value: "off", label: "Palette accent everywhere" },
+      { value: "on", label: "Each page in its branch colour" },
     ],
   },
   centre: {
@@ -189,7 +250,8 @@ function applyAppearance() {
   const s = loadSettings();
   const palette = currentTheme() === "dark" ? s.paletteDark : s.paletteLight;
   Object.assign(document.documentElement.dataset, {
-    palette, type: s.type, bars: s.bars, ticks: s.ticks, motion: s.motion,
+    palette, type: s.type, bars: s.bars, ticks: s.ticks, motion: s.motion, size: s.size, radius: s.radius,
+    density: s.density, levelUp: s.levelUp, texture: s.texture, icons: s.icons, tint: s.tint,
   });
   loadTypeFont(s.type);
 }
