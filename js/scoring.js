@@ -843,3 +843,13 @@ function overallLevelDates(events) {
   }
   return dates;
 }
+
+// The days something was logged (a spend or a no-spend), for the logging streak.
+function moneyLogDays(events) {
+  return new Set(events.filter(isMoneyLog).map(e => e.date));
+}
+
+// How many no-spend days fall in one month ("2026-11"), for the gold stars.
+function noSpendDaysInMonth(events, month) {
+  return new Set(events.filter(e => e.activity === "no-spend" && e.date.startsWith(month)).map(e => e.date)).size;
+}

@@ -169,6 +169,21 @@ function drawLog(events, today) {
   button.setAttribute("aria-pressed", String(noSpend));
 }
 
+// "🔥 12 days logged · ★ 2 no-spend this month": any logged day counts, one missed day pauses.
+function drawStreak(events, today) {
+  const streak = dayStreak(moneyLogDays(events));
+  const stars = noSpendDaysInMonth(events, today.slice(0, 7));
+  const line = document.getElementById("streak-line");
+  const parts = [];
+  if (streak.days > 0) {
+    const word = streak.days === 1 ? "day" : "days";
+    parts.push(`🔥 ${streak.days} ${word} logged${streak.paused ? " (paused)" : ""}`);
+  }
+  if (stars > 0) parts.push(`★ ${stars} no-spend this month`);
+  line.textContent = parts.join(" · ");
+  line.hidden = parts.length === 0;
+}
+
 // ---- This week: budget, spent, left ----
 
 // Changing the budget again this week edits this week's; otherwise it starts this week.
@@ -290,6 +305,7 @@ function render() {
     `${core + extra} / ${parts.today.goal + parts.week.goal} XP · logged today + payout on track`;
 
   drawLog(events, today);
+  drawStreak(events, today);
   drawWeek(events, today);
   drawSavings(events, today);
 }
