@@ -7,6 +7,12 @@ const SCORING = {
 
 const LEVELS = { first: 600, step: 100, overallMultiplier: 3 };
 
+// Level-up rewards. Each overall level reached gives one rest day, held up to restMax
+// (one earned while holding restMax is not kept). A rest day is spent on one streak's
+// missed yesterday. restCoversWeeklyPause: true = it also covers a weekly pause limit
+// (Dua's second miss in a week); false = it only stops two misses in a row.
+const REWARDS = { restMax: 3, restCoversWeeklyPause: true };
+
 // Quran revision, logged in juz (30 in the Quran), in order from Juz 1.
 // Up to dailyTarget counts toward the daily goal; anything beyond is bonus XP.
 const QURAN = {
