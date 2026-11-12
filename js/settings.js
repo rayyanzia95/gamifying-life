@@ -116,12 +116,16 @@ const APPEARANCE_CHOICES = {
   },
   levelUp: {
     label: "Level-up effect",
-    default: "glow",
+    default: "ring",
     options: [
       { value: "none", label: "Just the gold ring" },
       { value: "glow", label: "Glow" },
       { value: "burst", label: "Burst" },
       { value: "banner", label: "Banner" },
+      { value: "ring", label: "Popup: ring fills" },
+      { value: "hud", label: "Popup: sci-fi HUD" },
+      { value: "rpg", label: "Popup: RPG card" },
+      { value: "toast", label: "Popup: toast" },
     ],
   },
   texture: {

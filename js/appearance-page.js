@@ -35,7 +35,7 @@ function appearancePreview() {
     </div>`;
   const tick = makeCheckbox("Sample tick", true, () => {});
   const play = Object.assign(document.createElement("button"), { type: "button", className: "filter-button", textContent: "Play level-up" });
-  play.addEventListener("click", () => playLevelUp(document.getElementById("preview-chip"), "Deen · level 8"));
+  play.addEventListener("click", () => playLevelUp(document.getElementById("preview-chip"), "deen", 8));
   const row = Object.assign(document.createElement("div"), { className: "preview-actions" });
   row.append(tick, play);
   preview.append(row);

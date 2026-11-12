@@ -1,5 +1,5 @@
-// The moment a level is reached (Appearance → Level-up effect): Glow, Burst or Banner, once per new level.
-// On every page, before nav.js. Needs config.js, scoring.js and storage.js.
+// The moment a level is reached (Appearance → Level-up effect): Glow, Burst, Banner or a popup, once per new level.
+// On every page, before nav.js. Needs config.js, scoring.js, storage.js and level-popup.js.
 //
 // The levels already celebrated are kept in localStorage on this device, not synced: each device plays
 // a new level once. The first time this runs it only writes down today's levels, so nothing old plays.
@@ -44,17 +44,16 @@ function levelTarget(key) {
 }
 
 const levelName = key => key === "overall" ? "Overall" : BRANCHES.find(b => b.id === key).name;
+const levelLabel = (key, level) => `${levelName(key)} · level ${level}`;
 
-// Plays the chosen effect. el: the thing to light up (may be null for the banner). Returns true if it played.
-function playLevelUp(el, text) {
+// Plays the chosen effect for one level. el: the thing to light up (Glow and Burst need it). Returns true if it played.
+function playLevelUp(el, key, level) {
   const style = document.documentElement.dataset.levelUp;
-  if (style === "banner") {
-    const banner = Object.assign(document.createElement("div"), { className: "level-banner", textContent: text });
-    banner.setAttribute("role", "status"); // read out once by screen readers
-    document.body.append(banner);
-    setTimeout(() => banner.remove(), LEVEL_UP_MS);
+  if (isPopupStyle(style)) {
+    showLevelPopup(style, key, levelName(key), level); // level-popup.js
     return true;
   }
+  if (style === "banner") return showBanner(levelLabel(key, level));
   if (!el) return false;
   el.classList.remove("level-up");
   void el.offsetWidth; // forces a reflow so the animation restarts when the class goes back on
@@ -63,18 +62,29 @@ function playLevelUp(el, text) {
   return true;
 }
 
+function showBanner(text) {
+  const banner = Object.assign(document.createElement("div"), { className: "level-banner", textContent: text });
+  banner.setAttribute("role", "status"); // read out once by screen readers
+  document.body.append(banner);
+  setTimeout(() => banner.remove(), LEVEL_UP_MS);
+  return true;
+}
+
 function checkLevelUps() {
   const now = currentLevels();
   const seen = readSeenLevels();
   if (!seen) return writeSeenLevels(now);
-  const quiet = document.documentElement.dataset.levelUp === "none" || document.documentElement.dataset.motion === "none"
-    || matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const risen = Object.keys(now).filter(key => now[key] > (seen[key] ?? now[key]));
-  const label = key => `${levelName(key)} · level ${now[key]}`;
-  const banner = document.documentElement.dataset.levelUp === "banner";
-  // One banner names every new level at once; the other effects light up each level where it shows.
-  if (banner && !quiet && risen.length) playLevelUp(null, risen.map(label).join("   "));
-  const played = risen.filter(key => quiet || banner || playLevelUp(levelTarget(key), label(key)));
+  const style = document.documentElement.dataset.levelUp;
+  const popup = isPopupStyle(style);
+  // Popups still show with motion off (as a still card); the other effects are pure motion, so they skip.
+  const quiet = style === "none" || (!popup && motionOff());
+  const banner = style === "banner";
+  // Branches first, overall last, so the biggest popup comes at the end.
+  const risen = Object.keys(now).filter(key => now[key] > (seen[key] ?? now[key]))
+    .sort((a, b) => (a === "overall") - (b === "overall"));
+  // One banner names every new level at once; the other effects play each level.
+  if (banner && !quiet && risen.length) showBanner(risen.map(key => levelLabel(key, now[key])).join("   "));
+  const played = risen.filter(key => quiet || banner || playLevelUp(levelTarget(key), key, now[key]));
   // Keep the highest level each one has shown, so unticking then ticking again doesn't replay it;
   // a level that rose but found nowhere to play keeps its old value and waits for a page that shows it.
   const waiting = key => risen.includes(key) && !played.includes(key);

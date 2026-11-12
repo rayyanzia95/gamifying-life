@@ -1,0 +1,210 @@
+/* Appearance extras, loaded after styles.css on every page: level-up popups, more palettes, OLED black,
+   custom accent, glow and the sci-fi effects. styles.css was past 3000 lines, so the new looks live here. */
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* ---- Level-up popups (level-popup.js) ----
+   --lp-colour is the branch colour, or gold for the overall level (the bigger .big variant). */
+.level-popup {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  cursor: pointer;
+  --lp-time: 3s;
+}
+.level-popup.big { --lp-time: 4.5s; }
+.level-popup.closing { animation: lp-fade 0.3s ease-in reverse forwards; }
+.level-popup[data-style="toast"] { place-items: start center; pointer-events: none; }
+.level-popup[data-style="toast"] .lp-card { pointer-events: auto; }
+
+.lp-shade {
+  position: absolute;
+  inset: 0;
+  background: color-mix(in srgb, var(--bg) 55%, transparent);
+  backdrop-filter: blur(2px);
+  animation: lp-fade 0.25s ease-out;
+}
+.lp-card { position: relative; max-width: 100%; text-align: center; color: var(--text); }
+.lp-perk { margin-top: 10px; font-size: 0.9rem; color: var(--gold); }
+@keyframes lp-fade { from { opacity: 0; } }
+
+/* Sci-fi HUD: corner brackets snap in, the level decodes, a band of the branch colour sweeps across */
+.lp-hud {
+  min-width: 250px;
+  padding: 26px 34px;
+  overflow: hidden;
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  background: color-mix(in srgb, var(--surface) 90%, transparent);
+}
+.lp-br {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--lp-colour);
+  animation: lp-bracket 0.45s cubic-bezier(0.2, 0.9, 0.3, 1) both;
+}
+.lp-br.tl { top: 0; left: 0; border-right: 0; border-bottom: 0; --dx: -40px; --dy: -30px; }
+.lp-br.tr { top: 0; right: 0; border-left: 0; border-bottom: 0; --dx: 40px; --dy: -30px; }
+.lp-br.bl { bottom: 0; left: 0; border-right: 0; border-top: 0; --dx: -40px; --dy: 30px; }
+.lp-br.br { bottom: 0; right: 0; border-left: 0; border-top: 0; --dx: 40px; --dy: 30px; }
+@keyframes lp-bracket { from { transform: translate(var(--dx), var(--dy)); opacity: 0; } }
+.lp-tag { font-size: 0.7rem; letter-spacing: 0.25em; color: var(--lp-colour); }
+.lp-hud .lp-level { margin: 4px 0; font-size: 2.1rem; font-weight: 700; letter-spacing: 0.08em; }
+.lp-hud .lp-name { font-size: 0.8rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); }
+.lp-hud .lp-perk { font-size: 0.78rem; }
+.lp-sweep {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(100deg, transparent 30%, color-mix(in srgb, var(--lp-colour) 35%, transparent) 50%, transparent 70%);
+  transform: translateX(-100%);
+  animation: lp-sweep 0.9s 0.35s ease-out forwards;
+}
+@keyframes lp-sweep { to { transform: translateX(100%); } }
+.big .lp-hud { padding: 36px 48px; }
+.big .lp-hud .lp-level { font-size: 2.8rem; color: var(--gold); }
+.big .lp-br { width: 26px; height: 26px; }
+
+/* RPG card: the level disc spins in like a coin, with slow rays behind it */
+.lp-rpg {
+  display: grid;
+  justify-items: center;
+  padding: 26px 36px 22px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: calc(16px * var(--round));
+  animation: lp-pop 0.5s cubic-bezier(0.2, 1.4, 0.4, 1) both;
+}
+.lp-rays {
+  position: absolute;
+  top: 62px;
+  left: 50%;
+  z-index: -1;
+  width: 260px;
+  height: 260px;
+  margin: -130px 0 0 -130px;
+  border-radius: 50%;
+  background: repeating-conic-gradient(color-mix(in srgb, var(--lp-colour) 45%, transparent) 0 6deg, transparent 6deg 30deg);
+  -webkit-mask: radial-gradient(circle, #000 25%, transparent 68%);
+  mask: radial-gradient(circle, #000 25%, transparent 68%);
+  animation: lp-spin 3s linear, lp-fade 0.4s ease-out;
+}
+.lp-disc {
+  display: grid;
+  place-items: center;
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: var(--lp-colour);
+  color: var(--bg);
+  font-family: var(--font-head, inherit);
+  font-size: 2rem;
+  font-weight: 700;
+  box-shadow: 0 0 0 4px var(--surface), 0 0 0 6px var(--gold);
+  animation: lp-flip 0.8s 0.1s cubic-bezier(0.3, 0.7, 0.3, 1) both;
+}
+.lp-rpg .lp-level { margin-top: 12px; font-family: var(--font-head, inherit); font-size: 1.35rem; }
+.lp-rpg .lp-name { color: var(--muted); }
+@keyframes lp-pop { from { transform: scale(0.7); opacity: 0; } }
+@keyframes lp-spin { to { transform: rotate(90deg); } }
+@keyframes lp-flip { from { transform: rotateY(-540deg) scale(0.4); } }
+.big .lp-disc { width: 96px; height: 96px; font-size: 2.6rem; }
+.big .lp-rays { top: 74px; width: 360px; height: 360px; margin: -180px 0 0 -180px; }
+.big .lp-rpg .lp-level { font-size: 1.7rem; }
+
+/* Toast: a slim card drops from the top; the line along the bottom shows the time left */
+.lp-toast {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 6px;
+  padding: 10px 16px 12px;
+  overflow: hidden;
+  text-align: left;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: calc(12px * var(--round));
+  box-shadow: 0 6px 24px color-mix(in srgb, var(--text) 14%, transparent);
+  animation: lp-drop 0.4s cubic-bezier(0.2, 1.2, 0.4, 1) both;
+}
+.lp-chip { min-width: 28px; padding: 2px 6px; background: var(--lp-colour); }
+.lp-toast .lp-level { font-family: var(--font-head, inherit); }
+.lp-toast .lp-perk { margin: 0; font-size: 0.8rem; }
+.lp-time {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 3px;
+  background: var(--lp-colour);
+  transform-origin: left;
+  animation: lp-shrink var(--lp-time) linear forwards;
+}
+@keyframes lp-drop { from { transform: translateY(-140%); } }
+@keyframes lp-shrink { to { transform: scaleX(0); } }
+.big .lp-toast { border-color: var(--gold); }
+.big .lp-chip { font-size: 1rem; }
+
+/* Ring fills: the level ring closes its last quarter, flashes gold, and the number rolls over */
+.lp-ring {
+  display: grid;
+  justify-items: center;
+  padding: 22px 32px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: calc(16px * var(--round));
+  animation: lp-fade 0.25s ease-out;
+}
+.lp-ring svg { width: 120px; height: 120px; overflow: visible; }
+.lp-track { fill: none; stroke: var(--border); stroke-width: 7; }
+.lp-arc {
+  fill: none;
+  stroke: var(--lp-colour);
+  stroke-width: 7;
+  stroke-linecap: round;
+  stroke-dasharray: 314;
+  transform: rotate(-90deg);
+  transform-origin: 60px 60px;
+  animation: lp-fill 1s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+.lp-flash {
+  fill: none;
+  stroke: var(--gold);
+  stroke-width: 3;
+  opacity: 0;
+  transform-origin: 60px 60px;
+  animation: lp-flash 0.7s 1s ease-out;
+}
+.lp-roll {
+  height: 2.6rem;
+  margin: -82px 0 40px;
+  overflow: hidden;
+  font-family: var(--font-head, inherit);
+  font-size: 2.2rem;
+  line-height: 2.6rem;
+  font-variant-numeric: tabular-nums;
+}
+.lp-roll span { display: block; transform: translateY(-2.6rem); animation: lp-roll 0.45s 1s cubic-bezier(0.3, 1.3, 0.5, 1) backwards; }
+.lp-ring .lp-level { font-family: var(--font-head, inherit); font-size: 1.1rem; }
+@keyframes lp-fill { from { stroke-dashoffset: 75; } }
+@keyframes lp-flash { from { opacity: 1; transform: scale(1); } to { opacity: 0; transform: scale(1.35); } }
+@keyframes lp-roll { from { transform: translateY(0); } }
+.big .lp-ring svg { width: 150px; height: 150px; }
+.big .lp-roll { margin-top: -97px; margin-bottom: 55px; }
+
+/* Motion None / reduced motion: styles.css stops every animation, so each card is drawn still.
+   Hide the parts that only make sense moving. */
+:is([data-motion="none"]) :is(.lp-sweep, .lp-rays, .lp-flash) { display: none; }
+@media (prefers-reduced-motion: reduce) {
+  :is(.lp-sweep, .lp-rays, .lp-flash) { display: none; }
+}
