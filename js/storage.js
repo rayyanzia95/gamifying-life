@@ -23,8 +23,11 @@ function loadEvents() {
   return events;
 }
 
+// After saving, tell anyone listening (sync.js sends the change to the cloud). A page without
+// sync.js simply has no listener; its changes still go up the next time a sync page opens.
 function saveEvents(events) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(withIds(events)));
+  window.dispatchEvent(new Event("events-saved"));
 }
 
 function dateString(d) {

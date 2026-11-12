@@ -1791,7 +1791,8 @@ body.wide {
   font-size: 13px;
 }
 
-/* Sync: status dot beside the light/dark button. Grey = not signed in, green = signed in. */
+/* Sync: status dot beside the light/dark button. Grey = not signed in, green = all sent,
+   gold = changes waiting to send. */
 .sync-dot::before {
   content: "";
   width: 10px;
@@ -1802,4 +1803,8 @@ body.wide {
 
 .sync-dot[data-state="synced"]::before {
   background: var(--accent);
+}
+
+.sync-dot[data-state="waiting"]::before {
+  background: var(--gold);
 }
