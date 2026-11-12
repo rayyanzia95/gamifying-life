@@ -232,12 +232,13 @@ const DEADLINES = [
   { date: "2026-12-01", time: "11:00 a.m.", course: "phys",  kind: "lab",        title: "Lab 8 report" },
   { date: "2026-12-01", time: "2:00 p.m.",  course: "cmput", kind: "lab",        title: "Labs 7 + 8 demo" },
   { date: "2026-12-03", time: "Thu night",  course: "phys",  kind: "quiz",       title: "Content Quiz 9" },
-  { date: "2026-12-07", time: "In class",   course: "cmput", kind: "exam",       title: "Midterm 3", hp: 10 },
+  // CMPUT 175's "final": a final midterm in the last class (its usual lecture slot).
+  { date: "2026-12-07", time: "9:00 a.m.",  course: "cmput", kind: "exam",       title: "Midterm 3", hp: 10, note: "Final midterm, in the last class · NRE 1-001 · 50 min" },
   { date: "2026-12-07", time: "Mon night",  course: "phys",  kind: "quiz",       title: "Content Quiz 10" },
   { date: "2026-12-08", time: "12:00 p.m.", course: "phys",  kind: "task",       title: "Redo lab selection" },
   { date: "2026-12-13", time: "Sun night",  course: "study", kind: "task",       title: "Student Evaluation Form" },
-  // Finals, from the Bear Tracks exam schedule (.ics). CMPUT 175 and ASTRO 101
-  // (rescheduled through accommodations, away from Jumu'ah) still to come.
+  // Finals, from the Bear Tracks exam schedule (.ics). CMPUT 175's is Midterm 3
+  // above. ASTRO 101 (rescheduled through accommodations, away from Jumu'ah) still to come.
   { date: "2026-12-14", time: "9:00 a.m.",  course: "econ",  kind: "exam",       title: "Final exam", hp: 10, note: "ED 3-106 · 2.5 h (room booked 9–12)" },
 ];
 
