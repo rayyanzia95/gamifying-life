@@ -37,9 +37,23 @@ const PALETTES = [
   { value: "candle", label: "Candlelit RPG", mode: "dark" },
   { value: "vapor", label: "Vaporwave", mode: "dark" },
   { value: "jrpg", label: "JRPG blue", mode: "dark" },
+  { value: "pixeld", label: "Cozy pixel", mode: "dark" },
+  { value: "glassd", label: "Glass (dark)", mode: "dark" },
+  { value: "noted", label: "Chalkboard", mode: "dark" },
+  { value: "brutd", label: "Console", mode: "dark" },
+  { value: "matrix", label: "Matrix", mode: "dark" },
+  { value: "void", label: "Void violet", mode: "dark" },
+  { value: "solar", label: "Solar flare", mode: "dark" },
+  { value: "abyss", label: "Abyss", mode: "dark" },
   { value: "paper", label: "Paper terminal", mode: "light" },
   { value: "parch", label: "Parchment", mode: "light" },
   { value: "glass", label: "Glass", mode: "light" },
+  { value: "pixell", label: "Cozy pixel", mode: "light" },
+  { value: "notel", label: "Notebook", mode: "light" },
+  { value: "jrpgl", label: "JRPG menu", mode: "light" },
+  { value: "brutl", label: "Brutalist", mode: "light" },
+  { value: "arctic", label: "Arctic", mode: "light" },
+  { value: "sakura", label: "Sakura", mode: "light" },
 ];
 
 const palettesFor = mode => PALETTES.filter(p => p.mode === mode || p.mode === "both");

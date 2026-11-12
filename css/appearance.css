@@ -208,3 +208,258 @@
 @media (prefers-reduced-motion: reduce) {
   :is(.lp-sweep, .lp-rays, .lp-flash) { display: none; }
 }
+
+/* ---- More palettes (Appearance → Colours): four brought back from ui-themes.html and new ones.
+   Same shape as the palettes in styles.css; everything else is mixed from these in its shared block. */
+
+/* Cozy pixel (dark) */
+:is(:root, *)[data-palette="pixeld"] {
+  color-scheme: dark;
+  --bg: #211a2b;
+  --surface: #2d2440;
+  --text: #f6e9d2;
+  --muted: #b9a8c9;
+  --border: #7a62a3;
+  --accent: #ffb86b;
+  --deen: #80d68c;
+  --chores: #ffc460;
+  --health: #ff90ad;
+  --academics: #a3a3ff;
+  --money: #72e2cf;
+  --personal: #d8a4ff;
+  --people: #82bbff;
+}
+
+/* Glass (dark) (dark) */
+:is(:root, *)[data-palette="glassd"] {
+  color-scheme: dark;
+  --bg: #0b0e15;
+  --surface: #151a24;
+  --text: #f5f5f7;
+  --muted: #a0a0aa;
+  --border: #2c3240;
+  --accent: #0a84ff;
+  --deen: #30d158;
+  --chores: #ff9f0a;
+  --health: #ff375f;
+  --academics: #7d7aff;
+  --money: #40d0c0;
+  --personal: #bf5af2;
+  --people: #64a8ff;
+}
+
+/* Chalkboard (dark) */
+:is(:root, *)[data-palette="noted"] {
+  color-scheme: dark;
+  --bg: #233231;
+  --surface: #2a3b3a;
+  --text: #f1f1e6;
+  --muted: #adb9b2;
+  --border: #4d615f;
+  --accent: #ffd86b;
+  --deen: #9be28a;
+  --chores: #ffcf6b;
+  --health: #ff9db8;
+  --academics: #adadff;
+  --money: #7fe8d6;
+  --personal: #dcabff;
+  --people: #8fc7ff;
+}
+
+/* Console (dark) */
+:is(:root, *)[data-palette="brutd"] {
+  color-scheme: dark;
+  --bg: #17171a;
+  --surface: #232327;
+  --text: #f5f1e6;
+  --muted: #b0b0b0;
+  --border: #55555c;
+  --accent: #ffdd33;
+  --deen: #3ddc84;
+  --chores: #ffb020;
+  --health: #ff5c93;
+  --academics: #8a8aff;
+  --money: #2fe0cf;
+  --personal: #c880ff;
+  --people: #52a8ff;
+}
+
+/* Matrix (dark) */
+:is(:root, *)[data-palette="matrix"] {
+  color-scheme: dark;
+  --bg: #020a04;
+  --surface: #06140a;
+  --text: #c8ffd4;
+  --muted: #5f9a6c;
+  --border: #123a1d;
+  --accent: #3dff6e;
+  --deen: #3dff6e;
+  --chores: #b6ff3d;
+  --health: #3dffc2;
+  --academics: #7dd68f;
+  --money: #00e5a0;
+  --personal: #a6ff9e;
+  --people: #5cffd8;
+}
+
+/* Void violet (dark) */
+:is(:root, *)[data-palette="void"] {
+  color-scheme: dark;
+  --bg: #07050d;
+  --surface: #0e0a18;
+  --text: #ece6ff;
+  --muted: #9087b0;
+  --border: #2a2145;
+  --accent: #a78bfa;
+  --deen: #6ee7b7;
+  --chores: #fbbf24;
+  --health: #f472b6;
+  --academics: #a78bfa;
+  --money: #22d3ee;
+  --personal: #c084fc;
+  --people: #60a5fa;
+}
+
+/* Solar flare (dark) */
+:is(:root, *)[data-palette="solar"] {
+  color-scheme: dark;
+  --bg: #120806;
+  --surface: #1d0e09;
+  --text: #ffe6d6;
+  --muted: #b58a78;
+  --border: #4a2418;
+  --accent: #ff6b35;
+  --deen: #7bd88f;
+  --chores: #ffb13b;
+  --health: #ff4f6d;
+  --academics: #9b8cff;
+  --money: #3fd6c4;
+  --personal: #d68bff;
+  --people: #5fb0ff;
+}
+
+/* Abyss (dark) */
+:is(:root, *)[data-palette="abyss"] {
+  color-scheme: dark;
+  --bg: #020812;
+  --surface: #061226;
+  --text: #dbeaff;
+  --muted: #7f98bd;
+  --border: #16305a;
+  --accent: #4cc9f0;
+  --deen: #4ade80;
+  --chores: #facc15;
+  --health: #fb7185;
+  --academics: #818cf8;
+  --money: #2dd4bf;
+  --personal: #e879f9;
+  --people: #38bdf8;
+}
+
+/* Cozy pixel (light) */
+:is(:root, *)[data-palette="pixell"] {
+  color-scheme: light;
+  --bg: #f9ecd0;
+  --surface: #fff8e8;
+  --text: #3a2d2d;
+  --muted: #7d6a5e;
+  --border: #c9b49a;
+  --accent: #d9703f;
+  --deen: #3f9a50;
+  --chores: #d98b25;
+  --health: #dc5a79;
+  --academics: #6061d0;
+  --money: #259a8b;
+  --personal: #9a52c4;
+  --people: #3f80d4;
+}
+
+/* Notebook (light) */
+:is(:root, *)[data-palette="notel"] {
+  color-scheme: light;
+  --bg: #f5f0e2;
+  --surface: #fbf8ef;
+  --text: #27365a;
+  --muted: #6b7590;
+  --border: #c9c3ae;
+  --accent: #d4452f;
+  --deen: #2f8442;
+  --chores: #d9811a;
+  --health: #d33f75;
+  --academics: #4450c2;
+  --money: #1b9080;
+  --personal: #9442c0;
+  --people: #2870c8;
+}
+
+/* JRPG menu (light) */
+:is(:root, *)[data-palette="jrpgl"] {
+  color-scheme: light;
+  --bg: #d9e6ff;
+  --surface: #ffffff;
+  --text: #1d2a55;
+  --muted: #4f5f92;
+  --border: #9fb3e6;
+  --accent: #e8473c;
+  --deen: #1f9f55;
+  --chores: #ec8200;
+  --health: #e8366f;
+  --academics: #5348dd;
+  --money: #009d96;
+  --personal: #9c36dc;
+  --people: #1c72e0;
+}
+
+/* Brutalist (light) */
+:is(:root, *)[data-palette="brutl"] {
+  color-scheme: light;
+  --bg: #f2eee0;
+  --surface: #ffffff;
+  --text: #111111;
+  --muted: #505050;
+  --border: #111111;
+  --accent: #ff5030;
+  --deen: #17a350;
+  --chores: #ff9b00;
+  --health: #ff3b80;
+  --academics: #4a4af2;
+  --money: #00a99a;
+  --personal: #a03bff;
+  --people: #087ae6;
+}
+
+/* Arctic (light) */
+:is(:root, *)[data-palette="arctic"] {
+  color-scheme: light;
+  --bg: #f2f7fb;
+  --surface: #ffffff;
+  --text: #0f1c2a;
+  --muted: #56677a;
+  --border: #d3e0ec;
+  --accent: #0077b6;
+  --deen: #15803d;
+  --chores: #c2410c;
+  --health: #be185d;
+  --academics: #4338ca;
+  --money: #0f766e;
+  --personal: #7e22ce;
+  --people: #1d4ed8;
+}
+
+/* Sakura (light) */
+:is(:root, *)[data-palette="sakura"] {
+  color-scheme: light;
+  --bg: #fbf1f3;
+  --surface: #fffafb;
+  --text: #2b1d22;
+  --muted: #7a6168;
+  --border: #ecd3da;
+  --accent: #c2416b;
+  --deen: #3f7d4f;
+  --chores: #b8650f;
+  --health: #c2416b;
+  --academics: #5a55c9;
+  --money: #11867a;
+  --personal: #8f45b8;
+  --people: #2f66c4;
+}

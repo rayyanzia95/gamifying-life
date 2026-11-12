@@ -680,14 +680,21 @@ h1 {
   padding: 6px 0;
 }
 
-/* Appearance page: short groups sit in a row, palettes stay one per line. */
+/* Appearance page: short groups sit in a row; the long palette lists fill a grid of columns. */
 .appearance-form .choice label {
   display: inline-block;
   margin-right: 14px;
 }
 
-.appearance-form .choice label:has([name^="palette"]) {
+.appearance-form .choice[data-key^="palette"] {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  column-gap: 10px;
+}
+
+.appearance-form .choice[data-key^="palette"] label {
   display: block;
+  margin-right: 0;
 }
 
 .choice label:has(input:disabled) {
