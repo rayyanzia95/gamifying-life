@@ -1,6 +1,7 @@
 /* Colours live here as variables, so dark mode only has to swap the values. */
 :root {
   color-scheme: light;
+  --round: 1; /* corner setting: 0 square, 1 slight, 1.75 round */
   --bg: #ffffff;
   --surface: #ffffff;
   --text: #1f1f1d;
@@ -131,7 +132,7 @@ h1 {
 
 .card {
   border: 1px solid var(--border);
-  border-radius: 12px;
+  border-radius: calc(12px * var(--round));
   padding: 16px;
   margin-bottom: 24px;
 }
@@ -145,7 +146,7 @@ h1 {
 .bar {
   height: 8px;
   background: var(--line);
-  border-radius: 4px;
+  border-radius: calc(4px * var(--round));
   margin: 10px 0;
   overflow: hidden;
   display: flex;
@@ -256,13 +257,13 @@ h1 {
 .key-today::before {
   width: 14px;
   height: 4px;
-  border-radius: 2px;
+  border-radius: calc(2px * var(--round));
 }
 
 .key-level::before {
   width: 14px;
   height: 6px;
-  border-radius: 3px;
+  border-radius: calc(3px * var(--round));
 }
 
 .level-row {
@@ -290,7 +291,7 @@ h1 {
   font-size: 0.75rem;
   font-weight: 700;
   line-height: 18px;
-  border-radius: 6px;
+  border-radius: calc(6px * var(--round));
   color: var(--bg);
   font-variant-numeric: tabular-nums;
 }
@@ -299,14 +300,14 @@ h1 {
   position: relative;
   height: 6px;
   background: var(--line);
-  border-radius: 3px;
+  border-radius: calc(3px * var(--round));
   overflow: hidden;
 }
 
 .level-bar i {
   position: absolute;
   inset: 0 auto 0 0;
-  border-radius: 3px;
+  border-radius: calc(3px * var(--round));
 }
 
 .badge {
@@ -356,7 +357,7 @@ h1 {
   width: 28px;
   height: 28px;
   border: 1px solid var(--control-border);
-  border-radius: 6px;
+  border-radius: calc(6px * var(--round));
   background: var(--surface);
   font-size: 1rem;
   line-height: 1;
@@ -423,7 +424,7 @@ h1 {
 .branch-link {
   display: block;
   border: 1px solid var(--border);
-  border-radius: 12px;
+  border-radius: calc(12px * var(--round));
   padding: 16px;
   margin-bottom: 12px;
   color: inherit;
@@ -597,7 +598,7 @@ h1 {
   width: 32px;
   height: 32px;
   border: 1px solid var(--control-border);
-  border-radius: 8px;
+  border-radius: calc(8px * var(--round));
   background: var(--surface);
   color: var(--text);
   font-size: 1rem;
@@ -634,7 +635,7 @@ h1 {
 
 .tile {
   border: 1px solid var(--border);
-  border-radius: 12px;
+  border-radius: calc(12px * var(--round));
   padding: 12px;
   cursor: pointer;
   font-size: 0.875rem;
@@ -702,7 +703,7 @@ h1 {
   display: inline-flex;
   gap: 3px;
   padding: 3px 5px;
-  border-radius: 999px;
+  border-radius: calc(999px * var(--round));
   background: var(--bg);
   border: 1px solid var(--border);
   vertical-align: middle;
@@ -724,7 +725,7 @@ h1 {
   padding: 12px;
   margin-bottom: 12px;
   border: 1px solid var(--line);
-  border-radius: 10px;
+  border-radius: calc(10px * var(--round));
 }
 
 .preview-row {
@@ -826,7 +827,7 @@ h1 {
   color: var(--text);
   background: var(--surface);
   border: 1px solid var(--control-border);
-  border-radius: 6px;
+  border-radius: calc(6px * var(--round));
   padding: 4px 8px;
 }
 
@@ -840,7 +841,7 @@ h1 {
   font: inherit;
   font-size: 0.8125rem;
   padding: 4px 8px;
-  border-radius: 6px;
+  border-radius: calc(6px * var(--round));
   border: 1px solid var(--control-border);
   background: var(--surface);
   color: var(--text);
@@ -1047,7 +1048,7 @@ h1 {
   letter-spacing: 0.05em;
   color: var(--muted);
   border: 1px solid var(--line);
-  border-radius: 4px;
+  border-radius: calc(4px * var(--round));
   padding: 0 5px;
   margin-left: 6px;
 }
@@ -1095,7 +1096,7 @@ label.done {
 .hp-bar {
   height: 8px;
   margin: 5px 0 2px;
-  border-radius: 4px;
+  border-radius: calc(4px * var(--round));
   background: var(--line);
   overflow: hidden;
 }
@@ -1125,7 +1126,7 @@ label.done {
   min-width: 40px;
   padding: 6px 12px;
   border: 1px solid var(--control-border);
-  border-radius: 8px;
+  border-radius: calc(8px * var(--round));
   background: var(--surface);
   color: var(--text);
   font: inherit;
@@ -1186,7 +1187,7 @@ label.done {
 .view-tabs button {
   padding: 6px 14px;
   border: 1px solid var(--control-border);
-  border-radius: 999px;
+  border-radius: calc(999px * var(--round));
   background: var(--surface);
   color: var(--text);
   font: inherit;
@@ -1216,7 +1217,7 @@ label.done {
 .week-scroll {
   overflow-x: auto;
   border: 1px solid var(--border);
-  border-radius: 12px;
+  border-radius: calc(12px * var(--round));
   background: var(--surface);
 }
 
@@ -1270,7 +1271,7 @@ label.done {
   padding: 2px 4px;
   border: 0;
   border-left: 3px solid var(--course);
-  border-radius: 4px;
+  border-radius: calc(4px * var(--round));
   background: color-mix(in srgb, var(--course) 18%, var(--surface));
   color: var(--text);
   font: inherit;
@@ -1327,7 +1328,7 @@ button.week-block {
   grid-template-columns: repeat(7, minmax(0, 1fr));
   overflow: hidden;
   border: 1px solid var(--border);
-  border-radius: 12px;
+  border-radius: calc(12px * var(--round));
   background: var(--surface);
 }
 
@@ -1390,7 +1391,7 @@ button.week-block {
   overflow: hidden;
   padding: 1px 3px;
   border-left: 3px solid var(--course);
-  border-radius: 3px;
+  border-radius: calc(3px * var(--round));
   background: color-mix(in srgb, var(--course) 15%, var(--surface));
   font-size: 0.625rem;
   line-height: 1.25;
@@ -1419,7 +1420,7 @@ button.week-block {
   height: 3px;
   margin-top: auto;
   overflow: hidden;
-  border-radius: 2px;
+  border-radius: calc(2px * var(--round));
   background: var(--line);
 }
 
@@ -1515,7 +1516,7 @@ body.wide {
 .filter-button {
   padding: 5px 11px;
   border: 1px solid var(--control-border);
-  border-radius: 999px;
+  border-radius: calc(999px * var(--round));
   background: var(--surface);
   color: var(--text);
   font: inherit;
@@ -1568,7 +1569,7 @@ body.wide {
   padding: 5px 10px;
   border: 1px solid var(--border);
   border-left: 3px solid var(--course);
-  border-radius: 8px;
+  border-radius: calc(8px * var(--round));
   background: var(--surface);
   color: var(--text);
   font: inherit;
@@ -1692,7 +1693,7 @@ body.wide {
   font: inherit;
   padding: 6px 10px;
   border: 1px solid var(--control-border);
-  border-radius: 8px;
+  border-radius: calc(8px * var(--round));
   background: var(--surface);
   color: var(--text);
 }
@@ -1778,7 +1779,7 @@ body.wide {
 .bar-part {
   position: relative;
   flex-basis: 0;
-  border-radius: 4px;
+  border-radius: calc(4px * var(--round));
   overflow: hidden;
 }
 
@@ -1839,7 +1840,7 @@ body.wide {
 .personal-book-bar {
   height: 8px;
   margin: 6px 0 2px;
-  border-radius: 4px;
+  border-radius: calc(4px * var(--round));
   background: var(--line);
   overflow: hidden;
 }
@@ -2111,7 +2112,7 @@ body.wide {
 .rest-button {
   padding: 2px 9px;
   border: 1px solid var(--sleep);
-  border-radius: 999px;
+  border-radius: calc(999px * var(--round));
   background: none;
   color: var(--sleep);
   font: inherit;
@@ -2183,7 +2184,7 @@ body.wide {
   width: 34px;
   height: 30px;
   border: 1px solid var(--control-border);
-  border-radius: 8px;
+  border-radius: calc(8px * var(--round));
   background: var(--surface);
   color: var(--text);
   font: inherit;
@@ -2233,7 +2234,7 @@ body.wide {
   min-height: 44px;
   padding: 4px 0 3px;
   border: 0;
-  border-radius: 8px;
+  border-radius: calc(8px * var(--round));
   background: none;
   display: flex;
   flex-direction: column;
@@ -2313,7 +2314,7 @@ button.cal-day {
 .mini {
   height: 6px;
   background: var(--line);
-  border-radius: 3px;
+  border-radius: calc(3px * var(--round));
   overflow: hidden;
 }
 
@@ -2348,7 +2349,7 @@ body.nav-open #side-nav {
   align-items: center;
   gap: 8px;
   padding: 8px 10px;
-  border-radius: 8px;
+  border-radius: calc(8px * var(--round));
   color: var(--text);
   text-decoration: none;
   font-size: 0.9375rem;
@@ -2412,14 +2413,14 @@ body.nav-open #nav-backdrop {
   position: relative;
   height: 16px;
   background: var(--line);
-  border-radius: 8px;
+  border-radius: calc(8px * var(--round));
   overflow: hidden;
 }
 
 .big-fill {
   height: 100%;
   background: var(--accent);
-  border-radius: 8px;
+  border-radius: calc(8px * var(--round));
 }
 
 .big-fill.low {
@@ -2820,7 +2821,7 @@ h2,
   min-height: 32px;
   padding: 2px 12px;
   border: 1.5px solid var(--accent);
-  border-radius: 16px; /* a pill on one line, a rounded box when a long title wraps */
+  border-radius: 16px; /* not scaled by --round: a pill on one line, a rounded box when a long title wraps */
   cursor: pointer;
 }
 
@@ -2844,7 +2845,7 @@ h2,
   width: 48px;
   height: 22px;
   border: 1.5px dashed var(--border);
-  border-radius: 3px;
+  border-radius: calc(3px * var(--round));
   display: inline-grid;
   place-items: center;
 }
