@@ -117,6 +117,29 @@ function foldedForm(summaryText, form) {
 
 // ---- Log a spend ----
 
+const MAX_DAYS_BACK = 7; // the Log card can go back this far, to fix or fill in a day
+
+// The day the Log card is showing, and the spend being edited on it (if any).
+// Page state only: a reload goes back to today.
+let logDate = todayString();
+let editing = null;
+
+function showDay(date) {
+  logDate = date;
+  editing = null;
+  document.getElementById("amount").value = "";
+  showError(document.getElementById("log-error"), "");
+  render();
+}
+
+function stepDay(step) {
+  const today = todayString();
+  const next = shiftDate(logDate, step);
+  if (next > today || daysBetween(next, today) > MAX_DAYS_BACK) return;
+  showDay(next);
+}
+
+// Saves a spend on the shown day. If one is being edited, it takes that spend's place.
 function addSpend(category) {
   const input = document.getElementById("amount");
   const error = document.getElementById("log-error");
@@ -126,22 +149,34 @@ function addSpend(category) {
     input.focus();
     return;
   }
-  const today = todayString();
-  // A spend means today isn't a no-spend day any more.
-  const events = loadEvents().filter(e => !isNoSpendOn(today)(e));
-  saveEvents([...events, { date: today, activity: "spend", cents, category }]);
+  const spend = { date: logDate, activity: "spend", cents, category };
+  const key = JSON.stringify(editing);
+  const events = loadEvents();
+  const editIndex = editing ? events.findIndex(e => JSON.stringify(e) === key) : -1;
+  // A spend means the day isn't a no-spend day any more.
+  const kept = events.filter(e => !isNoSpendOn(logDate)(e));
+  saveEvents(editIndex === -1
+    ? [...kept, spend]
+    : kept.map(e => (JSON.stringify(e) === key ? spend : e)));
   input.value = "";
+  editing = null;
   showError(error, "");
   render();
 }
 
 function toggleNoSpend() {
-  const today = todayString();
   const events = loadEvents();
-  const isSet = events.some(isNoSpendOn(today));
+  const isSet = events.some(isNoSpendOn(logDate));
   saveEvents(isSet
-    ? events.filter(e => !isNoSpendOn(today)(e))
-    : [...events, { date: today, activity: "no-spend" }]);
+    ? events.filter(e => !isNoSpendOn(logDate)(e))
+    : [...events, { date: logDate, activity: "no-spend" }]);
+  render();
+}
+
+// Tap a spend to edit it: its amount fills the box and its chip lights up. Tap again to cancel.
+function editSpend(spend) {
+  editing = editing && JSON.stringify(editing) === JSON.stringify(spend) ? null : spend;
+  document.getElementById("amount").value = editing ? (spend.cents / 100).toFixed(2) : "";
   render();
 }
 
@@ -150,22 +185,44 @@ function setupLog() {
   const chips = MONEY.categories.map(category => {
     const chip = Object.assign(document.createElement("button"),
       { type: "button", className: "filter-button", textContent: category.name });
+    chip.dataset.category = category.id;
     chip.addEventListener("click", () => addSpend(category.id));
     return chip;
   });
   document.getElementById("categories").replaceChildren(...chips);
   document.getElementById("no-spend").addEventListener("click", toggleNoSpend);
+  document.getElementById("day-prev").addEventListener("click", () => stepDay(-1));
+  document.getElementById("day-next").addEventListener("click", () => stepDay(1));
+}
+
+function spendRow(spend) {
+  const row = removableRow("", spend);
+  const open = Object.assign(document.createElement("button"), {
+    type: "button", className: "row-tap",
+    textContent: `${dollars(spend.cents)} · ${categoryName(spend.category)}`,
+  });
+  open.setAttribute("aria-label", "Edit " + open.textContent);
+  open.addEventListener("click", () => editSpend(spend));
+  row.prepend(open);
+  return row;
 }
 
 function drawLog(events, today) {
-  const spends = events.filter(e => isSpend(e) && e.date === today);
-  const noSpend = events.some(isNoSpendOn(today));
-  document.getElementById("log-date").textContent = dayLabel(today);
-  document.getElementById("today-list").replaceChildren(...spends.map(spend =>
-    removableRow(`${dollars(spend.cents)} · ${categoryName(spend.category)}`, spend)));
+  const spends = events.filter(e => isSpend(e) && e.date === logDate);
+  const noSpend = events.some(isNoSpendOn(logDate));
+  const label = logDate === today ? dayLabel(logDate) : dayLabel(logDate) + " (earlier)";
+  document.getElementById("log-date").textContent = label;
+  document.getElementById("day-prev").disabled = daysBetween(logDate, today) >= MAX_DAYS_BACK;
+  document.getElementById("day-next").disabled = logDate >= today;
+  document.getElementById("today-list").replaceChildren(...spends.map(spendRow));
+  document.querySelectorAll("#categories .filter-button").forEach(chip => {
+    const lit = editing !== null && chip.dataset.category === editing.category;
+    chip.setAttribute("aria-pressed", String(lit));
+  });
   const button = document.getElementById("no-spend");
   button.hidden = spends.length > 0;
-  button.textContent = noSpend ? "✓ No spend today" : "No spend today";
+  const day = logDate === today ? "today" : "this day";
+  button.textContent = noSpend ? `✓ No spend ${day}` : `No spend ${day}`;
   button.setAttribute("aria-pressed", String(noSpend));
 }
 

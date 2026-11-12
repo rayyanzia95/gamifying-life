@@ -2038,3 +2038,42 @@ body.wide {
   color: var(--gold);
   font-weight: 500;
 }
+
+/* ---- Money: day arrows on the Log card, tap-to-edit spend rows ---- */
+.day-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 0 0 8px;
+}
+
+.day-nav h2 {
+  margin: 0;
+  text-align: center;
+}
+
+.arrow {
+  width: 34px;
+  height: 30px;
+  border: 1px solid var(--control-border);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+}
+
+.arrow:disabled {
+  opacity: 0.35;
+}
+
+.row-tap {
+  border: 0;
+  background: none;
+  padding: 0;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  text-decoration: underline dotted;
+  text-underline-offset: 3px;
+}

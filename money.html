@@ -29,7 +29,11 @@
     </div>
   </section>
   <section class="card" id="log">
-    <h2>Log a spend <span class="muted" id="log-date"></span></h2>
+    <div class="day-nav">
+      <button class="arrow" id="day-prev" type="button" aria-label="Previous day">‹</button>
+      <h2>Log a spend <span class="muted" id="log-date"></span></h2>
+      <button class="arrow" id="day-next" type="button" aria-label="Next day">›</button>
+    </div>
     <input class="money-input amount-input" id="amount" inputmode="decimal" placeholder="$0.00"
       aria-label="Amount spent">
     <div class="filters" id="categories"></div>
