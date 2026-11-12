@@ -3,6 +3,14 @@
 
 const MONEY_RINGS = { outer: 42, inner: 33 };
 
+// An arc of a ring: `length` long, starting `from` along the ring (from the top, clockwise).
+// The dash pattern is: nothing for 0, a gap of `from`, the arc, then a gap for the rest.
+function ringArc(cls, r, from, length) {
+  const C = 2 * Math.PI * r;
+  return `<circle class="${cls}" cx="50" cy="50" r="${r}"
+    transform="rotate(-90 50 50)" stroke-dasharray="0 ${from} ${length} ${C}"/>`;
+}
+
 // 850 → "$8.50". Shared by the Money page.
 function dollars(cents) {
   return "$" + (cents / 100).toFixed(2);
