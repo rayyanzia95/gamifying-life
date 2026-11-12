@@ -75,6 +75,27 @@ function drawWeekBar({ core, extra, goal, done }) {
   document.getElementById("bonus").textContent = fullWeek + included;
 }
 
+// The last 8 weeks as stars (by Sunday): gold = full week, faint = missed, outlined = this week, still open.
+const STAR_WEEKS = 8;
+
+function drawStreak(events, today) {
+  const { weeks, paused } = choreStreak(events, today);
+  const streak = document.getElementById("streak");
+  streak.textContent = weeks > 0 ? `⭐ ${weeks}-week streak` : "⭐ Finish a full week to start a streak";
+  streak.classList.toggle("paused", paused);
+
+  const thisWeek = weekStart(today);
+  const stars = Array.from({ length: STAR_WEEKS }, (_, i) => {
+    const week = shiftDate(thisWeek, -7 * (STAR_WEEKS - 1 - i));
+    const state = choreWeekFull(events, week) ? "full" : week === thisWeek ? "now" : "missed";
+    const label = new Date(week + "T00:00").toLocaleDateString("en-US", { month: "short", day: "numeric" });
+    return `<div><div class="star ${state}" role="img"
+      aria-label="${label}: ${{ full: "full week", now: "this week, still open", missed: "missed" }[state]}">★</div>
+      <div class="star-date">${label}</div></div>`;
+  });
+  document.getElementById("stars").innerHTML = stars.join("");
+}
+
 function render() {
   const events = loadEvents();
   const week = weekStart(todayString());
@@ -83,6 +104,7 @@ function render() {
   drawWheel(events);
   drawWeekBar(choreWeek(events, week));
   drawQuests(events, week);
+  drawStreak(events, todayString());
 }
 
 // The wheel's done slices from the last draw, so only new ticks animate.

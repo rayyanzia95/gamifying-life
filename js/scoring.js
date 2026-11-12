@@ -206,6 +206,37 @@ function choreWeek(events, week) {
   return { core, extra: extra + (done ? CHORES.weekBonus : 0), goal, done };
 }
 
+// ---- Chores: full-week streak ----
+// A week is full when it has chore ticks and every quest is covered (the +50 bonus test).
+// Display only, no XP. One missed week only pauses the streak; two in a row reset it.
+// This week never counts as missed while it is still open.
+
+function choreWeekFull(events, week) {
+  const end = shiftDate(week, 7);
+  const hasTicks = events.some(e => e.activity === "chore" && e.date >= week && e.date < end);
+  return hasTicks && choreWeekDone(events, week);
+}
+
+// Returns { weeks, paused }.
+function choreStreak(events, today) {
+  const thisWeek = weekStart(today);
+  const firstTick = events.filter(e => e.activity === "chore").map(e => e.date).sort()[0];
+  let weeks = 0;
+  let missesInARow = 0;
+  for (let week = firstTick && weekStart(firstTick); week && week < thisWeek; week = shiftDate(week, 7)) {
+    if (choreWeekFull(events, week)) {
+      weeks += 1;
+      missesInARow = 0;
+    } else {
+      missesInARow += 1;
+      if (missesInARow >= 2) weeks = 0;
+    }
+  }
+  const fullNow = choreWeekFull(events, thisWeek);
+  if (fullNow) weeks += 1;
+  return { weeks, paused: weeks > 0 && !fullNow && missesInARow > 0 };
+}
+
 // ---- Sleep ----
 // A night belongs to the morning you wake. Bedtimes are measured from that
 // morning's midnight, so 22:40 is -80 and 00:15 is 15. Anything from noon on
