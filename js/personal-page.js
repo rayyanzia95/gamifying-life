@@ -152,21 +152,44 @@ function weekHint(count, perWeek, today) {
   return `${left} to go · ${daysLeft === 1 ? "last day" : daysLeft + " days left"}`;
 }
 
-function weeklyCounter(label, activity, count, rule, today) {
+const WEEKDAY_LETTERS = ["S", "M", "T", "W", "T", "F", "S"];
+
+// Sun–Sat dots like the Exercise card, in teal: filled on a day with at least one,
+// today outlined, days still to come faint. Screen readers get one summary instead.
+function weekDots(events, activity, today) {
+  const week = weekStart(today);
+  const days = new Set(events.filter(e => e.activity === activity && e.date >= week).map(e => e.date));
+  const row = document.createElement("div");
+  row.className = "session-days";
+  row.setAttribute("role", "img");
+  row.setAttribute("aria-label", `On ${days.size} days this week`);
+  row.append(...WEEKDAY_LETTERS.map((letter, i) => {
+    const date = shiftDate(week, i);
+    const dot = document.createElement("span");
+    dot.className = ["session-dot teal", days.has(date) ? "done" : "",
+      date === today ? "today" : "", date > today ? "future" : ""].filter(Boolean).join(" ");
+    const day = document.createElement("div");
+    day.append(dot, letter);
+    return day;
+  }));
+  return row;
+}
+
+function weeklyCounter(events, label, activity, count, rule, today) {
   const onStep = delta => (delta > 0 ? addEvent({ date: today, activity }) : removeLatest(activity));
   const stepper = makeStepper(label, count, Infinity, onStep, { step: 1, target: rule.perWeek, unit: label });
   const block = document.createElement("div");
   block.className = "personal-counter";
-  block.append(stepper, mutedLine(weekHint(count, rule.perWeek, today)));
+  block.append(stepper, weekDots(events, activity, today), mutedLine(weekHint(count, rule.perWeek, today)));
   return block;
 }
 
-function drawWeek(parts) {
+function drawWeek(events, parts) {
   const today = todayString();
   document.getElementById("week").replaceChildren(
     heading("This week"),
-    weeklyCounter("time alone, no screens", "alone", parts.week.alone, PERSONAL.alone, today),
-    weeklyCounter("with friends", "friends", parts.week.friends, PERSONAL.friends, today),
+    weeklyCounter(events, "time alone, no screens", "alone", parts.week.alone, PERSONAL.alone, today),
+    weeklyCounter(events, "with friends", "friends", parts.week.friends, PERSONAL.friends, today),
   );
 }
 
@@ -304,7 +327,7 @@ function render() {
 
   drawTop(events, parts, today);
   drawToday(events);
-  drawWeek(parts);
+  drawWeek(events, parts);
   drawBooks(events);
   drawQuiet(events);
 }

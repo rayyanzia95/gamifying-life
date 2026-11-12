@@ -1808,3 +1808,18 @@ body.wide {
 .sync-dot[data-state="waiting"]::before {
   background: var(--gold);
 }
+
+/* Personal: Sun–Sat dots under Time alone and Friends, teal like the week part of
+   the ring (shapes from the Exercise card). Days still to come are faint. */
+.session-dot.teal.done {
+  background: var(--teal);
+  border-color: var(--teal);
+}
+
+.session-dot.teal.today {
+  border-color: var(--text);
+}
+
+.session-dot.teal.future {
+  opacity: 0.5;
+}
