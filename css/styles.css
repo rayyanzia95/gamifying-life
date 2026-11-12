@@ -25,6 +25,13 @@
   --econ: #b86a0b;
   --astro: #7a4cc2;
   --skills: #5f6b7a;
+  --deen: #2e7d4f;
+  --chores: #b8730f;
+  --health: #c9507a;
+  --academics: #5b5bd6;
+  --money: #0f8a7a;
+  --personal: #8a4cc2;
+  --people: #2563c9;
 }
 
 /* Dark values. Used when the device is in dark mode (unless you picked light),
@@ -56,7 +63,14 @@
   --econ: #e3a24a;
   --astro: #a989e6;
   --skills: #9aa5b4;
-  }
+    --deen: #4fae78;
+    --chores: #e3a24a;
+    --health: #e57ea3;
+    --academics: #8f8ff0;
+    --money: #5cc8b0;
+    --personal: #b98ae6;
+    --people: #6fa0f2;
+    }
 }
 
 :root[data-theme="dark"] {
@@ -85,6 +99,13 @@
   --econ: #e3a24a;
   --astro: #a989e6;
   --skills: #9aa5b4;
+  --deen: #4fae78;
+  --chores: #e3a24a;
+  --health: #e57ea3;
+  --academics: #8f8ff0;
+  --money: #5cc8b0;
+  --personal: #b98ae6;
+  --people: #6fa0f2;
 }
 
 /* hidden always hides, even on elements whose class sets display: flex or grid. */
@@ -311,6 +332,24 @@ h1 {
   width: 160px;
   height: 160px;
   margin: 0 auto 12px;
+}
+
+/* Home rings: one ring per branch in its own colour (stroke set inline from --<branch>). */
+.ring-branch {
+  fill: none;
+  stroke-width: 4.2;
+  stroke-linecap: round;
+}
+
+.ring-branch-track {
+  fill: none;
+  stroke: var(--line);
+  stroke-width: 4.2;
+}
+
+.legend-row .legend-name {
+  display: flex;
+  align-items: center;
 }
 
 .legend-row {

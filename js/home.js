@@ -5,63 +5,13 @@ const overallXp = Object.values(totals).reduce((sum, xp) => sum + xp, 0);
 document.getElementById("overall").innerHTML =
   badgeHtml("Overall", levelInfo(overallXp, LEVELS.overallMultiplier));
 
-// Health's ring in two colours: sleep today, then this week's sessions.
-function healthRow(name) {
-  const { sleep, diet, exercise } = healthParts(events, todayString());
-  return {
-    name,
-    parts: [
-      { ...sleep, colour: "sleep", text: `${sleep.core + sleep.extra} / ${sleep.goal} sleep` },
-      { ...diet, colour: "diet", text: `${diet.core + diet.extra} / ${diet.goal} diet` },
-      { ...exercise, colour: "exercise", text: `${exercise.count} / ${EXERCISE.perWeek} sessions` },
-    ],
-  };
-}
-
-// Academics' ring: study blocks today, then this week's deadlines. A week with
-// nothing due has no deadline part (a part needs a goal to size it).
-function academicsRow(name) {
-  const { study, deadlines } = academicsParts(events, todayString());
-  const studyPart = { ...study, colour: "study", text: `${study.count} / ${ACADEMICS.blocksPerDay} blocks` };
-  const duePart = { ...deadlines, colour: "due", text: `${deadlines.count} / ${deadlines.total} due` };
-  return { name, parts: deadlines.goal > 0 ? [studyPart, duePart] : [studyPart] };
-}
-
-// Money's ring: today logged (green), then the payout this week is on track for (gold).
-// No dollars on Home: only XP and whether today is logged.
-function moneyRow(name) {
-  const { today, week } = moneyParts(events, todayString());
-  return {
-    name,
-    parts: [
-      { ...today, colour: "exercise", text: today.logged ? "logged today" : "not logged" },
-      { ...week, colour: "due", text: `${week.core} / ${week.goal} payout` },
-    ],
-  };
-}
-
-// Personal's ring: journal + reading today (plum), then time alone + friends this week (teal).
-function personalRow(name) {
-  const { today, week } = personalParts(events, todayString());
-  return {
-    name,
-    parts: [
-      { ...today, colour: "plum", text: `${today.core + today.extra} / ${today.goal} today` },
-      { ...week, colour: "teal", text: `${week.core} / ${week.goal} week` },
-    ],
-  };
-}
-
-// People's ring: checked in today (green), then calls home this week (gold).
-function peopleRow(name) {
-  const { today, week } = peopleParts(events, todayString());
-  return {
-    name,
-    parts: [
-      { ...today, colour: "exercise", text: today.checkedIn ? "checked in" : "not yet" },
-      { ...week, colour: "due", text: `${week.count} / ${PEOPLE.callsHomePerWeek} calls home` },
-    ],
-  };
+// A branch's share of today (0..1) is what its ring shows. A branch with parts adds each part's
+// (core + extra), capped at that part's goal, over the sum of the goals.
+function partsShare(parts) {
+  const list = Object.values(parts).filter(part => part.goal > 0);
+  const goal = list.reduce((sum, part) => sum + part.goal, 0);
+  const done = list.reduce((sum, part) => sum + Math.min(part.core + part.extra, part.goal), 0);
+  return goal > 0 ? done / goal : 0;
 }
 
 // One quiet line on the day a level is reached: "Health reached level 3 · reward: new shoes".
@@ -79,9 +29,9 @@ function drawLevelNote() {
   note.textContent = lines.join(" · ");
 }
 
-// Which function draws each mixed branch's split ring.
-const MIXED_ROWS = {
-  health: healthRow, academics: academicsRow, money: moneyRow, personal: personalRow, people: peopleRow,
+// Which function gives each mixed branch's parts (today and this week side by side).
+const MIXED_PARTS = {
+  health: healthParts, academics: academicsParts, money: moneyParts, personal: personalParts, people: peopleParts,
 };
 
 // One quiet line when a birthday or the anniversary is close and not wished yet:
@@ -97,22 +47,16 @@ function drawPeopleNote() {
   note.textContent = `${kind} ${countdownLabel(today, next.on)}`;
 }
 
-// A weekly branch (Chores) fills its ring over the week, a mixed one (Health,
-// Academics) is split into daily and weekly parts, and the rest fill each day.
-const rows = BRANCHES.map(branch => {
-  if (branch.period === "mixed") return MIXED_ROWS[branch.id](branch.name);
-  if (branch.period === "week") {
-    const week = choreWeek(events, weekStart(todayString()));
-    return { name: branch.name, core: week.core, extra: week.extra, goal: week.goal, weekly: true };
-  }
+// A weekly branch (Chores) fills its ring over the week, a mixed one (Health, Academics...)
+// adds its daily and weekly parts together, and the rest fill each day.
+function branchShare(branch) {
+  if (branch.period === "mixed") return partsShare(MIXED_PARTS[branch.id](events, todayString()));
+  if (branch.period === "week") return partsShare({ week: choreWeek(events, weekStart(todayString())) });
   const today = todayXp(events, branch.id);
-  return {
-    name: branch.name,
-    core: today.core,
-    extra: today.extra,
-    goal: branchGoal(branch.id),
-  };
-});
+  return partsShare({ today: { ...today, goal: branchGoal(branch.id) } });
+}
+
+const rows = BRANCHES.map(branch => ({ id: branch.id, name: branch.name, share: branchShare(branch) }));
 document.getElementById("rings").innerHTML = ringsHtml(rows);
 drawPeopleNote();
 drawLevelNote();
