@@ -6,7 +6,7 @@ const SUPABASE_URL = "https://byrxbtfzcnlbwhdptozg.supabase.co";
 
 // Paste the anon / publishable key between the quotes (Supabase → Project Settings → API).
 // It's fine in public code because Row Level Security is on. NEVER the service_role / secret key.
-const SUPABASE_ANON_KEY = "";
+const SUPABASE_ANON_KEY = "sb_publishable_g10yJSSblSRm5F6PSLfDqg_yELaGDqw";
 
 const SYNC_STATES = {
   synced: "Sync: signed in",
