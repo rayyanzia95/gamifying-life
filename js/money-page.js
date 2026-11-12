@@ -365,6 +365,7 @@ function render() {
   drawStreak(events, today);
   drawWeek(events, today);
   drawSavings(events, today);
+  drawCalendar(events, today);
 }
 
 setupLog();

@@ -2077,3 +2077,121 @@ body.wide {
   text-decoration: underline dotted;
   text-underline-offset: 3px;
 }
+
+/* ---- Money: calendar card ---- */
+.arrow.small {
+  width: 28px;
+  height: 24px;
+}
+
+.cal-arrows {
+  display: inline-flex;
+  gap: 4px;
+  margin-left: 6px;
+}
+
+.cal {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  text-align: center;
+  margin: 6px 0 10px;
+}
+
+.cal-head {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.cal-day {
+  min-height: 44px;
+  padding: 4px 0 3px;
+  border: 0;
+  border-radius: 8px;
+  background: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  font: inherit;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+button.cal-day {
+  background: var(--line);
+  cursor: pointer;
+}
+
+.cal-day.now {
+  outline: 1.5px solid var(--text);
+}
+
+.cal-day.future {
+  opacity: 0.4;
+}
+
+.cal-amount {
+  font-size: 10px;
+  color: var(--text);
+}
+
+.cal-amount.zero {
+  color: var(--gold);
+}
+
+.cal-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 8px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.cal-legend span::before {
+  content: "";
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  margin-right: 4px;
+  border: 2px solid var(--line);
+  border-radius: 50%;
+  box-sizing: border-box;
+  vertical-align: -1px;
+}
+
+.cal-legend .done::before {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.cal-legend .no-spend::before {
+  background: var(--gold);
+  border-color: var(--gold);
+}
+
+.cat-bar {
+  display: grid;
+  grid-template-columns: 82px 1fr 64px;
+  gap: 8px;
+  align-items: center;
+  padding: 3px 0;
+  font-size: 13px;
+}
+
+.cat-bar .amt {
+  text-align: right;
+}
+
+.mini {
+  height: 6px;
+  background: var(--line);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.mini div {
+  height: 100%;
+  background: var(--accent-soft);
+}
