@@ -1823,3 +1823,88 @@ body.wide {
 .session-dot.teal.future {
   opacity: 0.5;
 }
+
+/* Chores wheel: tap zones and the "ticked · Undo" line under it. */
+.chore-wheel {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-user-select: none;
+  user-select: none;
+  touch-action: manipulation;
+}
+
+.wheel-hit {
+  fill: none;
+  stroke: transparent;
+  stroke-width: 40;
+  pointer-events: stroke;
+  cursor: pointer;
+}
+
+.wheel-status {
+  min-height: 20px;
+  margin: 6px 0 0;
+  font-size: 13px;
+  color: var(--muted);
+  text-align: center;
+}
+
+.wheel-status button {
+  border: 0;
+  background: none;
+  color: var(--accent);
+  font: inherit;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 0 4px;
+}
+
+/* Rewards page: perk rows, and the rest-day tokens. */
+.perk-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 0;
+}
+
+.perk-row.claimed {
+  opacity: 0.55;
+}
+
+.perk-level {
+  font-size: 13px;
+  color: var(--muted);
+  text-align: right;
+}
+
+.perk-level.open {
+  color: var(--gold);
+  font-weight: 500;
+}
+
+.perk-select {
+  flex: 0 1 auto;
+}
+
+.perk-level-input {
+  flex: 0 0 64px;
+}
+
+.tokens {
+  display: inline-flex;
+  gap: 5px;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+
+.token {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid var(--sleep);
+  box-sizing: border-box;
+}
+
+.token.full {
+  background: var(--sleep);
+}

@@ -1,5 +1,6 @@
 // The quest wheel on the Chores page: one slice for each time a quest needs doing
 // this week (dishes gets 3), clockwise from the top in CHORES order.
+// Tapping a quest ticks it (see tapWheel in chores-page.js).
 // Solid green = done this week. Dashed green = last week's tick still covers it
 // (every-two-weeks chores). Faint track = still to do. The centre counts what's left.
 
@@ -67,6 +68,14 @@ function wheelLabel(events, chore, firstPosition, count, week) {
     text-anchor="${anchor}" dominant-baseline="${baseline}">${chore.short ?? chore.name}</text>`;
 }
 
+// A wide invisible tap zone over all of a quest's slices (the slices are only ~11px thick
+// on a phone). data-chore tells chores-page.js which quest was tapped.
+function wheelHit(chore, firstPosition, count) {
+  const from = firstPosition / count;
+  const to = (firstPosition + choreTarget(chore)) / count;
+  return `<path class="wheel-hit" data-chore="${chore.id}" d="${wheelArc(CHORE_WHEEL.radius, from, to)}"/>`;
+}
+
 // Centre, in the dial's style: a heading and a line under it.
 function wheelCentre(left, daysLeft) {
   const centre = CHORE_WHEEL.size / 2;
@@ -93,12 +102,16 @@ function choreWheelHtml(events, today, before) {
     .map((slice, position) => (slice.index === 0 ? wheelLabel(events, slice.chore, position, count, week) : ""))
     .join("");
 
+  const hits = slices
+    .map((slice, position) => (slice.index === 0 ? wheelHit(slice.chore, position, count) : ""))
+    .join("");
+
   const left = CHORES.list.reduce((sum, chore) => sum + choreLeftThisWeek(events, chore, week), 0);
   const daysLeft = 7 - daysBetween(week, today);
 
   return `<svg class="chore-wheel" viewBox="0 0 ${CHORE_WHEEL.size} ${CHORE_WHEEL.size}" role="img"
       aria-label="${left} chores left this week">
-    ${arcs}${labels}${wheelCentre(left, daysLeft)}
+    ${arcs}${labels}${wheelCentre(left, daysLeft)}${hits}
   </svg>`;
 }
 

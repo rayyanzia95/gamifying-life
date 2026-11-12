@@ -95,4 +95,45 @@ function drawWheel(events) {
   lastWheel = doneSliceKeys(events, today);
 }
 
+// ---- Tapping the wheel ----
+// One tap ticks the quest's next slice. A "Laundry ticked · Undo" line shows for 6 seconds.
+// Quests that are already covered only get a one-line explanation.
+const UNDO_MS = 6000;
+let statusTimer = null;
+
+function showWheelStatus(text, undoChoreId) {
+  clearTimeout(statusTimer);
+  const status = document.getElementById("wheel-status");
+  status.replaceChildren(text);
+  if (undoChoreId) {
+    const undo = document.createElement("button");
+    undo.type = "button";
+    undo.textContent = "Undo";
+    undo.addEventListener("click", () => {
+      removeChore(undoChoreId);
+      showWheelStatus("Unticked");
+    });
+    status.append(" · ", undo);
+  }
+  statusTimer = setTimeout(() => status.replaceChildren(), UNDO_MS);
+}
+
+function tapWheel(chore) {
+  const events = loadEvents();
+  const week = weekStart(todayString());
+  if (choreLeftThisWeek(events, chore, week) > 0) {
+    addChore(chore.id);
+    showWheelStatus(`${chore.name} ticked`, chore.id);
+  } else if (choreDueThisWeek(events, chore, week) === 0) {
+    showWheelStatus(`${chore.name}: done last week, nothing to do`);
+  } else {
+    showWheelStatus(`${chore.name} is done · untick it in the list`);
+  }
+}
+
+document.getElementById("wheel").addEventListener("click", event => {
+  const hit = event.target.closest("[data-chore]");
+  if (hit) tapWheel(CHORES.list.find(chore => chore.id === hit.dataset.chore));
+});
+
 render();
