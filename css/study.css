@@ -119,11 +119,17 @@
 .kind-cheat { --kind: var(--cmput); }
 .kind-lab   { --kind: var(--study); }
 .kind-plan  { --kind: var(--gold); }
+.kind-practice { --kind: var(--accent); }
+.kind-mock     { --kind: var(--personal); }
+.kind-visual   { --kind: var(--health); }
 
 .kind-crash,
 .kind-cheat,
 .kind-lab,
-.kind-plan {
+.kind-plan,
+.kind-practice,
+.kind-mock,
+.kind-visual {
   background: color-mix(in srgb, var(--kind) 16%, var(--surface));
   color: color-mix(in srgb, var(--kind) 70%, var(--text));
 }

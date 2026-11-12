@@ -263,9 +263,35 @@ const STUDY_GUIDE_KINDS = [
   { id: "notes", name: "Notes" },
   { id: "lab",   name: "Lab" },
   { id: "plan",  name: "Plan" },
+  { id: "practice", name: "Practice bank" },
+  { id: "mock",  name: "Mock exam" },
+  { id: "visual", name: "Visual guide" },
 ];
 
+// One artifact holds every course's crash course, practice bank, mock exams and visual
+// guide (a copy of his Fall 2026 Planner); "#phys.course" opens that one tab.
+const GUIDES_ARTIFACT = "https://claude.ai/artifact/1mtx4FJACcCm4MjCPiLEQD";
+
 const STUDY_GUIDES = [
+  { course: "phys",  kind: "crash",    updated: "2026-11-10", title: "Midterm 2 Crash Course",            url: `${GUIDES_ARTIFACT}#phys.course`,    exam: "phys-midterm-2" },
+  { course: "phys",  kind: "practice", updated: "2026-11-10", title: "Midterm 2 Practice Bank",           url: `${GUIDES_ARTIFACT}#phys.practice`,  exam: "phys-midterm-2" },
+  { course: "phys",  kind: "mock",     updated: "2026-11-10", title: "Midterm 2 Mock Exams",              url: `${GUIDES_ARTIFACT}#phys.exam`,      exam: "phys-midterm-2" },
+  { course: "phys",  kind: "visual",   updated: "2026-11-10", title: "Midterm 2 Visual Guide",            url: `${GUIDES_ARTIFACT}#phys.visual`,    exam: "phys-midterm-2" },
+  { course: "cmput", kind: "crash",    updated: "2026-11-10", title: "Midterm 3 Crash Course",            url: `${GUIDES_ARTIFACT}#cmput.course`,   exam: "cmput-midterm-3" },
+  { course: "cmput", kind: "practice", updated: "2026-11-10", title: "Midterm 3 Practice Bank",           url: `${GUIDES_ARTIFACT}#cmput.practice`, exam: "cmput-midterm-3" },
+  { course: "cmput", kind: "mock",     updated: "2026-11-10", title: "Midterm 2 & 3 Mock Exams",          url: `${GUIDES_ARTIFACT}#cmput.exam`,     exam: "cmput-midterm-3" },
+  { course: "cmput", kind: "visual",   updated: "2026-11-10", title: "Midterm 3 Visual Guide",            url: `${GUIDES_ARTIFACT}#cmput.visual`,   exam: "cmput-midterm-3" },
+  { course: "econ",  kind: "crash",    updated: "2026-11-10", title: "Final Exam Crash Course",           url: `${GUIDES_ARTIFACT}#econ.course`,    exam: "econ-final-exam" },
+  { course: "econ",  kind: "practice", updated: "2026-11-10", title: "Final Exam Practice Bank",          url: `${GUIDES_ARTIFACT}#econ.practice`,  exam: "econ-final-exam" },
+  { course: "econ",  kind: "mock",     updated: "2026-11-10", title: "Final Mock Exams",                  url: `${GUIDES_ARTIFACT}#econ.exam`,      exam: "econ-final-exam" },
+  { course: "econ",  kind: "visual",   updated: "2026-11-10", title: "Final Exam Visual Guide",           url: `${GUIDES_ARTIFACT}#econ.visual`,    exam: "econ-final-exam" },
+  { course: "astro", kind: "crash",    updated: "2026-11-10", title: "Quiz Crash Course: Modules 7–8",    url: `${GUIDES_ARTIFACT}#astro.course`,   exam: "astro-quiz-modules-7-8" },
+  { course: "astro", kind: "practice", updated: "2026-11-10", title: "Modules 7–8 Practice Bank",         url: `${GUIDES_ARTIFACT}#astro.practice`, exam: "astro-quiz-modules-7-8" },
+  { course: "astro", kind: "mock",     updated: "2026-11-10", title: "Modules 7–8 Mock Quizzes",          url: `${GUIDES_ARTIFACT}#astro.exam`,     exam: "astro-quiz-modules-7-8" },
+  { course: "astro", kind: "visual",   updated: "2026-11-10", title: "Modules 7–8 Visual Guide",          url: `${GUIDES_ARTIFACT}#astro.visual`,   exam: "astro-quiz-modules-7-8" },
+  { course: "study", kind: "crash",    updated: "2026-11-10", title: "Study Skills Crash Course",         url: `${GUIDES_ARTIFACT}#study.course` },
+  { course: "study", kind: "practice", updated: "2026-11-10", title: "Study Skills Practice",             url: `${GUIDES_ARTIFACT}#study.practice` },
+  { course: "study", kind: "visual",   updated: "2026-11-10", title: "Study Skills Visual Guide",         url: `${GUIDES_ARTIFACT}#study.visual` },
   { course: "phys",  kind: "lab",   updated: "2026-11-10", title: "Lab Report 13: Springs II",                  url: "https://claude.ai/artifact/EAWsLeXs3mpMEk1VeYcU6R" },
   { course: "phys",  kind: "lab",   updated: "2026-11-03", title: "Lab Report 12: Hooke's Law and SHM",         url: "https://claude.ai/artifact/AK8QuNDZz73DKghQg57YoN" },
   { course: "phys",  kind: "lab",   updated: "2026-10-27", title: "Human Arm Statics Lab: Worksheet Solutions", url: "https://claude.ai/artifact/LCpbpx31EH9ChHwy1ohuqv" },
