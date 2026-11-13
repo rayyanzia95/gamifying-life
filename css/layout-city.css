@@ -67,9 +67,10 @@
   background: var(--surface);
 }
 
-/* The 3D canvas: only on wide screens without reduced motion (js/city-home.js decides). */
+/* The 3D canvas (js/city-home.js decides; no WebGL means the plain map instead). */
 .city-stage.is-3d { padding: 0; overflow: hidden; aspect-ratio: 4 / 3; }
 .city-stage.is-3d canvas { display: block; width: 100%; height: 100%; }
+.city-stage.is-3d > svg { display: block; width: 100%; height: 100%; } /* the flat map holds the place while 3D loads */
 
 .city-tag {
   position: absolute;
@@ -84,6 +85,10 @@
   white-space: nowrap;
   will-change: transform;
 }
+
+/* Held still (phones): names only, at the 12px floor, so the towers stay visible. */
+.city-stage.is-still .city-tag { font-size: 0.75rem; padding: 0 6px; }
+.city-stage.is-still .city-tag .lv { display: none; }
 
 .city-tag:is(:hover, :focus-visible) { background: var(--c); color: var(--bg); }
 

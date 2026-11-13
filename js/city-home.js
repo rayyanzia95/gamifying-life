@@ -1,7 +1,8 @@
 // City layout, Home only: home.js calls cityHomeHtml instead of homeCardHtml, then cityHomeMount. The city has one
 // building per branch plus the overall level as the centre (js/city-svg.js has the tiers and the flat SVG map).
-// Wide screens without reduced motion get the 3D scene (js/city/scene.js); three.js and the building files are only
-// fetched then, and only when City is the layout. Phones, reduced motion, no WebGL or a failed fetch get the SVG.
+// Every browser with WebGL gets the 3D scene (js/city/scene.js); three.js and the building files are only fetched
+// then, and only when City is the layout. Wide screens can orbit and it moves; phones and reduced motion get the same
+// city held still (drawn on demand). No WebGL or a failed fetch gets the flat SVG, which is also shown while it loads.
 // Beside the city: the next prayer and each branch's level and today. Styles in css/layout-city.css.
 // Needs hud-home.js (hudPrayers), orrery-home.js (orrIn) and the scoring files loaded before it.
 
@@ -42,10 +43,10 @@ function cityHasWebgl() {
   try { return !!document.createElement("canvas").getContext("webgl"); } catch { return false; }
 }
 
-// Live 3D only when there is room, motion is welcome and the browser can draw it.
-function cityUse3d() {
+// Held still on phones and when motion isn't welcome.
+function cityStill() {
   const calm = matchMedia("(prefers-reduced-motion: reduce)").matches || document.documentElement.dataset.motion === "none";
-  return matchMedia(CITY_WIDE).matches && !calm && cityHasWebgl();
+  return calm || !matchMedia(CITY_WIDE).matches;
 }
 
 function cityNextPrayerHtml(events, today) {
@@ -83,12 +84,12 @@ let cityShown = null; // the items just drawn, 3D or flat, for the level-up buil
 function cityHomeHtml(events, overall, overallXp, branches) {
   const today = todayString();
   const items = cityItems(overall, branches);
-  const live = cityUse3d();
+  const live = cityHasWebgl();
   cityPending = live ? items : null;
   cityShown = items;
   const label = `Your city: a building per branch, taller at higher levels, windows lit by today's progress. Overall level ${overall.level}.`;
   const stage = live
-    ? `<div class="city-stage is-3d" id="city-stage" role="group" aria-label="${label}"></div>`
+    ? `<div class="city-stage is-3d" id="city-stage" role="group" aria-label="${label}">${cityMapSvg(items, label)}</div>`
     : `<div class="city-stage">${cityMapSvg(items, label)}</div>`;
   const rows = branches.map(b => `<a class="city-row" href="${b.page}" style="--c: var(--${b.id})">
     <i></i><span>${b.name}</span><span class="num">Lv ${b.level} · ${cityPercent(b.share)}% today</span></a>`).join("");
@@ -109,8 +110,8 @@ function cityHomeMount() {
   const items = cityPending;
   if (!stage || !items) { cityBuildPlaySvg(document.querySelector(".city-stage"), grown); return; }
   cityLoad3d().then(() => {
-    if (stage.isConnected) CityScene.mount(stage, items, grown);
-    else { const now = document.getElementById("city-stage"); if (now) CityScene.mount(now, cityPending, grown); }
+    if (stage.isConnected) CityScene.mount(stage, items, grown, cityStill());
+    else { const now = document.getElementById("city-stage"); if (now) CityScene.mount(now, cityPending, grown, cityStill()); }
   }).catch(() => {
     stage.classList.remove("is-3d");
     stage.innerHTML = cityMapSvg(items, "Your city");
@@ -118,7 +119,7 @@ function cityHomeMount() {
   });
 }
 
-// Crossing the wide-screen line (a resized window, a rotated tablet) swaps 3D and SVG.
+// Crossing the wide-screen line (a resized window, a rotated tablet) switches between moving and still.
 matchMedia(CITY_WIDE).addEventListener("change", () => {
   if (document.documentElement.dataset.layout === "city" && typeof render === "function") render();
 });

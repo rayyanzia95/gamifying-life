@@ -1,7 +1,8 @@
 // The 3D city for City → Home on wide screens (js/city-home.js loads three.js, then the building files, then this).
 // One building per CITY_PLOT cell, an orthographic camera with limited orbit and zoom, today's XP as the glow
 // material's brightness (dim 0.15 to full 1.0), small HTML tags over the buildings, 30 fps and paused when the page
-// is hidden or the city is off screen. The scene is built once and kept; a redraw of Home only re-attaches it.
+// is hidden or the city is off screen. On phones and under reduced motion it is "still": no orbit controls, and a frame is
+// drawn only when something changes (mount, resize, scrolling into view, a level-up build), so nothing loops. The scene is built once and kept; a redraw of Home only re-attaches it.
 
 const CityScene = (() => {
   const GLOW_MIN = 0.15; // windows of a branch with nothing done today
@@ -178,12 +179,12 @@ const CityScene = (() => {
     floor.receiveShadow = true;
     scene.add(floor);
     CityTerrain.build(scene);
-    s ={ canvas, renderer, scene, camera, controls, districts: new Map(), tags: new Map(), visible: true, last: 0, down: null };
+    s = { canvas, renderer, scene, camera, controls, districts: new Map(), tags: new Map(), visible: true, last: 0, down: null, still: false, queued: false };
     addScenery();
     watchPointer();
-    new IntersectionObserver(([e]) => { s.visible = e.isIntersecting; }).observe(canvas);
+    new IntersectionObserver(([e]) => { s.visible = e.isIntersecting; wake(); }).observe(canvas);
     new ResizeObserver(fit).observe(canvas);
-    requestAnimationFrame(frame);
+    document.addEventListener("visibilitychange", wake); // a frame skipped while the page was hidden is redrawn on return
   }
 
   // A click on a building (not the end of a drag) opens its page.
@@ -212,6 +213,14 @@ const CityScene = (() => {
     const aspect = w / h, half = Math.max(10, 18 / aspect);
     Object.assign(s.camera, { left: -half * aspect, right: half * aspect, top: half, bottom: -half });
     s.camera.updateProjectionMatrix();
+    wake();
+  }
+
+  // Ask for one frame (never two at once). Moving mode keeps asking from frame(); still mode only when told.
+  function wake() {
+    if (s.queued) return;
+    s.queued = true;
+    requestAnimationFrame(frame);
   }
 
   function tagFor(item) {
@@ -222,7 +231,11 @@ const CityScene = (() => {
       s.tags.set(item.id, tag);
     }
     tag.style.setProperty("--c", item.c);
-    tag.textContent = `${item.name} · Lv ${item.level}`;
+    tag.textContent = item.name;
+    const level = document.createElement("span"); // phones drop it (css), the rows beside the city say it
+    level.className = "lv";
+    level.textContent = ` · Lv ${item.level}`;
+    tag.append(level);
     tag.setAttribute("aria-label", item.label);
     if (item.href) tag.href = item.href; else tag.removeAttribute("href");
     return tag;
@@ -240,8 +253,9 @@ const CityScene = (() => {
   }
 
   function frame(time) {
-    requestAnimationFrame(frame);
-    if (document.hidden || !s.visible || time - s.last < FRAME_MS) return;
+    s.queued = false;
+    if (!s.still || builds.length) wake();
+    if (document.hidden || !s.visible || (!s.still && time - s.last < FRAME_MS)) return;
     s.last = time;
     const t = time / 1000;
     CityUtils.tick(s.scene, t); // water, boats, flags and lamps
@@ -259,12 +273,16 @@ const CityScene = (() => {
     placeTags();
   }
 
-  // items: [{ id, name, href, level, tier, lit, c, label }]; grown: [{ id, from }] districts to rebuild. Safe to call again with fresh numbers.
-  function mount(host, items, grown = []) {
+  // items: [{ id, name, href, level, tier, lit, c, label }]; grown: [{ id, from }] districts to rebuild; still: no controls, frames on demand. Safe to call again with fresh numbers.
+  function mount(host, items, grown = [], still = false) {
     if (!s) create(host);
+    s.still = still;
+    s.controls.enabled = !still;
     items.forEach(item => addDistrict(item, grown));
+    host.classList.toggle("is-still", still);
     host.replaceChildren(s.canvas, ...items.map(tagFor));
     fit();
+    wake(); // fit() skips this when the box has no size yet; the data may have changed too
   }
 
   return { mount };
