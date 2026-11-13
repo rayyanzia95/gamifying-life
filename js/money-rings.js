@@ -33,8 +33,8 @@ function daysToGo(week, today) {
 
 function ringTextHtml(week, goal, today) {
   const hasBudget = week.budget !== null;
-  const main = hasBudget ? dollars(week.left) : "No budget";
-  const sub = hasBudget ? `left · ${daysToGo(weekStart(today), today)}` : "set one below";
+  const main = hasBudget ? dollars(week.left) : "—";
+  const sub = hasBudget ? `left · ${daysToGo(weekStart(today), today)}` : "no budget set";
   const saved = goal ? `saved ${savedPercent(goal)}%` : "";
   return `
     <text class="money-left" x="50" y="50" text-anchor="middle">${main}</text>

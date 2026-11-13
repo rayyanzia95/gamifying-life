@@ -223,7 +223,7 @@ function drawTiles(events) {
 // action is what keeps the streak going, e.g. "Revise" or "Make dua".
 function streakLabel({ days, paused }, action) {
   if (days === 0) return `${action} today to start a streak`;
-  const text = `🔥 ${days}-day streak`;
+  const text = `${days}-day streak`;
   return paused ? `${text} · paused, ${action.toLowerCase()} today to keep it` : text;
 }
 

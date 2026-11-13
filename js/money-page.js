@@ -74,7 +74,7 @@ function amountForm({ button, cents = null, name = null, onSave }) {
   const form = document.createElement("form");
   form.className = "money-form";
   const nameInput = name === null ? null : Object.assign(document.createElement("input"), {
-    className: "money-input", value: name, maxLength: 40, placeholder: "Goal, e.g. Emergency fund",
+    className: "money-input", value: name, maxLength: 40, placeholder: "e.g. Emergency fund…",
   });
   const amountInput = Object.assign(document.createElement("input"), {
     className: "money-input", inputMode: "decimal", placeholder: "$0.00",
@@ -217,7 +217,7 @@ function drawLog(events, today) {
   button.setAttribute("aria-pressed", String(noSpend));
 }
 
-// "🔥 12 days logged · ★ 2 no-spend this month": any logged day counts, one missed day pauses.
+// "12 days logged · ★ 2 no-spend this month": any logged day counts, one missed day pauses.
 function drawStreak(events, today) {
   const streak = dayStreak(moneyLogDays(events));
   const stars = noSpendDaysInMonth(events, today.slice(0, 7));
@@ -225,7 +225,7 @@ function drawStreak(events, today) {
   const parts = [];
   if (streak.days > 0) {
     const word = streak.days === 1 ? "day" : "days";
-    parts.push(`🔥 ${streak.days} ${word} logged${streak.paused ? " (paused)" : ""}`);
+    parts.push(`${streak.days} ${word} logged${streak.paused ? " (paused)" : ""}`);
   }
   if (stars > 0) parts.push(`★ ${stars} no-spend this month`);
   line.textContent = parts.join(" · ");
