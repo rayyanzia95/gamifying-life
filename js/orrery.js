@@ -14,8 +14,12 @@ function orrPlanetSvg(item) {
   const angle = `${orrStart(item)}; --a: ${orrRound((item.start ?? 0) + item.p * 360)}deg`;
   const ring = item.t === undefined ? "" : `<circle class="orr-today-track" r="${item.pr + 7}"/>
     <circle class="orr-today" r="${item.pr + 7}" pathLength="100" stroke-dasharray="${orrRound(item.t * 100)} 100"/>`;
-  const labels = item.name ? `<text class="orr-name" y="${orrRound(item.pr + 26)}">${item.name}</text>
-    <text class="orr-sub" y="${orrRound(item.pr + 42)}">${item.sub}</text>` : "";
+  const above = item.above; // set by orrPlaceLabels when below would collide
+  const labels = item.name ? (above
+    ? `<text class="orr-name" y="${orrRound(-item.pr - 32)}">${item.name}</text>
+    <text class="orr-sub" y="${orrRound(-item.pr - 14)}">${item.sub}</text>`
+    : `<text class="orr-name" y="${orrRound(item.pr + 26)}">${item.name}</text>
+    <text class="orr-sub" y="${orrRound(item.pr + 42)}">${item.sub}</text>`) : "";
   const body = `<g class="orr-planet" style="${angle}"><g transform="translate(0 -${item.R})"><g class="orr-upright" style="${angle}">
     ${ring}<circle class="orr-ball" r="${item.pr}"/>${labels}</g></g></g>`;
   const wrap = item.href ? `<a href="${item.href}" aria-label="${item.label}">${body}</a>` : body;
@@ -32,6 +36,30 @@ function orrCometSvg(comet) {
   </g></g></a>`;
 }
 
+// Labels go under their planet unless that would land on another label or planet; then they go above.
+// Boxes are rough text sizes (17px name, 14px sub), enough to tell when two labels would touch.
+function orrPlaceLabels(items) {
+  const at = it => {
+    const a = (((it.start ?? 0) + it.p * 360) * Math.PI) / 180;
+    return { x: it.R * Math.sin(a), y: -it.R * Math.cos(a) };
+  };
+  const box = (it, above) => {
+    const { x, y } = at(it), w = Math.max(it.name.length * 10, it.sub.length * 8) / 2;
+    return above ? { x0: x - w, x1: x + w, y0: y - it.pr - 40, y1: y - it.pr - 4 }
+                 : { x0: x - w, x1: x + w, y0: y + it.pr + 8, y1: y + it.pr + 48 };
+  };
+  const hit = (a, b) => a.x0 < b.x1 && b.x0 < a.x1 && a.y0 < b.y1 && b.y0 < a.y1;
+  const balls = items.map(it => { const { x, y } = at(it); return { x0: x - it.pr - 4, x1: x + it.pr + 4, y0: y - it.pr - 4, y1: y + it.pr + 4 }; });
+  const placed = [];
+  return items.map((it, i) => {
+    if (!it.name) return it;
+    const clash = b => placed.some(o => hit(b, o)) || balls.some((o, j) => j !== i && hit(b, o));
+    const above = clash(box(it, false)) && !clash(box(it, true));
+    placed.push(box(it, above));
+    return { ...it, above };
+  });
+}
+
 // The whole sky. sun: { n, t, p? (0..1 round the sun) }. vb = half the view box, sunR = the sun's radius.
 function orbitSvg({ items, sun, comets = [], vb, sunR, label, cls = "" }) {
   const orbits = items.map(item => `<circle class="orr-orbit" r="${item.R}"/>
@@ -42,7 +70,7 @@ function orbitSvg({ items, sun, comets = [], vb, sunR, label, cls = "" }) {
     <circle class="orr-glow" r="${vb}"/>${orbits}
     <circle class="orr-sun" r="${sunR}"/>${sunRing}
     <text class="orr-sun-n" y="-4">${sun.n}</text><text class="orr-sun-t" y="${orrRound(sunR * 0.55)}">${sun.t}</text>
-    ${comets.map(orrCometSvg).join("")}${items.map(orrPlanetSvg).join("")}
+    ${comets.map(orrCometSvg).join("")}${orrPlaceLabels(items).map(orrPlanetSvg).join("")}
   </svg>`;
 }
 

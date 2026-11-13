@@ -150,7 +150,7 @@
 
 .orr-header .orr-mini { width: 96px; flex: none; }
 .orr-mini .orr-sun-n { font-size: 20px; }
-.orr-mini .orr-sun-t { font-size: 6px; letter-spacing: 0.15em; }
+.orr-mini .orr-sun-t { display: none; }
 .orr-mini .orr-progress { stroke-width: 2; }
 
 .orr-header-text {
