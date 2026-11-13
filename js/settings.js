@@ -111,7 +111,7 @@ const FX_PRESETS = {
 };
 
 const APPEARANCE_CHOICES = {
-  paletteDark: { label: "Colours in dark mode", options: palettesFor("dark"), default: "ice" },
+  paletteDark: { label: "Colours in dark mode", options: palettesFor("dark"), default: "multi" },
   paletteLight: { label: "Colours in light mode", options: palettesFor("light") },
   black: {
     label: "Black level (dark mode)",
