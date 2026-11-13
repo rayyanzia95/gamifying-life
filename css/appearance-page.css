@@ -44,3 +44,8 @@
   justify-content: space-between;
   gap: 10px;
 }
+
+/* Phone: the preview is a normal card at the top, not a strip that covers the options. */
+@media (max-width: 699px) {
+  .appearance-preview { position: static; }
+}
