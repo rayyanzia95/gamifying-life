@@ -115,6 +115,8 @@
   display: none !important;
 }
 
+html.booting body { visibility: hidden; } /* removed by theme.js once the page scripts have run */
+
 body {
   font-family: system-ui, sans-serif;
   position: relative;

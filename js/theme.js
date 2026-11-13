@@ -39,6 +39,14 @@ function toggleTheme() {
 const initialTheme = savedTheme();
 if (initialTheme) document.documentElement.dataset.theme = initialTheme;
 
+// The page scripts sit at the end of <body> and add each layout's header and classes, so the browser can paint a
+// half-built page first (plain title, missing header, then everything jumps). Hide the body until they have run:
+// base.css hides `html.booting body`. This listener is registered first, so it runs before the page-open effects.
+document.documentElement.classList.add("booting");
+const showPage = () => document.documentElement.classList.remove("booting");
+document.addEventListener("DOMContentLoaded", showPage);
+setTimeout(showPage, 2000); // safety net: never leave the page blank
+
 document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("theme-toggle").addEventListener("click", toggleTheme);
   updateButton();
