@@ -44,7 +44,7 @@ function cmdWheelSvg({ sectors, hub, size, label, cls = "" }) {
     <g class="cw-sectors">${sectors.map((s, i) => cwSectorHtml(s, i, step, size)).join("")}</g>
     <circle class="cw-hub" r="${r0 - 8}"/>
     <circle class="cw-hub-xp" r="${r0 - 16}" pathLength="100" stroke-dasharray="${cwRound(hub.p * 100)} 100"/>
-    <text class="cw-hub-n" y="-6">${hub.n}</text><text class="cw-hub-t" y="${cwRound(r0 * 0.3)}">${hub.t}</text>
+    <text class="cw-hub-n" y="${hub.t ? -6 : 0}">${hub.n}</text><text class="cw-hub-t" y="${cwRound(r0 * 0.3)}">${hub.t}</text>
   </svg>`;
 }
 
@@ -63,7 +63,7 @@ function cwPageHeaderHtml(branch) {
   const { level, into, cost } = levelOf(totals, branch.id);
   const { core, extra } = todayXp(events, branch.id);
   const wheel = cmdWheelSvg({
-    sectors, hub: { n: level, t: "LEVEL", p: into / cost }, size: { r0: 40, r1: 74, vb: 84, gap: 0.04 },
+    sectors, hub: { n: level, t: "", p: into / cost }, size: { r0: 40, r1: 74, vb: 84, gap: 0.04 },
     label: "Branch wheel", cls: "cw-mini",
   });
   return `<nav class="cw-header" style="--c: var(--${branch.id})" aria-label="Branch wheel">${wheel}

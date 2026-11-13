@@ -133,10 +133,11 @@
 }
 
 .cw-header .cw-mini { width: 112px; flex: none; }
-.cw-mini .cw-track { stroke-width: 2; }
+.cw-mini .cw-track { fill: color-mix(in srgb, var(--c) 24%, var(--surface)); stroke-width: 2; }
+.cw-mini .cw-fill { fill: color-mix(in srgb, var(--c) 70%, var(--surface)); }
 .cw-mini .cw-sec.sel .cw-track { stroke-width: 2; }
-.cw-mini .cw-hub-n { font-size: 26px; }
-.cw-mini .cw-hub-t { font-size: 7px; }
+.cw-mini .cw-hub-n { font-size: 28px; }
+.cw-mini .cw-sec:is(:hover, :focus-visible) .cw-track { stroke: var(--text); }
 
 .cw-header-text {
   display: grid;
