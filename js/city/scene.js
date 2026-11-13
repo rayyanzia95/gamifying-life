@@ -68,7 +68,57 @@ const CityScene = (() => {
 
   const brightness = lit => GLOW_MIN + (1 - GLOW_MIN) * Math.min(Math.max(lit, 0), 1);
 
-  function addDistrict(item) {
+  // Level-up build: the district's new tier is cut off by a flat plane that climbs in five steps (so the floors rise
+  // one after another), while a copy of the old tier fades out and a ring ripples off the pad. Times are in seconds.
+  const BUILD_FADE = 0.5, BUILD_RISE = 1.4, BUILD_STEPS = 5, BUILD_RING_AT = 1.9, BUILD_RING_FOR = 1.2, BUILD_END = 3.2;
+  const builds = [];
+
+  // Give every mesh in the group its own copy of its materials (the originals are shared between buildings), so
+  // clipping or fading one district can't touch another. fn(material) tweaks each copy.
+  function ownMaterials(group, fn) {
+    group.traverse(o => {
+      if (!o.material) return;
+      o.material = Array.isArray(o.material) ? o.material.map(m => m.clone()) : o.material.clone();
+      [].concat(o.material).forEach(fn);
+    });
+  }
+
+  function startBuild(group, id, fromTier) {
+    const base = group.position.y, top = group.userData.top;
+    const plane = new THREE.Plane(new THREE.Vector3(0, -1, 0), base - 1); // everything above `constant` is cut off
+    ownMaterials(group, m => { m.clippingPlanes = [plane]; });
+    const ghost = CityBuildings[id](fromTier, PALETTES[id]);
+    place(ghost, id);
+    ownMaterials(ghost, m => { m.transparent = true; });
+    const ring = new THREE.Mesh(new THREE.RingGeometry(1.9, 2.1, 64),
+      new THREE.MeshBasicMaterial({ color: PALETTES[id].glow, transparent: true, opacity: 0, side: THREE.DoubleSide, depthWrite: false }));
+    ring.rotation.x = -Math.PI / 2;
+    ring.position.set(group.position.x, base + 0.1, group.position.z);
+    s.scene.add(ghost, ring);
+    builds.push({ start: performance.now() / 1000, group, ghost, ring, plane, base, height: top - base + 1 });
+  }
+
+  function stepBuilds(t) {
+    for (let i = builds.length - 1; i >= 0; i--) {
+      const b = builds[i];
+      const e = t - b.start;
+      const fade = Math.min(Math.max(1 - e / BUILD_FADE, 0), 1);
+      if (fade === 0 && b.ghost.parent) s.scene.remove(b.ghost);
+      else b.ghost.traverse(o => { if (o.material) [].concat(o.material).forEach(m => { m.opacity = fade; }); });
+      const rise = Math.min(Math.max((e - BUILD_FADE) / BUILD_RISE, 0), 1);
+      const step = Math.ceil(rise * BUILD_STEPS) / BUILD_STEPS; // 0, then a fifth at a time
+      b.plane.constant = b.base - 1 + (b.height + 1) * step;
+      const ring = Math.min(Math.max((e - BUILD_RING_AT) / BUILD_RING_FOR, 0), 1);
+      b.ring.material.opacity = ring > 0 && ring < 1 ? 0.7 * (1 - ring) : 0;
+      b.ring.scale.setScalar(0.8 + 0.8 * ring);
+      if (e < BUILD_END) continue;
+      b.group.traverse(o => { if (o.material) [].concat(o.material).forEach(m => { m.clippingPlanes = null; }); });
+      s.scene.remove(b.ring);
+      builds.splice(i, 1);
+    }
+  }
+
+  function addDistrict(item, grown = []) {
     const old = s.districts.get(item.id);
     if (old && old.tier === item.tier) { old.item = item; old.group.userData.base = brightness(item.lit); return; }
     if (old) s.scene.remove(old.group);
@@ -80,6 +130,8 @@ const CityScene = (() => {
     group.userData.top = new THREE.Box3().setFromObject(group).max.y;
     s.scene.add(group);
     s.districts.set(item.id, { tier: item.tier, group, item });
+    const up = grown.find(g => g.id === item.id);
+    if (up) startBuild(group, item.id, up.from);
   }
 
   // The park and the pool are props, not buildings; they sit on their pads at full glow.
@@ -98,6 +150,7 @@ const CityScene = (() => {
     const canvas = document.createElement("canvas");
     const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
     renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2));
+    renderer.localClippingEnabled = true; // for the level-up build's rising plane
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     const scene = new THREE.Scene();
@@ -192,6 +245,7 @@ const CityScene = (() => {
     s.last = time;
     const t = time / 1000;
     CityUtils.tick(s.scene, t); // water, boats, flags and lamps
+    stepBuilds(time / 1000);
     s.districts.forEach(({ group }) => {
       const factor = group.userData.base / GLOW_NEUTRAL;
       group.userData.glow.forEach(o => {
@@ -205,10 +259,10 @@ const CityScene = (() => {
     placeTags();
   }
 
-  // items: [{ id, name, href, level, tier, lit, c, label }]. Safe to call again with fresh numbers.
-  function mount(host, items) {
+  // items: [{ id, name, href, level, tier, lit, c, label }]; grown: [{ id, from }] districts to rebuild. Safe to call again with fresh numbers.
+  function mount(host, items, grown = []) {
     if (!s) create(host);
-    items.forEach(addDistrict);
+    items.forEach(item => addDistrict(item, grown));
     host.replaceChildren(s.canvas, ...items.map(tagFor));
     fit();
   }

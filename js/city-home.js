@@ -77,6 +77,7 @@ function cityItems(overall, branches) {
 }
 
 let cityPending = null; // the items for the 3D stage that cityHomeMount fills in
+let cityShown = null; // the items just drawn, 3D or flat, for the level-up build
 
 // overall: { level, into, cost }. branches: [{ id, name, page, level, into, cost, share }] as for homeCardHtml.
 function cityHomeHtml(events, overall, overallXp, branches) {
@@ -84,6 +85,7 @@ function cityHomeHtml(events, overall, overallXp, branches) {
   const items = cityItems(overall, branches);
   const live = cityUse3d();
   cityPending = live ? items : null;
+  cityShown = items;
   const label = `Your city: a building per branch, taller at higher levels, windows lit by today's progress. Overall level ${overall.level}.`;
   const stage = live
     ? `<div class="city-stage is-3d" id="city-stage" role="group" aria-label="${label}"></div>`
@@ -102,15 +104,17 @@ function cityHomeHtml(events, overall, overallXp, branches) {
 
 // After home.js has put the card in the page: bring the 3D scene in, or swap in the SVG if it can't load.
 function cityHomeMount() {
+  const grown = cityShown ? cityBuildDue(cityShown) : [];
   const stage = document.getElementById("city-stage");
   const items = cityPending;
-  if (!stage || !items) return;
+  if (!stage || !items) { cityBuildPlaySvg(document.querySelector(".city-stage"), grown); return; }
   cityLoad3d().then(() => {
-    if (stage.isConnected) CityScene.mount(stage, items);
-    else { const now = document.getElementById("city-stage"); if (now) CityScene.mount(now, cityPending); }
+    if (stage.isConnected) CityScene.mount(stage, items, grown);
+    else { const now = document.getElementById("city-stage"); if (now) CityScene.mount(now, cityPending, grown); }
   }).catch(() => {
     stage.classList.remove("is-3d");
     stage.innerHTML = cityMapSvg(items, "Your city");
+    cityBuildPlaySvg(stage, grown);
   });
 }
 

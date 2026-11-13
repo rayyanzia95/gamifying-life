@@ -98,6 +98,7 @@ const ANIM_CHOICES = {
   animWipe: { label: "Scan wipe when a page opens", options: ON_OFF, default: "off" },
   animStreak: { label: "Streak flame flares and flickers", options: ON_OFF, default: "on" },
   animDay: { label: "Day complete: the seven rings close and glow", options: ON_OFF, default: "on" },
+  animBuild: { label: "City: a building rebuilds floor by floor when its tier grows", options: ON_OFF, default: "on" },
 };
 const ANIM_KEYS = Object.keys(ANIM_CHOICES);
 const EFFECT_CHOICES = { ...ANIM_CHOICES, ...FX_CHOICES };

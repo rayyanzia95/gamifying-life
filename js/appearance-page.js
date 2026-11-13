@@ -52,12 +52,15 @@ function appearancePreview() {
     <div class="preview-row">
       <span class="level-chip" id="preview-chip" style="background: var(--deen)">7</span>
       <div class="bar"><div class="bar-fill" style="width: 62%"></div><div class="bonus-fill" style="width: 14%"></div></div>
-    </div>`;
+    </div>
+    <div class="preview-city">${cityMiniSvg("health", "Health", 5, 0.6)}</div>`;
   const tick = makeCheckbox("Sample tick", true, () => {});
   const play = Object.assign(document.createElement("button"), { type: "button", className: "filter-button", textContent: "Play level-up" });
   play.addEventListener("click", () => playLevelUp(document.getElementById("preview-chip"), "deen", 8));
+  const build = Object.assign(document.createElement("button"), { type: "button", className: "filter-button", textContent: "Play build" });
+  build.addEventListener("click", () => cityBuildPlaySvg(preview.querySelector(".city-mini"), [{ id: "health", from: 3, tier: 5 }]));
   const row = Object.assign(document.createElement("div"), { className: "preview-actions" });
-  row.append(tick, play);
+  row.append(tick, play, build);
   preview.append(row);
   return preview;
 }

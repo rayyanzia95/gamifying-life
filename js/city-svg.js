@@ -138,7 +138,7 @@ function cityMapSvg(items, label) {
   places.forEach(({ at, it, scenery }) => {
     const gx = at.x - 0.75, gy = at.y - 0.75;
     const lift = cityTopH(cityPadLevel(at));
-    const inner = scenery ? citySceneryHtml(gx, gy, scenery) : `<g class="city-bld" style="--c: ${it.c}">${cityBuildingSvg(gx, gy, it.tier, it.lit)}</g>`;
+    const inner = scenery ? citySceneryHtml(gx, gy, scenery) : `<g class="city-bld" style="--c: ${it.c}" data-id="${it.id}" data-gx="${gx}" data-gy="${gy}" data-lit="${it.lit}">${cityBuildingSvg(gx, gy, it.tier, it.lit)}</g>`;
     const g = `<g transform="translate(0 ${-lift})">${inner}</g>`;
     parts.push({ key: at.x + at.y + 0.5, svg: it?.href ? `<a href="${it.href}" aria-label="${it.label}">${g}</a>` : g });
   });
@@ -150,6 +150,15 @@ function cityMapSvg(items, label) {
   return `<svg class="city-map" viewBox="${x0} ${top} ${x1 - x0} ${y1 - top}" role="img" aria-label="${label}">${body}</svg>`;
 }
 
+// One building on its own (the branch page portrait, and the Appearance preview of the level-up build). data-* tell
+// js/city-build.js where it stands, so it can draw the old tier beside it.
+function cityMiniSvg(id, name, tier, lit) {
+  const x0 = cityIso(0, 1.5)[0] - 6, x1 = cityIso(1.5, 0)[0] + 6;
+  const top = -cityHeight(6) - CITY_TOWER - 30, bottom = cityIso(1.5, 1.5)[1] + 6;
+  return `<svg class="city-mini" viewBox="${x0} ${top} ${x1 - x0} ${bottom - top}" role="img"
+    aria-label="${name} building, tier ${tier} of 6"><g class="city-bld" style="--c: var(--${id})" data-id="${id}" data-gx="0" data-gy="0" data-lit="${lit}">${cityBuildingSvg(0, 0, tier, lit)}</g></svg>`;
+}
+
 // Branch page header: this branch's building at its tier, with the numbers beside it.
 function cityPageHeaderHtml(branch) {
   const events = loadEvents();
@@ -158,10 +167,7 @@ function cityPageHeaderHtml(branch) {
   const goal = branchGoal(branch.id);
   const lit = goal > 0 ? (core + extra) / goal : (core + extra > 0 ? 1 : 0);
   const tier = cityTier(level);
-  const x0 = cityIso(0, 1.5)[0] - 6, x1 = cityIso(1.5, 0)[0] + 6;
-  const top = -cityHeight(tier) - (tier >= 3 ? CITY_TOWER : 0) - (tier >= 5 ? 30 : 8), bottom = cityIso(1.5, 1.5)[1] + 6;
-  const svg = `<svg class="city-mini" viewBox="${x0} ${top} ${x1 - x0} ${bottom - top}" role="img"
-    aria-label="${branch.name} building, tier ${tier} of 6"><g class="city-bld" style="--c: var(--${branch.id})">${cityBuildingSvg(0, 0, tier, lit)}</g></svg>`;
+  const svg = cityMiniSvg(branch.id, branch.name, tier, lit);
   return `<div class="city-header" style="--c: var(--${branch.id})">${svg}
     <div class="city-header-text"><strong>Level ${level} · tier ${tier} of 6</strong>
       <span>${into} / ${cost} XP to level ${level + 1}</span><span>Today +${core + extra} XP</span></div>
@@ -174,6 +180,8 @@ function setupCityPage() {
   if (!branch) return;
   document.body.classList.add("city-branch");
   document.querySelector("h1")?.insertAdjacentHTML("afterend", cityPageHeaderHtml(branch));
+  const tier = cityTier(levelOf(xpByBranch(loadEvents()), branch.id).level);
+  cityBuildPlaySvg(document.querySelector(".city-header .city-mini"), cityBuildDue([{ id: branch.id, tier }]));
 }
 
 setupCityPage();

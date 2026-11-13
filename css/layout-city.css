@@ -135,3 +135,18 @@
 
 [data-layout="city"] body.city-branch > .back { order: -2; align-self: flex-start; }
 [data-layout="city"] body.city-branch > :is(h1, .city-header) { order: -1; }
+
+/* ---- Level-up build (js/city-build.js): the old tier fades, the new one rises floor by floor, a ring ripples ---- */
+
+@keyframes city-old-out { to { opacity: 0; } }
+@keyframes city-rise { from { clip-path: inset(100% 0 0 0); } to { clip-path: inset(0 0 0 0); } }
+@keyframes city-ripple { from { transform: scale(0.7); opacity: 0.7; } to { transform: scale(1.7); opacity: 0; } }
+.city-old { pointer-events: none; animation: city-old-out 0.5s ease-out forwards; }
+.city-build-new { animation: city-rise 1.4s steps(5, jump-start) 0.5s backwards; }
+.city-ripple { fill: none; stroke: var(--c); stroke-width: 2; pointer-events: none; opacity: 0;
+  transform-box: fill-box; transform-origin: center; animation: city-ripple 1.2s ease-out 1.9s both; }
+@media (prefers-reduced-motion: reduce) {
+  .city-old, .city-ripple { display: none; }
+  .city-build-new { animation: none; }
+}
+.preview-city { width: 120px; margin: 0 auto 8px; }
