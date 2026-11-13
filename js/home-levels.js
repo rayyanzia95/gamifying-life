@@ -22,8 +22,9 @@ function homePoint(i, n, radius, fraction = 1) {
 }
 
 // Outer ring: one segment per branch (centred on its spoke), filled with today's share, a gap between.
-function todaySegmentsHtml(branches) {
-  const { centre, ringRadius: r, ringWidth, ringGapDegrees } = HOME;
+// r, ringWidth and ringGapDegrees default to the Ring + web look; the other centrepieces (centrepieces.js) pass their own.
+function todaySegmentsHtml(branches, r = HOME.ringRadius, ringWidth = HOME.ringWidth, ringGapDegrees = HOME.ringGapDegrees) {
+  const { centre } = HOME;
   const C = 2 * Math.PI * r;
   const span = 360 / branches.length;
   const length = ((span - ringGapDegrees) / 360) * C;
@@ -87,9 +88,15 @@ function branchRowHtml(b) {
 }
 
 // overall: { level, into, cost }. branches: [{ id, name, page, level, into, cost, share }], share = today 0..1.
+// The spoken summary of the hub, shared by every centrepiece.
+const hubLabel = (overall, branches) => `Overall level ${overall.level}. ` +
+  branches.map(b => `${b.name} level ${b.level}, ${percent(b.share)}% today`).join(". ");
+
+// Appearance → Home centrepiece: anything but Ring + web is drawn by centrepieces.js.
 function homeCardHtml(overall, branches) {
-  const label = `Overall level ${overall.level}. ` +
-    branches.map(b => `${b.name} level ${b.level}, ${percent(b.share)}% today`).join(". ");
+  const other = CENTREPIECES[document.documentElement.dataset.centre];
+  if (other) return other(overall, branches);
+  const label = hubLabel(overall, branches);
   return `<svg class="home-hub" viewBox="0 0 220 220" role="img" aria-label="${label}">
       ${todaySegmentsHtml(branches)}${levelWebHtml(branches)}${sweepHtml()}${overallCentreHtml(overall)}
     </svg>

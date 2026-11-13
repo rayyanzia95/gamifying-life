@@ -13,7 +13,7 @@ const APPEARANCE_GROUPS = [
   { title: "Animations and sci-fi FX", presets: true, keys: EFFECT_KEYS,
     note: "Scanlines are under Background. All of these stay off with Motion set to None or the device's reduce-motion setting." },
   { title: "Background", keys: ["texture"] },
-  { title: "Coming next", keys: ["centre"] },
+  { title: "Home centrepiece", keys: ["centre"], note: "The picture at the top of Home. Only the Classic layout shows it; the other layouts draw their own." },
 ];
 
 const PRESET_LABELS = { off: "All off", recommended: "Recommended", on: "All on" };

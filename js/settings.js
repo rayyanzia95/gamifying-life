@@ -252,10 +252,10 @@ const APPEARANCE_CHOICES = {
     label: "Home centrepiece",
     options: [
       { value: "ringweb", label: "Ring + web" },
-      { value: "starmap", label: "Star map", soon: true },
-      { value: "hex", label: "Hex grid", soon: true },
-      { value: "gauge", label: "Segmented gauge", soon: true },
-      { value: "sheet", label: "Stat block", soon: true },
+      { value: "starmap", label: "Star map" },
+      { value: "hex", label: "Hex grid" },
+      { value: "gauge", label: "Segmented gauge" },
+      { value: "sheet", label: "Stat block" },
     ],
   },
   // Each layout is data-layout on <html> plus its own css/layout-<value>.css (and JS where markup changes).
@@ -369,7 +369,7 @@ function applyAppearance() {
     black: dark ? s.black : "palette",
     accent: s.accent === "custom" ? `custom-${dark ? "dark" : "light"}` : "palette",
     glow: s.glow, type: s.type, bars: s.bars, ticks: s.ticks, motion: s.motion, size: s.size, radius: s.radius,
-    density: s.density, levelUp: s.levelUp, texture: s.texture, icons: s.icons, tint: s.tint, layout: s.layout,
+    density: s.density, levelUp: s.levelUp, texture: s.texture, icons: s.icons, tint: s.tint, layout: s.layout, centre: s.centre,
     ...Object.fromEntries(EFFECT_KEYS.map(key => [key, s[key]])), // fxBoot → data-fx-boot, animTick → data-anim-tick
   });
   root.style.setProperty("--accent-hue", s.accentHue); // a number the CSS turns into an oklch colour
