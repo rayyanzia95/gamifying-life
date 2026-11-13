@@ -64,6 +64,7 @@ function render() {
   document.getElementById("home-card").innerHTML =
     layoutHome ? layoutHome(events, overall, overallXp, branches) : homeCardHtml(overall, branches);
   if (document.documentElement.dataset.layout === "city") cityHomeMount();
+  if (document.documentElement.dataset.layout === "orrery") orreryHomeMount();
   drawPeopleNote();
   drawLevelNote();
   drawQuickLog(events);

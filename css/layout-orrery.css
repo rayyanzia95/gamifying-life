@@ -171,3 +171,19 @@
   .orr-name { font-size: 19px; }
   .orr-sub, .orr-comet-label, .orr-sun-t { font-size: 18px; }
 }
+
+/* ---- 3D tilt (Appearance → Orrery view = 3D tilt; js/orrery-home.js) ---- */
+
+/* touch-action: none on the sky only, so a finger on it turns it and the page around it still scrolls. */
+.orr-stage { position: relative; perspective: 1400px; touch-action: none; cursor: grab; user-select: none; border-radius: calc(18px * var(--round)); }
+.orr-stage:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.orr-stage.is-dragging { cursor: grabbing; }
+.orr-stage .orr-sky { transform: rotateX(var(--tilt, 55deg)) rotateZ(var(--yaw, 0deg)); transition: transform 0.15s ease-out; }
+.orr-stage.is-dragging .orr-sky { transition: none; }
+.orr-stage :is(.orr-name, .orr-sub, .orr-comet-label, .orr-sun-n, .orr-sun-t) { visibility: hidden; } /* the HTML tags draw them */
+
+.orr-tags { position: absolute; inset: 0; pointer-events: none; }
+.orr-tag { position: absolute; left: 0; top: 0; white-space: nowrap; line-height: 1.1; text-align: center;
+  text-shadow: 0 0 3px var(--bg), 0 0 3px var(--bg), 0 0 5px var(--bg); }
+.orr-tags a.orr-tag { pointer-events: auto; }
+@media (prefers-reduced-motion: reduce) { .orr-stage .orr-sky { transition: none; } }

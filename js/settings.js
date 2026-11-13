@@ -271,6 +271,14 @@ const APPEARANCE_CHOICES = {
       { value: "codex", label: "Grimoire ledger" },
     ],
   },
+  // Only the Orrery's Home uses it (js/orrery-home.js); Motion None and the device's reduce-motion setting force Flat.
+  orreryView: {
+    label: "Orrery view (when Layout is Orrery)",
+    options: [
+      { value: "flat", label: "Flat" },
+      { value: "tilt", label: "3D tilt (drag to turn)" },
+    ],
+  },
 };
 
 // Every setting in one object, so loading, saving and sync treat them all the same way.
@@ -370,7 +378,7 @@ function applyAppearance() {
     black: dark ? s.black : "palette",
     accent: s.accent === "custom" ? `custom-${dark ? "dark" : "light"}` : "palette",
     glow: s.glow, type: s.type, bars: s.bars, ticks: s.ticks, motion: s.motion, size: s.size, radius: s.radius,
-    density: s.density, levelUp: s.levelUp, texture: s.texture, icons: s.icons, tint: s.tint, layout: s.layout, centre: s.centre,
+    density: s.density, levelUp: s.levelUp, texture: s.texture, icons: s.icons, tint: s.tint, layout: s.layout, orreryView: s.orreryView, centre: s.centre,
     ...Object.fromEntries(EFFECT_KEYS.map(key => [key, s[key]])), // fxBoot → data-fx-boot, animTick → data-anim-tick
   });
   root.style.setProperty("--accent-hue", s.accentHue); // a number the CSS turns into an oklch colour

@@ -4,7 +4,7 @@
 
 // Cards on the page, in order: a title and the settings in it (keys of APPEARANCE_CHOICES).
 const APPEARANCE_GROUPS = [
-  { title: "Layout", keys: ["layout"], note: "Changes how Home and the branch pages are laid out. Works with any palette." },
+  { title: "Layout", keys: ["layout", "orreryView"], note: "Changes how Home and the branch pages are laid out. Works with any palette." },
   { title: "Colours", note: "The light/dark button picks which of the two colour sets shows.",
     keys: ["paletteDark", "paletteLight", "black", "accent", "accentHue", "glow", "tint"] },
   { title: "Type and shape", keys: ["type", "size", "radius", "density"] },
