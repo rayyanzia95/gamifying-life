@@ -1,7 +1,5 @@
-const events = loadEvents();
-
-const totals = xpByBranch(events);
-const overallXp = Object.values(totals).reduce((sum, xp) => sum + xp, 0);
+// Set by render() below, which runs again when sync pulls new events (sync.js redrawPage).
+let events, totals, overallXp, branches, overall;
 // A branch's share of today (0..1) is what its ring shows. A branch with parts adds each part's
 // (core + extra), capped at that part's goal, over the sum of the goals.
 function partsShare(parts) {
@@ -53,13 +51,20 @@ function branchShare(branch) {
   return partsShare({ today: { ...today, goal: branchGoal(branch.id) } });
 }
 
-const branches = BRANCHES.map(b => ({ ...b, ...levelOf(totals, b.id), share: branchShare(b) }));
-const overall = levelInfo(overallXp, LEVELS.overallMultiplier);
-// Appearance → Layout: the Cockpit HUD (hud-home.js), the Orrery (orrery-home.js), the Command wheel
-// (wheel-home.js) and the Grimoire ledger (codex.js) draw their own Home; every other layout keeps the card.
-const HOME_LAYOUTS = { hud: hudHomeHtml, orrery: orreryHomeHtml, wheel: wheelHomeHtml, codex: codexHomeHtml };
-const layoutHome = HOME_LAYOUTS[document.documentElement.dataset.layout];
-document.getElementById("home-card").innerHTML =
-  layoutHome ? layoutHome(events, overall, overallXp, branches) : homeCardHtml(overall, branches);
-drawPeopleNote();
-drawLevelNote();
+function render() {
+  events = loadEvents();
+  totals = xpByBranch(events);
+  overallXp = Object.values(totals).reduce((sum, xp) => sum + xp, 0);
+  branches = BRANCHES.map(b => ({ ...b, ...levelOf(totals, b.id), share: branchShare(b) }));
+  overall = levelInfo(overallXp, LEVELS.overallMultiplier);
+  // Appearance → Layout: the Cockpit HUD (hud-home.js), the Orrery (orrery-home.js), the Command wheel
+  // (wheel-home.js) and the Grimoire ledger (codex.js) draw their own Home; every other layout keeps the card.
+  const HOME_LAYOUTS = { hud: hudHomeHtml, orrery: orreryHomeHtml, wheel: wheelHomeHtml, codex: codexHomeHtml };
+  const layoutHome = HOME_LAYOUTS[document.documentElement.dataset.layout];
+  document.getElementById("home-card").innerHTML =
+    layoutHome ? layoutHome(events, overall, overallXp, branches) : homeCardHtml(overall, branches);
+  drawPeopleNote();
+  drawLevelNote();
+}
+
+render();

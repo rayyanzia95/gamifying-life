@@ -143,11 +143,14 @@ function canonicalList(events) {
   return events.map(e => canonical(e)).sort().join("\n");
 }
 
-// Pages with a render() redraw in place; Home draws once at load, so it reloads instead.
-// Settings shows no events, so it only needs the sync card redrawn.
+// Every page (Home too) has a render() that redraws in place. A redraw is not a page open: rebuilt nodes would replay their entrance
+// animations (row-rise, anim-rise...), so the one-shot animations the redraw starts are finished at once.
 function redrawPage() {
-  if (typeof render === "function") return render();
-  if (!document.getElementById("sync-body")) location.reload();
+  const running = new Set(document.getAnimations());
+  render();
+  document.getAnimations()
+    .filter(a => !running.has(a) && a.effect.getComputedTiming().endTime !== Infinity)
+    .forEach(a => a.finish());
 }
 
 let lastSyncError = null;
@@ -158,7 +161,7 @@ async function syncOnce() {
   if (!syncClient || !navigator.onLine || !(await currentEmail())) return;
   const changed = await pullEvents();
   await sendUnsent();
-  if (changed) redrawPage(); // after sending, so Home's reload can't cut a send short
+  if (changed) redrawPage();
 }
 
 async function sendUnsent() {
