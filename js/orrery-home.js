@@ -80,7 +80,8 @@ function orreryHomeHtml(events, overall, overallXp, branches) {
 // double-click turn it. SVG text can't stay upright inside a CSS 3D tilt, so each label is hidden in the SVG and an HTML
 // copy is laid over it at its tilted place (read back with getBoundingClientRect). Not saved: it starts tilted on each load.
 
-const ORR_TILT_START = 55; // degrees: 0 is the flat top-down view
+// degrees: 0 is the flat top-down view. Phones start flatter: a steep tilt squashes the sky and the labels pile up.
+const ORR_TILT_START = matchMedia("(max-width: 600px)").matches ? 35 : 55;
 const ORR_TILT_MAX = 70;
 const ORR_DRAG_START = 6; // px of movement before a press is a drag, so a tap on a planet still opens its page
 const ORR_TAG_TEXT = ".orr-name, .orr-sub, .orr-comet-label, .orr-sun-n, .orr-sun-t";
@@ -124,6 +125,30 @@ function orreryHomeMount() {
         shift = side === "end" ? "-100%" : side === "start" ? "0%" : "-50%";
       }
       tag.style.transform = `translate(${x}px, ${y}px) translate(${shift}, -50%)`;
+      spots[i] = { x, y, shift };
+    });
+    clearCometTags(box, spots);
+  };
+  const spots = [];
+
+  // The tilt squashes the sky but not the labels, so on a small screen a comet's label can land on a planet's. Comet labels
+  // are the free ones (planet name + sub-label stay as a pair), so nudge each up or down until it is clear.
+  const clearCometTags = box => {
+    const frac = shift => (shift === "-100%" ? 1 : shift === "0%" ? 0 : 0.5);
+    const rect = (tag, spot, dy = 0) => {
+      const w = tag.offsetWidth, h = tag.offsetHeight, left = spot.x - w * frac(spot.shift);
+      return { left, right: left + w, top: spot.y + dy - h / 2, bottom: spot.y + dy + h / 2 };
+    };
+    const PAD = 4; // breathing room, in px
+    const hit = (a, b) => a.left < b.right + PAD && b.left < a.right + PAD && a.top < b.bottom + PAD && b.top < a.bottom + PAD;
+    const rel = r => ({ left: r.left - box.left, right: r.right - box.left, top: r.top - box.top, bottom: r.bottom - box.top });
+    const balls = [...sky.querySelectorAll(".orr-ball, .orr-sun")].map(e => rel(e.getBoundingClientRect()));
+    const fixed = texts.flatMap((text, i) => (text.classList.contains("orr-comet-label") ? [] : [rect(tags.children[i], spots[i])]));
+    texts.forEach((text, i) => {
+      if (!text.classList.contains("orr-comet-label")) return;
+      const tag = tags.children[i], step = tag.offsetHeight;
+      const dy = [0, -step, step, -2 * step, 2 * step, -3 * step].find(d => ![...fixed, ...balls].some(o => hit(rect(tag, spots[i], d), o))) ?? 0;
+      tag.style.transform = `translate(${spots[i].x}px, ${spots[i].y + dy}px) translate(${spots[i].shift}, -50%)`;
     });
   };
   const apply = () => {

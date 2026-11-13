@@ -4,6 +4,8 @@
 // Loads right after nav.js on every page; on a branch page it adds a small orbit header under the title.
 
 const orrRound = n => Math.round(n * 10) / 10;
+// Phones draw the sky smaller and the CSS enlarges the text to compensate, so spacing grows with it.
+const orrScale = () => (window.matchMedia("(max-width: 600px)").matches ? 1.25 : 1);
 
 // Positions use SVG rotate/translate instead of trigonometry, so the CSS can sweep the planets in from the top.
 // item: { R, p (0..1 along the orbit), pr (planet radius), c (colour), start? (degrees where its lap begins),
@@ -14,12 +16,17 @@ function orrPlanetSvg(item) {
   const angle = `${orrStart(item)}; --a: ${orrRound((item.start ?? 0) + item.p * 360)}deg`;
   const ring = item.t === undefined ? "" : `<circle class="orr-today-track" r="${item.pr + 7}"/>
     <circle class="orr-today" r="${item.pr + 7}" pathLength="100" stroke-dasharray="${orrRound(item.t * 100)} 100"/>`;
-  const above = item.above; // set by orrPlaceLabels when below would collide
-  const labels = item.name ? (above
-    ? `<text class="orr-name" y="${orrRound(-item.pr - 32)}">${item.name}</text>
-    <text class="orr-sub" y="${orrRound(-item.pr - 14)}">${item.sub}</text>`
-    : `<text class="orr-name" y="${orrRound(item.pr + 26)}">${item.name}</text>
-    <text class="orr-sub" y="${orrRound(item.pr + 42)}">${item.sub}</text>`) : "";
+  // Where the label sits is chosen by orrPlaceLabels: below, above, or to the right / left of the planet.
+  // The name-to-sub gap grows with the phone text size so the two lines never touch.
+  const place = item.place || "below", gap = 16 * orrScale();
+  const side = place === "right" || place === "left";
+  const dx = place === "right" ? item.pr + 10 : -item.pr - 10;
+  const anchor = place === "right" ? "start" : "end";
+  const nameY = place === "above" ? -item.pr - 14 - gap : side ? -2 : item.pr + 26;
+  const x = side ? ` x="${orrRound(dx)}" text-anchor="${anchor}" style="text-anchor: ${anchor}"` : "";
+  const labels = item.name
+    ? `<text class="orr-name"${x} y="${orrRound(nameY)}">${item.name}</text>
+    <text class="orr-sub"${x} y="${orrRound(nameY + gap)}">${item.sub}</text>` : "";
   const body = `<g class="orr-planet" style="${angle}"><g transform="translate(0 -${item.R})"><g class="orr-upright" style="${angle}">
     ${ring}<circle class="orr-ball" r="${item.pr}"/>${labels}</g></g></g>`;
   const wrap = item.href ? `<a href="${item.href}" aria-label="${item.label}">${body}</a>` : body;
@@ -36,34 +43,37 @@ function orrCometSvg(comet) {
   </g></g></a>`;
 }
 
-// Labels go under their planet unless that would land on another label or planet; then they go above.
-// Boxes are rough text sizes (17px name, 14px sub), enough to tell when two labels would touch.
+// Labels go under their planet unless that would land on another label or planet; then above, then beside it.
+// Boxes are rough text sizes (17px name, 14px sub, times the phone scale), enough to tell when two labels would touch.
 function orrPlaceLabels(items, comets = []) {
-  // Phones draw the sky smaller and the CSS enlarges the text to compensate, so the boxes grow too.
-  const k = window.matchMedia("(max-width: 600px)").matches ? 1.25 : 1;
+  const k = orrScale(), gap = 16 * k;
   const at = it => {
     const a = (((it.start ?? 0) + it.p * 360) * Math.PI) / 180;
     return { x: it.R * Math.sin(a), y: -it.R * Math.cos(a) };
   };
-  const box = (it, above) => {
-    const { x, y } = at(it), w = (k * Math.max(it.name.length * 10, it.sub.length * 8)) / 2;
-    return above ? { x0: x - w, x1: x + w, y0: y - it.pr - 40, y1: y - it.pr - 4 }
-                 : { x0: x - w, x1: x + w, y0: y + it.pr + 8, y1: y + it.pr + 48 };
+  const box = (it, place) => {
+    const { x, y } = at(it), w = k * Math.max(it.name.length * 10, it.sub.length * 8);
+    const hi = 18 * k, lo = 6; // text height above the name's baseline, and below the sub's
+    if (place === "above") return { x0: x - w / 2, x1: x + w / 2, y0: y - it.pr - 14 - gap - hi, y1: y - it.pr - 4 };
+    if (place === "right") return { x0: x + it.pr + 8, x1: x + it.pr + 10 + w, y0: y - 2 - hi, y1: y - 2 + gap + lo };
+    if (place === "left") return { x0: x - it.pr - 10 - w, x1: x - it.pr - 8, y0: y - 2 - hi, y1: y - 2 + gap + lo };
+    return { x0: x - w / 2, x1: x + w / 2, y0: y + it.pr + 26 - hi, y1: y + it.pr + 26 + gap + lo };
   };
-  const hit = (a, b) => a.x0 < b.x1 && b.x0 < a.x1 && a.y0 < b.y1 && b.y0 < a.y1;
+  const overlap = (a, b) => Math.max(0, Math.min(a.x1, b.x1) - Math.max(a.x0, b.x0)) * Math.max(0, Math.min(a.y1, b.y1) - Math.max(a.y0, b.y0));
   const balls = items.map(it => { const { x, y } = at(it); return { x0: x - it.pr - 4, x1: x + it.pr + 4, y0: y - it.pr - 4, y1: y + it.pr + 4 }; });
   // Comet labels are fixed in place, so they count as taken before any planet label is placed.
   const placed = comets.map(c => {
-    const a = (c.angle * Math.PI) / 180, outward = Math.cos(a) > 0, w = c.text.length * 9 * k;
+    const a = (c.angle * Math.PI) / 180, outward = Math.cos(a) > 0, w = c.text.length * 10 * k + 6;
     const x = c.r * Math.cos(a) + (outward ? -10 : 10), y = c.r * Math.sin(a) - 12;
-    return { x0: outward ? x - w : x, x1: outward ? x : x + w, y0: y - 18 * k, y1: y + 4 };
+    return { x0: outward ? x - w : x, x1: outward ? x : x + w, y0: y - 18 * k, y1: y + 10 };
   });
   return items.map((it, i) => {
     if (!it.name) return it;
-    const clash = b => placed.some(o => hit(b, o)) || balls.some((o, j) => j !== i && hit(b, o));
-    const above = clash(box(it, false)) && !clash(box(it, true));
-    placed.push(box(it, above));
-    return { ...it, above };
+    // How much a candidate box overlaps what is already there; the first with none wins, else the least.
+    const cost = b => [...placed, ...balls.filter((_, j) => j !== i)].reduce((sum, o) => sum + overlap(b, o), 0);
+    const place = ["below", "above", "right", "left"].reduce((best, p) => (cost(box(it, p)) < cost(box(it, best)) ? p : best), "below");
+    placed.push(box(it, place));
+    return { ...it, place };
   });
 }
 
