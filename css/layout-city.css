@@ -33,6 +33,19 @@
 .city-water.city-r { fill: color-mix(in srgb, var(--academics) 80%, #000); }
 .city-water.city-l { fill: color-mix(in srgb, var(--academics) 62%, #000); }
 
+/* The land: grass on top, rock down the sides, the river low between. Higher ground is paler. */
+.city-ter.city-l { fill: color-mix(in srgb, color-mix(in srgb, var(--muted) 55%, var(--surface)) 82%, #000); }
+.city-ter.city-r { fill: color-mix(in srgb, var(--muted) 55%, var(--surface)); }
+.city-ter.city-t.city-lv1 { fill: color-mix(in srgb, var(--deen) 42%, var(--city-ground)); }
+.city-ter.city-t.city-lv2 { fill: color-mix(in srgb, var(--deen) 30%, var(--city-ground)); }
+.city-ter.city-t.city-lv3 { fill: color-mix(in srgb, var(--deen) 20%, var(--city-ground)); }
+.city-ter.city-t.city-wat { fill: color-mix(in srgb, var(--academics) 55%, var(--surface)); }
+.city-ter.city-r.city-wat { fill: color-mix(in srgb, var(--academics) 45%, var(--surface)); }
+.city-ter.city-l.city-wat { fill: color-mix(in srgb, var(--academics) 38%, var(--surface)); }
+.city-deck.city-t, .city-step.city-t { fill: color-mix(in srgb, var(--chores) 35%, var(--surface)); }
+.city-deck.city-r, .city-step.city-r { fill: color-mix(in srgb, var(--chores) 35%, var(--surface) ); filter: brightness(0.85); }
+.city-deck.city-l, .city-step.city-l { fill: color-mix(in srgb, var(--chores) 35%, var(--surface)); filter: brightness(0.7); }
+
 .city-map a { outline: none; }
 .city-map a:is(:hover, :focus-visible) .city-t:not(.city-plate) { filter: brightness(1.2); }
 .city-map a:focus-visible .city-plate.city-t { stroke: var(--text); stroke-width: 2; }
