@@ -49,6 +49,7 @@ const levelLabel = (key, level) => `${levelName(key)} · level ${level}`;
 // Plays the chosen effect for one level. el: the thing to light up (Glow and Burst need it). Returns true if it played.
 function playLevelUp(el, key, level) {
   const style = document.documentElement.dataset.levelUp;
+  if (el) lineBurst(el); // Sci-fi FX → Level-up line burst (fx.js), on top of whichever effect is picked
   if (isPopupStyle(style)) {
     showLevelPopup(style, key, levelName(key), level); // level-popup.js
     return true;

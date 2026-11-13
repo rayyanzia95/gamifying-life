@@ -62,9 +62,18 @@ function levelWebHtml(branches) {
 // The overall level in the middle, with a gold arc for its XP to the next level.
 function overallCentreHtml(overall) {
   const { centre } = HOME;
-  return `<circle cx="${centre}" cy="${centre}" r="22" fill="var(--surface)"/>` +
+  return `<circle class="hub-core" cx="${centre}" cy="${centre}" r="22" fill="var(--surface)"/>` +
     arcHtml(centre, centre, 19, overall.into / overall.cost, "var(--gold)", 3.5) +
     `<text class="overall-level" x="${centre}" y="${centre + 6}" text-anchor="middle">${overall.level}</text>`;
+}
+
+// Sci-fi FX → Scanning sweep: a faint radar wedge from the centre, hidden unless the setting is on (CSS turns it).
+function sweepHtml() {
+  const { centre } = HOME;
+  return `<defs><linearGradient id="hub-sweep-fade" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="var(--accent)" stop-opacity="0"/><stop offset="1" stop-color="var(--accent)" stop-opacity="0.9"/>
+    </linearGradient></defs>
+    <path class="hub-sweep" d="M${centre} ${centre} L${centre} 10 A100 100 0 0 1 168 28 Z" fill="url(#hub-sweep-fade)"/>`;
 }
 
 // One row per branch, linking to its page: name, level chip, bar to the next level, today's mini ring.
@@ -82,7 +91,7 @@ function homeCardHtml(overall, branches) {
   const label = `Overall level ${overall.level}. ` +
     branches.map(b => `${b.name} level ${b.level}, ${percent(b.share)}% today`).join(". ");
   return `<svg class="home-hub" viewBox="0 0 220 220" role="img" aria-label="${label}">
-      ${todaySegmentsHtml(branches)}${levelWebHtml(branches)}${overallCentreHtml(overall)}
+      ${todaySegmentsHtml(branches)}${levelWebHtml(branches)}${sweepHtml()}${overallCentreHtml(overall)}
     </svg>
     <div class="hub-key"><span class="key-today">today</span><span class="key-level">level progress</span></div>
     <div class="level-rows">${branches.map(branchRowHtml).join("")}</div>`;
