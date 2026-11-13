@@ -22,7 +22,7 @@
 .gauge-xp { stroke-width: 2; }
 .gauge-level { font-size: 11px; font-weight: 800; font-variant-numeric: tabular-nums; }
 .gauge-overall { font-size: 34px; }
-.gauge-caption { font-size: 7px; font-weight: 600; letter-spacing: 0.14em; fill: var(--muted); }
+.gauge-caption { font-size: 7.8px; font-weight: 600; letter-spacing: 0.14em; fill: var(--muted); }
 
 /* Stat block */
 .stat-top { display: grid; grid-template-columns: auto 1fr; align-items: baseline; gap: 4px 10px; max-width: none; margin: 0 0 8px; }

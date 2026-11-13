@@ -72,7 +72,7 @@
 
 .cx-run {
   color: var(--muted);
-  font: 0.72rem var(--cx-head);
+  font: 0.75rem var(--cx-head);
   letter-spacing: 0.2em;
   text-align: center;
   text-transform: uppercase;
@@ -128,7 +128,7 @@
 
 a.cx-bc:is(:hover, :focus-visible) { background: color-mix(in srgb, var(--c) 8%, transparent); }
 
-.cx-chn { color: var(--muted); font: 0.64rem var(--cx-head); letter-spacing: 0.16em; text-transform: uppercase; }
+.cx-chn { color: var(--muted); font: 0.75rem var(--cx-head); letter-spacing: 0.16em; text-transform: uppercase; }
 .cx-nm { font: 700 0.82rem var(--cx-head); letter-spacing: 0.08em; text-transform: uppercase; }
 .cx-lv { color: var(--c); font: 700 2.2rem / 1 var(--cx-head); }
 .cx-ln { color: var(--muted); font-size: 0.84rem; line-height: 1.3; }

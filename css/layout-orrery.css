@@ -63,16 +63,16 @@
 }
 
 .orr-name { font-size: 17px; font-weight: 700; fill: var(--text); text-anchor: middle; }
-.orr-sub { font-size: 14px; fill: var(--muted); text-anchor: middle; }
+.orr-sub { font-size: 15px; fill: var(--muted); text-anchor: middle; }
 
 .orr-sun { fill: var(--surface); stroke: var(--orr-line); stroke-width: 1.5; }
 .orr-sun-xp { fill: none; stroke: var(--gold); stroke-width: 4; stroke-linecap: round; transform: rotate(-90deg); }
 .orr-sun-n { font-size: 46px; font-weight: 700; fill: var(--text); text-anchor: middle; dominant-baseline: central; }
-.orr-sun-t { font-size: 11px; letter-spacing: 0.2em; fill: var(--muted); text-anchor: middle; }
+.orr-sun-t { font-size: 15px; letter-spacing: 0.2em; fill: var(--muted); text-anchor: middle; }
 
 .orr-comet { fill: var(--academics); }
 .orr-tail { stroke: var(--academics); stroke-width: 2; stroke-linecap: round; opacity: 0.5; }
-.orr-comet-label { font-size: 14px; fill: var(--academics); }
+.orr-comet-label { font-size: 15px; fill: var(--academics); }
 
 /* ---- Home ---- */
 
@@ -165,3 +165,9 @@
 /* Title and orbit header first, then the page's own cards, as in the Cockpit HUD. */
 [data-layout="orrery"] body.orr-branch > .back { order: -2; align-self: flex-start; }
 [data-layout="orrery"] body.orr-branch > :is(h1, .orr-header) { order: -1; }
+
+/* Phones: the orbit SVG renders at ~0.62 scale, so labels sized for desktop land near 7-9px. Raise to keep >= 11px. */
+@media (max-width: 600px) {
+  .orr-name { font-size: 19px; }
+  .orr-sub, .orr-comet-label, .orr-sun-t { font-size: 18px; }
+}

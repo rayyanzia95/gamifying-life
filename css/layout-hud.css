@@ -131,7 +131,7 @@
 .hud-ret-label { font: 700 11px var(--hud-mono); fill: var(--muted); text-anchor: middle; dominant-baseline: central; }
 .hud-reticle a:is(:hover, :focus-visible) .hud-ret-label { fill: var(--text); }
 .hud-ret-xp { fill: none; stroke: var(--gold); stroke-width: 3; stroke-linecap: round; transform: rotate(-90deg); }
-.hud-ret-small { font: 700 10px var(--hud-mono); fill: var(--accent); text-anchor: middle; letter-spacing: 0.2em; }
+.hud-ret-small { font: 700 11px var(--hud-mono); fill: var(--accent); text-anchor: middle; letter-spacing: 0.2em; }
 .hud-ret-level { font: 700 54px var(--font-head, var(--hud-mono)); fill: var(--text); text-anchor: middle; dominant-baseline: central; }
 .hud-cross { stroke: var(--hud-line); stroke-width: 1; }
 
@@ -265,3 +265,9 @@
 .hud-strip-bar i { height: 6px; background: var(--hud-track); }
 .hud-strip-bar i.on { background: var(--c); }
 
+
+/* Phones: the tape SVG shrinks to ~0.86, so its 11-12px labels would render near 9-10px. Raise to keep >= 11px. */
+@media (max-width: 600px) {
+  .hud-tick-label, .hud-waypoint-label { font-size: 13px; }
+  .hud-now-text { font-size: 13px; }
+}

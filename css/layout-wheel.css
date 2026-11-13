@@ -43,7 +43,7 @@
 .cw-hub { fill: var(--surface); stroke: var(--border); }
 .cw-hub-xp { fill: none; stroke: var(--gold); stroke-width: 4; stroke-linecap: round; transform: rotate(-90deg); }
 .cw-hub-n { font-size: 44px; font-weight: 700; fill: var(--text); text-anchor: middle; dominant-baseline: central; }
-.cw-hub-t { font-size: 11px; letter-spacing: 0.15em; fill: var(--muted); text-anchor: middle; }
+.cw-hub-t { font-size: 12px; letter-spacing: 0.15em; fill: var(--muted); text-anchor: middle; }
 
 /* Sectors grow out from the hub on load. */
 .cw-sectors {

@@ -38,19 +38,26 @@ function orrCometSvg(comet) {
 
 // Labels go under their planet unless that would land on another label or planet; then they go above.
 // Boxes are rough text sizes (17px name, 14px sub), enough to tell when two labels would touch.
-function orrPlaceLabels(items) {
+function orrPlaceLabels(items, comets = []) {
+  // Phones draw the sky smaller and the CSS enlarges the text to compensate, so the boxes grow too.
+  const k = window.matchMedia("(max-width: 600px)").matches ? 1.25 : 1;
   const at = it => {
     const a = (((it.start ?? 0) + it.p * 360) * Math.PI) / 180;
     return { x: it.R * Math.sin(a), y: -it.R * Math.cos(a) };
   };
   const box = (it, above) => {
-    const { x, y } = at(it), w = Math.max(it.name.length * 10, it.sub.length * 8) / 2;
+    const { x, y } = at(it), w = (k * Math.max(it.name.length * 10, it.sub.length * 8)) / 2;
     return above ? { x0: x - w, x1: x + w, y0: y - it.pr - 40, y1: y - it.pr - 4 }
                  : { x0: x - w, x1: x + w, y0: y + it.pr + 8, y1: y + it.pr + 48 };
   };
   const hit = (a, b) => a.x0 < b.x1 && b.x0 < a.x1 && a.y0 < b.y1 && b.y0 < a.y1;
   const balls = items.map(it => { const { x, y } = at(it); return { x0: x - it.pr - 4, x1: x + it.pr + 4, y0: y - it.pr - 4, y1: y + it.pr + 4 }; });
-  const placed = [];
+  // Comet labels are fixed in place, so they count as taken before any planet label is placed.
+  const placed = comets.map(c => {
+    const a = (c.angle * Math.PI) / 180, outward = Math.cos(a) > 0, w = c.text.length * 9 * k;
+    const x = c.r * Math.cos(a) + (outward ? -10 : 10), y = c.r * Math.sin(a) - 12;
+    return { x0: outward ? x - w : x, x1: outward ? x : x + w, y0: y - 18 * k, y1: y + 4 };
+  });
   return items.map((it, i) => {
     if (!it.name) return it;
     const clash = b => placed.some(o => hit(b, o)) || balls.some((o, j) => j !== i && hit(b, o));
@@ -70,7 +77,7 @@ function orbitSvg({ items, sun, comets = [], vb, sunR, label, cls = "" }) {
     <circle class="orr-glow" r="${vb}"/>${orbits}
     <circle class="orr-sun" r="${sunR}"/>${sunRing}
     <text class="orr-sun-n" y="-4">${sun.n}</text><text class="orr-sun-t" y="${orrRound(sunR * 0.55)}">${sun.t}</text>
-    ${comets.map(orrCometSvg).join("")}${orrPlaceLabels(items).map(orrPlanetSvg).join("")}
+    ${comets.map(orrCometSvg).join("")}${orrPlaceLabels(items, comets).map(orrPlanetSvg).join("")}
   </svg>`;
 }
 
