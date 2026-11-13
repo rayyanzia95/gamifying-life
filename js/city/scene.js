@@ -5,8 +5,9 @@
 
 const CityScene = (() => {
   const GLOW_MIN = 0.15; // windows of a branch with nothing done today
+  const GLOW_NEUTRAL = 0.6; // the strength Gemini's windows and lamps are made at; a lit share scales around it
   const FRAME_MS = 1000 / 30;
-  const SCENERY_TIER = 4; // park and pool are always there at this tier
+  const BUILDING_SCALE = 1.8; // Gemini's buildings are about one 2-unit tile wide; a pad is two tiles
   const PALETTES = {
     money: { main: "#ffd700", accent: "#ff8c00", dark: "#b8860b", light: "#fffacd", glow: "#ffee00" },
     health: { main: "#ff4500", accent: "#ff6347", dark: "#8b0000", light: "#ffe4e1", glow: "#ff7f50" },
@@ -39,19 +40,30 @@ const CityScene = (() => {
   // Stand a model on its pad (position from CITY_PLOT and the terrain under it, turned a little).
   function place(group, id) {
     const { x, y, z, turn } = CityTerrain.pad(id);
-    group.position.set(x, y + 0.05, z);
+    group.position.set(x, y + 0.02, z);
     group.rotation.y = turn;
+    group.scale.setScalar(BUILDING_SCALE);
   }
 
-  // The glow parts are the ones with an emissive colour; a branch's lit share sets their brightness.
+  // The glowing parts (windows, lamps, glass) are the materials with an emissive colour; a branch's lit share sets
+  // their brightness. Water, foam and waterfalls are shared and always on, so they stay out of it. The windows
+  // material is shared by every building, so each building gets its own copy to light up on its own.
   function collect(group) {
-    const glow = [], moving = [];
+    const { mats } = CityUtils.setup(PALETTES.park);
+    const always = [mats.water, mats.fall, mats.foam];
+    const copies = new Map();
+    const glow = [];
     group.traverse(o => {
-      if (o.userData.anim) moving.push(o);
-      if (o.material && o.material.emissive && o.material.emissive.getHex() !== 0) glow.push(o);
+      const m = o.material;
+      if (!m || !m.emissive || m.emissive.getHex() === 0 || always.includes(m)) return;
+      if (m === mats.win) {
+        if (!copies.has(m)) copies.set(m, m.clone());
+        o.material = copies.get(m);
+      }
+      o.userData.e0 = o.material.emissiveIntensity;
+      glow.push(o);
     });
     group.userData.glow = glow;
-    group.userData.moving = moving;
   }
 
   const brightness = lit => GLOW_MIN + (1 - GLOW_MIN) * Math.min(Math.max(lit, 0), 1);
@@ -70,40 +82,16 @@ const CityScene = (() => {
     s.districts.set(item.id, { tier: item.tier, group, item });
   }
 
+  // The park and the pool are props, not buildings; they sit on their pads at full glow.
   function addScenery() {
     ["park", "pool"].forEach(id => {
-      const group = CityBuildings[id](SCENERY_TIER, PALETTES[id]);
+      const group = CityProps[id](PALETTES[id]);
       place(group, id);
       group.userData.base = 0.6;
       collect(group);
       s.scene.add(group);
-      s.districts.set(id, { tier: SCENERY_TIER, group, item: null });
+      s.districts.set(id, { group, item: null });
     });
-    // Trees on the ledges and lamps at the bridge ends, at the fixed spots the terrain lists.
-    const prop = (kind, { x, y, z }) => {
-      const group = CityProps[kind](PALETTES.park);
-      group.scale.setScalar(CityUtils.BUILDING_SCALE);
-      group.position.set(x, y + 0.05, z);
-      group.userData.base = 0.8;
-      collect(group);
-      s.scene.add(group);
-      s.districts.set(`${kind}-${x}-${z}`, { group, item: null });
-    };
-    const { trees, lamps } = CityTerrain.spots();
-    trees.forEach(spot => prop("tree", spot));
-    lamps.forEach(spot => prop("lamp", spot));
-  }
-
-  // The land's colours from the app's palette, resolved to hex: grass lighter on higher ground, two rock shades.
-  function terrainColours(host) {
-    const mix = (colour, pct, into) => cssColor(`color-mix(in srgb, ${colour} ${pct}%, ${into})`, host);
-    return {
-      grass: [42, 30, 20].map(pct => mix("var(--deen)", pct, "var(--city-ground)")),
-      rock: [mix("var(--muted)", 55, "var(--surface)"), mix(`color-mix(in srgb, var(--muted) 55%, var(--surface))`, 85, "#000")],
-      water: mix("var(--academics)", 55, "var(--surface)"),
-      deck: mix("var(--chores)", 35, "var(--surface)"),
-      rail: mix("var(--chores)", 70, "#000"),
-    };
   }
 
   function create(host) {
@@ -115,8 +103,9 @@ const CityScene = (() => {
     const scene = new THREE.Scene();
     const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 1, 300);
     camera.position.set(50, 50, 50);
-    camera.lookAt(scene.position);
     const controls = new THREE.OrbitControls(camera, canvas);
+    controls.target.set(0, 2.5, 0); // a little up, so the tall towers keep their tops in frame
+    controls.update();
     Object.assign(controls, {
       enableDamping: true, enablePan: false, minZoom: 0.8, maxZoom: 2.6,
       minPolarAngle: Math.PI * 0.18, maxPolarAngle: Math.PI * 0.42,
@@ -128,14 +117,14 @@ const CityScene = (() => {
     sun.position.set(15, 30, 10);
     sun.castShadow = true;
     sun.shadow.mapSize.set(2048, 2048);
-    Object.assign(sun.shadow.camera, { top: 32, bottom: -32, left: -32, right: 32, far: 120 });
+    Object.assign(sun.shadow.camera, { top: 24, bottom: -24, left: -24, right: 24, far: 120 });
     scene.add(sun);
     const floor = new THREE.Mesh(new THREE.PlaneGeometry(160, 160), new THREE.MeshStandardMaterial({ color: ground }));
     floor.rotation.x = -Math.PI / 2;
-    floor.position.y = -2.6; // just under the land's edge
+    floor.position.y = -0.05; // just under the land
     floor.receiveShadow = true;
     scene.add(floor);
-    CityTerrain.build(scene, terrainColours(host));
+    CityTerrain.build(scene);
     s ={ canvas, renderer, scene, camera, controls, districts: new Map(), tags: new Map(), visible: true, last: 0, down: null };
     addScenery();
     watchPointer();
@@ -167,7 +156,7 @@ const CityScene = (() => {
     const w = s.canvas.clientWidth, h = s.canvas.clientHeight;
     if (!w || !h) return;
     s.renderer.setSize(w, h, false);
-    const aspect = w / h, half = Math.max(15, 24 / aspect);
+    const aspect = w / h, half = Math.max(10, 18 / aspect);
     Object.assign(s.camera, { left: -half * aspect, right: half * aspect, top: half, bottom: -half });
     s.camera.updateProjectionMatrix();
   }
@@ -202,18 +191,13 @@ const CityScene = (() => {
     if (document.hidden || !s.visible || time - s.last < FRAME_MS) return;
     s.last = time;
     const t = time / 1000;
+    CityUtils.tick(s.scene, t); // water, boats, flags and lamps
     s.districts.forEach(({ group }) => {
-      const base = group.userData.base;
+      const factor = group.userData.base / GLOW_NEUTRAL;
       group.userData.glow.forEach(o => {
-        const flicker = o.userData.anim === "flicker" ? 0.12 * Math.sin(t * 8 + group.position.x) : 0;
-        o.material.emissiveIntensity = Math.max(0, base + flicker);
-      });
-      group.userData.moving.forEach(o => {
-        if (o.userData.anim === "spin") o.rotation.y = t * 1.5;
-        else if (o.userData.anim === "bob") {
-          o.userData.baseY ??= o.position.y;
-          o.position.y = o.userData.baseY + Math.sin(t * 3) * 0.1;
-        }
+        // lamps flicker on their own (tick has just set them); the rest start from their own strength
+        const strength = o.userData.anim === "flicker" ? o.material.emissiveIntensity : o.userData.e0;
+        o.material.emissiveIntensity = strength * factor;
       });
     });
     s.controls.update();

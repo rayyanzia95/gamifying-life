@@ -99,8 +99,10 @@ function citySceneryHtml(gx, gy, kind) {
   return `<g class="city-park">${plate}${tree(0.4, 0.4)}${tree(1, 0.5)}${tree(0.6, 1)}</g>`;
 }
 
-const CITY_LEVEL_H = 10; // SVG: how much taller each rock level is
-const CITY_WATER_H = 3; // SVG: the river's surface, below the lowest bank
+const CITY_LEVEL_H = 10; // SVG: how much taller each rock level is (level 1 is a thin grass bank, 2 and 3 stand on rock)
+const CITY_WATER_H = 1; // SVG: the river's surface, just below the bank
+const CITY_BANK_H = 2; // SVG: the grass bank at level 1
+const cityTopH = level => (level === 0 ? CITY_WATER_H : level === 1 ? CITY_BANK_H : (level - 1) * CITY_LEVEL_H);
 const CITY_DEPTH = 8; // SVG: how far the land's edge drops below the river, so the island has thickness
 
 // The land: one column of rock per cell. Each is a box from far below up to its level, so the cliffs show on their own.
@@ -108,7 +110,7 @@ function cityTerrainParts() {
   const parts = [];
   CITY_TERRAIN.forEach((row, r) => [...row].forEach((_, c) => {
     const level = cityLevelAt(c, r);
-    const top = level ? level * CITY_LEVEL_H : CITY_WATER_H;
+    const top = cityTopH(level);
     parts.push({ key: c + r, svg: cityBoxSvg(c, r, 1, 1, top + CITY_DEPTH, -CITY_DEPTH, `city-ter ${level ? `city-lv${level}` : "city-wat"}`) });
   }));
   return parts;
@@ -121,7 +123,7 @@ function cityStairsSvg(st) {
   let svg = "";
   for (let i = 0; i < 4; i++) {
     const [gx, w] = span(st.x, dx, i), [gy, d] = span(st.y, dy, i);
-    svg += cityBoxSvg(gx, gy, w, d, ((i + 1) / 4) * (st.high - st.low) * CITY_LEVEL_H, st.low * CITY_LEVEL_H, "city-step");
+    svg += cityBoxSvg(gx, gy, w, d, ((i + 1) / 4) * (cityTopH(st.high) - cityTopH(st.low)), cityTopH(st.low), "city-step");
   }
   return svg;
 }
@@ -130,12 +132,12 @@ function cityStairsSvg(st) {
 // far to near (the key is how far from the back corner), so nearer things cover farther ones.
 function cityMapSvg(items, label) {
   const parts = cityTerrainParts();
-  CITY_BRIDGES.forEach(b => parts.push({ key: b.x + b.y1 + 0.6, svg: cityBoxSvg(b.x - 0.4, b.y0, 0.8, b.y1 - b.y0, 1.5, b.level * CITY_LEVEL_H - 1.5, "city-deck") }));
+  CITY_BRIDGES.forEach(b => parts.push({ key: b.x + b.y1 + 0.6, svg: cityBoxSvg(b.x - 0.4, b.y0, 0.8, b.y1 - b.y0, 1.5, cityTopH(b.level) - 1.5, "city-deck") }));
   CITY_STAIRS.forEach(st => parts.push({ key: st.x + st.y + 0.2, svg: cityStairsSvg(st) }));
   const places = [...items.map(it => ({ at: CITY_PLOT[it.id], it })), { at: CITY_PLOT.park, scenery: "park" }, { at: CITY_PLOT.pool, scenery: "pool" }];
   places.forEach(({ at, it, scenery }) => {
     const gx = at.x - 0.75, gy = at.y - 0.75;
-    const lift = cityPadLevel(at) * CITY_LEVEL_H;
+    const lift = cityTopH(cityPadLevel(at));
     const inner = scenery ? citySceneryHtml(gx, gy, scenery) : `<g class="city-bld" style="--c: ${it.c}">${cityBuildingSvg(gx, gy, it.tier, it.lit)}</g>`;
     const g = `<g transform="translate(0 ${-lift})">${inner}</g>`;
     parts.push({ key: at.x + at.y + 0.5, svg: it?.href ? `<a href="${it.href}" aria-label="${it.label}">${g}</a>` : g });
@@ -144,7 +146,7 @@ function cityMapSvg(items, label) {
   const x0 = cityIso(0, CITY_ROWS)[0] - 10;
   const x1 = cityIso(CITY_COLS, 0)[0] + 10;
   const y1 = cityIso(CITY_COLS, CITY_ROWS)[1] + CITY_DEPTH + 6;
-  const top = -3 * CITY_LEVEL_H - cityHeight(3) - CITY_TOWER - 12; // taller towers on the plateau overflow a little
+  const top = -cityTopH(3) - cityHeight(3) - CITY_TOWER - 12; // taller towers on the plateau overflow a little
   return `<svg class="city-map" viewBox="${x0} ${top} ${x1 - x0} ${y1 - top}" role="img" aria-label="${label}">${body}</svg>`;
 }
 

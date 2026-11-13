@@ -1,19 +1,23 @@
-// The land under the 3D city: the canyon river, the rock levels, the two bridges and the steps cut into the cliffs.
-// Everything is read from the hand-drawn tables in js/city-svg.js (CITY_TERRAIN, CITY_PLOT, CITY_BRIDGES, CITY_STAIRS),
-// so the flat SVG city matches. Bridges, steps and rock are plain boxes for now: they stand in for the bridge,
-// stairs and cliffEdge models that will come later. Loaded by js/city-home.js before scene.js.
+// The land under the 3D city, built from Gemini's props (js/city/props.js): a terrace block for every rock level, river
+// tiles in the canyon, a waterfall where the river comes in, two stone bridges, steps cut into the cliffs and tree
+// clusters. Everything is read from the hand-drawn tables in js/city-svg.js (CITY_TERRAIN, CITY_PLOT, CITY_BRIDGES,
+// CITY_STAIRS), so the flat SVG city matches. Level 1 is a thin grass bank; level 2 and 3 stand on one and two terraces.
+// The finished group is merged by material (CityUtils.finishBuilding), so the whole land costs a handful of draws.
+// Loaded by js/city-home.js after utils.js and props.js, before scene.js.
 
 const CityTerrain = (() => {
-  const CELL = 2.6; // one terrain cell, in scene units
-  const LEVEL = 1.2; // how much taller each rock level is
-  const WATER = 0.35; // the river's surface
-  const DEPTH = 2.5; // how far the land drops below the river, so the island has thickness
-  const STRIPES = 2; // rock sides alternate between this many shades, so the cliff layers read as strata
+  const CELL = 2; // one terrain cell = one terrace block or river tile
+  const RISE = 1.25; // each rock level is a terrace stretched to this height (the prop is 1.0 tall)
+  const BANK = 0.14; // the grass bank at level 1, just above the river
+  const WATER = 0.09; // the river's surface
+  const FALL_CELL = [1, 0]; // the waterfall stands here, facing the river below it
+  const PALETTE = { main: "#228B22", accent: "#FF69B4", dark: "#556B2F", light: "#D2B48C", glow: "#7CFC00" };
 
-  const topOf = level => (level ? level * LEVEL : WATER);
+  const topOf = level => (level === 0 ? WATER : level === 1 ? BANK : (level - 1) * RISE);
   // Cell coordinates (a cell is 1 x 1, the whole map is CITY_COLS x CITY_ROWS) to scene x, z.
   const world = (cx, cy) => [(cx - CITY_COLS / 2) * CELL, (cy - CITY_ROWS / 2) * CELL];
   const levelAtPoint = (cx, cy) => cityLevelAt(Math.floor(cx), Math.floor(cy));
+  const inMap = (c, r) => c >= 0 && r >= 0 && c < CITY_COLS && r < CITY_ROWS;
 
   // Where a building or scenery piece stands: scene x, y (the top of its pad), z, and its turn in radians.
   function pad(id) {
@@ -22,85 +26,84 @@ const CityTerrain = (() => {
     return { x, y: topOf(cityPadLevel(p)), z, turn: (p.turn * Math.PI) / 180 };
   }
 
-  // Trees on the plateau, ridge and ledges (cell coordinates), and lamps at the bridge ends. Fixed, like everything else.
+  // Tree clusters on the plateau, ridge and ledges (cell coordinates). Fixed, like everything else.
   const TREES = [
     [6, 1], [10, 1], [13, 2.4], [1, 0.6], [13.3, 0.7], [7.4, 9], [9, 8.6], [8.2, 9.6],
     [0.7, 7.6], [3.6, 6.6], [0.6, 9.5], [13.5, 6.5], [4, 3.4], [5.2, 7.7],
   ];
-  const LAMP_SIDE = 0.45;
-  const lampSpots = () => CITY_BRIDGES.flatMap(b => [b.y0 + 0.2, b.y1 - 0.2].flatMap(y => [-LAMP_SIDE, LAMP_SIDE].map(dx => [b.x + dx, y, b.level])));
-  function spots() {
-    const trees = TREES.map(([cx, cy]) => { const [x, z] = world(cx, cy); return { x, y: topOf(levelAtPoint(cx, cy)), z }; });
-    const lamps = lampSpots().map(([cx, cy, level]) => { const [x, z] = world(cx, cy); return { x, y: topOf(level), z }; });
-    return { trees, lamps };
+  const CITY_DIR_TURN = { s: 0, n: Math.PI, e: Math.PI / 2, w: -Math.PI / 2 }; // the stairs prop climbs toward +z
+
+  function put(group, prop, x, y, z, turn = 0, scale = [1, 1, 1]) {
+    prop.position.set(x, y, z);
+    prop.rotation.y = turn;
+    prop.scale.set(...scale);
+    group.add(prop);
   }
 
-  // One slab of land: a box standing on `y0`, `h` tall; its sides are the rock material, its top the grass or water.
-  function slab(group, x, z, y0, h, side, top, shadow = true) {
-    const mats = [side, side, top, side, side, side]; // +x, -x, +y, -y, +z, -z
-    const mesh = new THREE.Mesh(new THREE.BoxGeometry(CELL, h, CELL), mats);
-    mesh.position.set(x, y0 + h / 2, z);
-    mesh.receiveShadow = true;
-    mesh.castShadow = shadow;
-    group.add(mesh);
+  // A river tile flows along z, or along x when turned. It flows along the way with more water around it, and has a
+  // grassy bank on each side that has land beside it.
+  function addRiver(group, c, r) {
+    const water = (dc, dr) => !inMap(c + dc, r + dr) || cityLevelAt(c + dc, r + dr) === 0;
+    const land = (dc, dr) => inMap(c + dc, r + dr) && cityLevelAt(c + dc, r + dr) > 0;
+    const alongZ = Number(water(0, -1)) + Number(water(0, 1)) >= Number(water(-1, 0)) + Number(water(1, 0));
+    // the tile's own "left" is -x; turned a quarter, left is the south side
+    const [left, right] = alongZ ? [land(-1, 0), land(1, 0)] : [land(0, 1), land(0, -1)];
+    const banks = left && right ? "both" : left ? "left" : right ? "right" : "none";
+    const [x, z] = world(c + 0.5, r + 0.5);
+    put(group, CityProps.river(PALETTE, { banks }), x, 0, z, alongZ ? 0 : Math.PI / 2);
   }
 
-  function addLand(group, m) {
+  function addLand(group) {
+    const { mats, geos } = CityUtils.setup(PALETTE);
+    const add = CityUtils.createAdder(group, geos, mats);
     CITY_TERRAIN.forEach((row, r) => [...row].forEach((_, c) => {
       const level = cityLevelAt(c, r);
       const [x, z] = world(c + 0.5, r + 0.5);
-      if (!level) { slab(group, x, z, -DEPTH, WATER + DEPTH, m.rock[0], m.water, false); return; }
-      slab(group, x, z, -DEPTH, LEVEL + DEPTH, m.rock[0], level === 1 ? m.grass[0] : m.rock[0]);
-      for (let k = 2; k <= level; k++) slab(group, x, z, (k - 1) * LEVEL, LEVEL, m.rock[(k - 1) % STRIPES], k === level ? m.grass[k - 1] : m.rock[(k - 1) % STRIPES]);
+      if (level === 0) { addRiver(group, c, r); return; }
+      if (c === FALL_CELL[0] && r === FALL_CELL[1]) { put(group, CityProps.waterfall(PALETTE), x, 0, z, 0, [1, RISE * 0.92, 1]); return; }
+      if (level === 1) {
+        add("b", "rock", x, 0, z, CELL, BANK - 0.04, CELL);
+        add("b", "grass", x, BANK - 0.04, z, CELL, 0.04, CELL);
+        return;
+      }
+      for (let k = 0; k < level - 1; k++) put(group, CityProps.terrace(PALETTE), x, k * RISE, z, 0, [1, RISE, 1]);
     }));
   }
 
-  function box(group, w, h, d, x, y, z, material) {
-    const mesh = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), material);
-    mesh.position.set(x, y, z);
-    mesh.castShadow = mesh.receiveShadow = true;
-    group.add(mesh);
-  }
-
-  // A deck on the bank's level with a low rail down each side.
-  function addBridges(group, m) {
+  // The bridge prop is 3 long and 0.62 tall; stretch it to span the gap and meet the deck's bank.
+  function addBridges(group) {
     CITY_BRIDGES.forEach(b => {
       const [x, z0] = world(b.x, b.y0), [, z1] = world(b.x, b.y1);
-      const len = z1 - z0, z = (z0 + z1) / 2, top = topOf(b.level), width = CELL * 0.8;
-      box(group, width, 0.2, len, x, top - 0.05, z, m.deck);
-      [-1, 1].forEach(side => box(group, 0.12, 0.4, len, x + (side * width) / 2, top + 0.2, z, m.rail));
+      put(group, CityProps.bridge(PALETTE), x, 0, (z0 + z1) / 2, 0, [1.4, topOf(b.level) / 0.62, (z1 - z0) / 3]);
     });
   }
 
-  // Four steps in the direction the stair climbs, from the low level up to the high one.
-  function addStairs(group, m) {
-    const span = (c, d, i) => (d === 0 ? [c - 0.4, 0.8] : d > 0 ? [c - 0.5 + i / 4, 0.25] : [c + 0.5 - (i + 1) / 4, 0.25]);
+  // Stairs climb toward +z; turned and stretched to fill their cell and rise from the low level to the high one.
+  function addStairs(group) {
     CITY_STAIRS.forEach(st => {
-      const [dx, dy] = CITY_DIRS[st.dir];
-      for (let i = 0; i < 4; i++) {
-        const [gx, w] = span(st.x, dx, i), [gy, d] = span(st.y, dy, i);
-        const h = ((i + 1) / 4) * (st.high - st.low) * LEVEL;
-        const [x, z] = world(gx + w / 2, gy + d / 2);
-        box(group, w * CELL, h, d * CELL, x, topOf(st.low) + h / 2, z, m.deck);
-      }
+      const [x, z] = world(st.x, st.y);
+      const rise = topOf(st.high) - topOf(st.low);
+      put(group, CityProps.stairs(PALETTE), x, topOf(st.low), z, CITY_DIR_TURN[st.dir], [1.7, rise, CELL]);
     });
   }
 
-  // colours: { grass: [lv1, lv2, lv3], rock: [shade, shade], water, deck, rail } as hex numbers.
-  function build(scene, colours) {
-    const mat = hex => new THREE.MeshStandardMaterial({ color: hex, roughness: 0.95 });
-    const m = {
-      grass: colours.grass.map(mat), rock: colours.rock.map(mat),
-      water: new THREE.MeshStandardMaterial({ color: colours.water, roughness: 0.35, metalness: 0.1 }),
-      deck: mat(colours.deck), rail: mat(colours.rail),
-    };
+  function addTrees(group) {
+    TREES.forEach(([cx, cy]) => {
+      const [x, z] = world(cx, cy);
+      put(group, CityProps.trees(PALETTE), x, topOf(levelAtPoint(cx, cy)), z, cx * 7);
+    });
+  }
+
+  function build(scene) {
     const group = new THREE.Group();
-    addLand(group, m);
-    addBridges(group, m);
-    addStairs(group, m);
+    addLand(group);
+    addBridges(group);
+    addStairs(group);
+    addTrees(group);
+    CityUtils.finishBuilding(group);
     scene.add(group);
     return group;
   }
 
-  return { build, pad, spots, size: [CITY_COLS * CELL, CITY_ROWS * CELL] };
+  return { build, pad, size: [CITY_COLS * CELL, CITY_ROWS * CELL] };
 })();

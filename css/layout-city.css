@@ -33,18 +33,19 @@
 .city-water.city-r { fill: color-mix(in srgb, var(--academics) 80%, #000); }
 .city-water.city-l { fill: color-mix(in srgb, var(--academics) 62%, #000); }
 
-/* The land: grass on top, rock down the sides, the river low between. Higher ground is paler. */
-.city-ter.city-l { fill: color-mix(in srgb, color-mix(in srgb, var(--muted) 55%, var(--surface)) 82%, #000); }
-.city-ter.city-r { fill: color-mix(in srgb, var(--muted) 55%, var(--surface)); }
-.city-ter.city-t.city-lv1 { fill: color-mix(in srgb, var(--deen) 42%, var(--city-ground)); }
-.city-ter.city-t.city-lv2 { fill: color-mix(in srgb, var(--deen) 30%, var(--city-ground)); }
-.city-ter.city-t.city-lv3 { fill: color-mix(in srgb, var(--deen) 20%, var(--city-ground)); }
-.city-ter.city-t.city-wat { fill: color-mix(in srgb, var(--academics) 55%, var(--surface)); }
-.city-ter.city-r.city-wat { fill: color-mix(in srgb, var(--academics) 45%, var(--surface)); }
-.city-ter.city-l.city-wat { fill: color-mix(in srgb, var(--academics) 38%, var(--surface)); }
-.city-deck.city-t, .city-step.city-t { fill: color-mix(in srgb, var(--chores) 35%, var(--surface)); }
-.city-deck.city-r, .city-step.city-r { fill: color-mix(in srgb, var(--chores) 35%, var(--surface) ); filter: brightness(0.85); }
-.city-deck.city-l, .city-step.city-l { fill: color-mix(in srgb, var(--chores) 35%, var(--surface)); filter: brightness(0.7); }
+/* The land, in Gemini's colours (the same as the 3D terrain): grass on top, rock down the sides, the river low between.
+   Each is mixed a little with the page surface so it sits well in light and dark. */
+.city-ter.city-l { fill: color-mix(in srgb, #62594f 88%, var(--surface)); }
+.city-ter.city-r { fill: color-mix(in srgb, #857b6e 88%, var(--surface)); }
+.city-ter.city-t.city-lv1, .city-ter.city-t.city-lv2, .city-ter.city-t.city-lv3 { fill: color-mix(in srgb, #7fae5c 88%, var(--surface)); }
+.city-ter.city-t.city-lv2 { filter: brightness(1.05); }
+.city-ter.city-t.city-lv3 { filter: brightness(1.1); }
+.city-ter.city-t.city-wat { fill: color-mix(in srgb, #49b0c9 88%, var(--surface)); }
+.city-ter.city-r.city-wat { fill: color-mix(in srgb, #3f9db7 88%, var(--surface)); }
+.city-ter.city-l.city-wat { fill: color-mix(in srgb, #2f8fae 88%, var(--surface)); }
+.city-deck.city-t, .city-step.city-t { fill: color-mix(in srgb, #f3ead8 90%, var(--surface)); }
+.city-deck.city-r, .city-step.city-r { fill: color-mix(in srgb, #c4b89f 90%, var(--surface)); }
+.city-deck.city-l, .city-step.city-l { fill: color-mix(in srgb, #a89c84 90%, var(--surface)); }
 
 .city-map a { outline: none; }
 .city-map a:is(:hover, :focus-visible) .city-t:not(.city-plate) { filter: brightness(1.2); }
