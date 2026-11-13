@@ -4,6 +4,7 @@
 
 // Cards on the page, in order: a title and the settings in it (keys of APPEARANCE_CHOICES).
 const APPEARANCE_GROUPS = [
+  { title: "Layout", keys: ["layout"], note: "Changes how Home and the branch pages are laid out. Works with any palette." },
   { title: "Colours", note: "The light/dark button picks which of the two colour sets shows.",
     keys: ["paletteDark", "paletteLight", "black", "accent", "accentHue", "glow", "tint"] },
   { title: "Type and shape", keys: ["type", "size", "radius", "density"] },
@@ -12,7 +13,7 @@ const APPEARANCE_GROUPS = [
   { title: "Animations and sci-fi FX", presets: true, keys: EFFECT_KEYS,
     note: "Scanlines are under Background. All of these stay off with Motion set to None or the device's reduce-motion setting." },
   { title: "Background", keys: ["texture"] },
-  { title: "Coming next", keys: ["centre", "layout"] },
+  { title: "Coming next", keys: ["centre"] },
 ];
 
 const PRESET_LABELS = { off: "All off", recommended: "Recommended", on: "All on" };

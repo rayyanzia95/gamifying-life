@@ -258,13 +258,16 @@ const APPEARANCE_CHOICES = {
       { value: "sheet", label: "Stat block", soon: true },
     ],
   },
+  // Each layout is data-layout on <html> plus its own css/layout-<value>.css (and JS where markup changes).
   layout: {
     label: "Layout",
     options: [
-      { value: "card", label: "Card + sidebar" },
-      { value: "sheet", label: "Character sheet", soon: true },
-      { value: "dashboard", label: "Dashboard / HUD grid", soon: true },
-      { value: "terminal", label: "Terminal panes", soon: true },
+      { value: "classic", label: "Classic" },
+      { value: "hud", label: "Cockpit HUD" },
+      { value: "city", label: "City", soon: true },
+      { value: "orrery", label: "Orrery", soon: true },
+      { value: "wheel", label: "Command wheel", soon: true },
+      { value: "codex", label: "Grimoire ledger", soon: true },
     ],
   },
 };
@@ -366,7 +369,7 @@ function applyAppearance() {
     black: dark ? s.black : "palette",
     accent: s.accent === "custom" ? `custom-${dark ? "dark" : "light"}` : "palette",
     glow: s.glow, type: s.type, bars: s.bars, ticks: s.ticks, motion: s.motion, size: s.size, radius: s.radius,
-    density: s.density, levelUp: s.levelUp, texture: s.texture, icons: s.icons, tint: s.tint,
+    density: s.density, levelUp: s.levelUp, texture: s.texture, icons: s.icons, tint: s.tint, layout: s.layout,
     ...Object.fromEntries(EFFECT_KEYS.map(key => [key, s[key]])), // fxBoot → data-fx-boot, animTick → data-anim-tick
   });
   root.style.setProperty("--accent-hue", s.accentHue); // a number the CSS turns into an oklch colour

@@ -54,7 +54,10 @@ function branchShare(branch) {
 }
 
 const branches = BRANCHES.map(b => ({ ...b, ...levelOf(totals, b.id), share: branchShare(b) }));
+const overall = levelInfo(overallXp, LEVELS.overallMultiplier);
+// Appearance → Layout: the Cockpit HUD draws its own Home (hud-home.js); every other layout keeps the card.
+const isHud = document.documentElement.dataset.layout === "hud";
 document.getElementById("home-card").innerHTML =
-  homeCardHtml(levelInfo(overallXp, LEVELS.overallMultiplier), branches);
+  isHud ? hudHomeHtml(events, overall, overallXp, branches) : homeCardHtml(overall, branches);
 drawPeopleNote();
 drawLevelNote();

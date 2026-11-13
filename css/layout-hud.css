@@ -1,0 +1,235 @@
+/* Cockpit HUD layout (Appearance → Layout = Cockpit HUD, data-layout="hud" on <html>).
+   Only colour variables are used, so it follows every palette, light and dark. Home's instruments come from
+   js/hud-home.js; the branch pages keep their own markup and get the HUD frame from the rules further down.
+   Motion None / reduced motion: palettes.css already stops every animation. */
+
+[data-layout="hud"] {
+  --hud-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --hud-line: color-mix(in srgb, var(--accent) 22%, transparent);
+  --hud-fill: color-mix(in srgb, var(--accent) 4%, var(--bg));
+  --hud-track: color-mix(in srgb, var(--muted) 22%, transparent);
+  --hud-corner: 12px;
+}
+
+/* A HUD panel: thin accent outline, two corner brackets (top left, bottom right) painted as backgrounds,
+   so they never clash with the card ::before used by the Sci-fi FX brackets. */
+[data-layout="hud"] :is(.hud-panel, .card) {
+  border: 1px solid var(--hud-line);
+  border-radius: 0;
+  background:
+    linear-gradient(var(--accent), var(--accent)) top left / var(--hud-corner) 2px no-repeat,
+    linear-gradient(var(--accent), var(--accent)) top left / 2px var(--hud-corner) no-repeat,
+    linear-gradient(var(--accent), var(--accent)) bottom right / var(--hud-corner) 2px no-repeat,
+    linear-gradient(var(--accent), var(--accent)) bottom right / 2px var(--hud-corner) no-repeat,
+    var(--hud-fill);
+}
+
+[data-layout="hud"] h1 {
+  font-family: var(--hud-mono);
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.hud-cap,
+[data-layout="hud"] .card-title {
+  margin: 0 0 8px;
+  font-family: var(--hud-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+/* ---- Home ---- */
+
+/* The Home card is only the frame for the instruments, which carry their own panels. */
+[data-layout="hud"] #home-card {
+  padding: 0;
+  border: 0;
+  background: none;
+}
+
+@media (min-width: 900px) {
+  [data-layout="hud"] body.has-nav:has(.hud) {
+    --page-width: min(1000px, calc(100vw - 268px));
+  }
+}
+
+.hud {
+  container-type: inline-size;
+  display: grid;
+  gap: 12px;
+  font-family: var(--hud-mono);
+  font-size: 0.8rem;
+  color: var(--text);
+}
+
+.hud-panel {
+  padding: 12px;
+  min-width: 0;
+}
+
+.hud a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.hud-quiet {
+  color: var(--muted);
+}
+
+/* Time tape: the wide version on a desktop, a ±4 hour window on a phone. */
+.hud-tape svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.hud-tape .hud-narrow { display: none; }
+
+@container (max-width: 699px) {
+  .hud-tape .hud-wide { display: none; }
+  .hud-tape .hud-narrow { display: block; }
+}
+
+.hud-tick { stroke: var(--muted); stroke-width: 1; }
+.hud-tick-label { font: 11px var(--hud-mono); fill: var(--muted); text-anchor: middle; }
+.hud-waypoint { fill: var(--accent); }
+.hud-waypoint.done { fill: var(--muted); }
+.hud-waypoint-label { font: 700 11px var(--hud-mono); fill: var(--text); text-anchor: middle; }
+.hud-past { fill: color-mix(in srgb, var(--accent) 8%, transparent); }
+.hud-now { stroke: var(--accent); stroke-width: 2; }
+.hud-now-box { fill: var(--accent); }
+.hud-now-text { font: 700 12px var(--hud-mono); fill: var(--bg); text-anchor: middle; dominant-baseline: central; }
+
+.hud-mid {
+  display: grid;
+  gap: 12px;
+}
+
+@container (min-width: 700px) {
+  .hud-mid {
+    grid-template-columns: 190px minmax(0, 1fr) 220px;
+    align-items: stretch;
+  }
+}
+
+/* Reticle */
+.hud-reticle svg {
+  display: block;
+  width: min(100%, 340px);
+  margin: 0 auto;
+  overflow: visible;
+}
+
+.hud-ret-tick { stroke: var(--muted); stroke-width: 1; opacity: 0.6; }
+.hud-ret-track { fill: none; stroke: var(--hud-track); stroke-width: 9; }
+.hud-ret-seg { fill: none; stroke-width: 9; }
+.hud-ret-label { font: 700 11px var(--hud-mono); fill: var(--muted); text-anchor: middle; dominant-baseline: central; }
+.hud-reticle a:is(:hover, :focus-visible) .hud-ret-label { fill: var(--text); }
+.hud-ret-xp { fill: none; stroke: var(--gold); stroke-width: 3; stroke-linecap: round; transform: rotate(-90deg); }
+.hud-ret-small { font: 700 10px var(--hud-mono); fill: var(--accent); text-anchor: middle; letter-spacing: 0.2em; }
+.hud-ret-level { font: 700 54px var(--font-head, var(--hud-mono)); fill: var(--text); text-anchor: middle; dominant-baseline: central; }
+.hud-cross { stroke: var(--hud-line); stroke-width: 1; }
+
+.hud-ret-spin {
+  fill: none;
+  stroke: var(--hud-line);
+  stroke-width: 1;
+  stroke-dasharray: 3 9;
+  animation: hud-spin 40s linear infinite;
+}
+
+@keyframes hud-spin { to { transform: rotate(360deg); } }
+
+/* Level climb columns */
+.hud-cols {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+  height: 150px;
+}
+
+@container (min-width: 700px) {
+  .hud-cols { height: calc(100% - 24px); min-height: 150px; }
+}
+
+.hud-col {
+  display: grid;
+  grid-template-rows: 1fr auto auto;
+  gap: 3px;
+  text-align: center;
+}
+
+.hud-col-track {
+  position: relative;
+  background: var(--hud-track);
+}
+
+.hud-col-track i {
+  position: absolute;
+  inset: auto 0 0;
+  background: var(--c);
+  animation: hud-rise 1.2s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+@keyframes hud-rise { from { height: 0; } }
+
+.hud-col b { font-size: 1rem; color: var(--c); }
+.hud-col span:last-child { font-size: 0.62rem; color: var(--muted); }
+
+/* Targets: the next exams, the soonest locked on */
+.hud-targets {
+  display: grid;
+  gap: 8px;
+}
+
+.hud-target {
+  display: grid;
+  gap: 4px;
+  padding: 7px 8px;
+  border: 1px solid var(--line);
+}
+
+.hud-target.lock {
+  border-color: var(--accent);
+  box-shadow: inset 0 0 0 1px var(--hud-line);
+}
+
+.hud-target-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 6px;
+  color: var(--muted);
+}
+
+.hud-lock {
+  color: var(--accent);
+  font-weight: 700;
+  animation: hud-blink 1.4s steps(2) infinite;
+}
+
+@keyframes hud-blink { 50% { opacity: 0.35; } }
+
+.hud-hp {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: 2px;
+}
+
+.hud-hp i { height: 6px; background: var(--hud-track); }
+.hud-hp i.on { background: var(--academics); }
+
+/* Status strip */
+.hud-status {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 20px;
+  font-size: 0.74rem;
+  color: var(--muted);
+}
+
+.hud-status b { color: var(--accent); }
