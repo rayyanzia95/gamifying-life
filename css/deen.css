@@ -109,3 +109,8 @@
 .tick-row label:has(input:disabled) {
   color: var(--disabled-text);
 }
+
+/* Wide screens: the three trackers sit side by side. */
+@media (min-width: 1000px) {
+  .tiles { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}

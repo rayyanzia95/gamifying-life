@@ -163,10 +163,5 @@
 .orr-header-text strong { color: var(--c); font-size: 1.1rem; }
 
 /* Title and orbit header first, then the page's own cards, as in the Cockpit HUD. */
-[data-layout="orrery"] body.orr-branch {
-  display: flex;
-  flex-direction: column;
-}
-
 [data-layout="orrery"] body.orr-branch > .back { order: -2; align-self: flex-start; }
 [data-layout="orrery"] body.orr-branch > :is(h1, .orr-header) { order: -1; }

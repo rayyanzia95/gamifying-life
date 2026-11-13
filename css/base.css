@@ -1361,18 +1361,36 @@ html[data-layout]:not([data-layout="classic"]) .hero .summary-row { grid-templat
   .money-form > .money-input:first-child:not(:last-of-type) { flex: 1 1 100%; }
 }
 
-/* Wide screens: branch pages use the room. Hero and bar span, the other cards sit in two columns. */
+/* Branch pages: ONE grid for every layout (a page with a .hero card, or body.grid-page). Layouts add their own header
+   element after the h1 and only give it `order: -1`; none of them may change body's display (that is what broke the
+   wide view in Orrery / Wheel / Grimoire). One column on a phone, hero band + two columns from 1000px. */
+body.has-nav:is(:has(> .hero), .grid-page) {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  column-gap: 16px;
+  align-content: start;
+}
+body.has-nav:is(:has(> .hero), .grid-page) > * { min-width: 0; }
+body.has-nav:is(:has(> .hero), .grid-page) > .back { order: -2; justify-self: start; }
+body.has-nav:is(:has(> .hero), .grid-page) > h1 { order: -1; }
+
 @media (min-width: 1000px) {
-  body.has-nav:has(> .hero) {
-    --page-width: min(960px, calc(100vw - 268px));
-    display: grid;
+  body.has-nav:is(:has(> .hero), .grid-page) {
+    --page-width: min(1040px, calc(100vw - 268px));
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    column-gap: 16px;
     align-items: start;
   }
-  body.has-nav:has(> .hero) > * { grid-column: 1 / -1; }
-  body.has-nav:has(> .hero) > section.card:not(.hero):not(.hero-xp) { grid-column: auto; }
-  body.has-nav:has(> .hero) :is(.sleep-week, .dial, .money-rings, .home-hub) { max-width: 440px; margin-inline: auto; }
+  /* Title, layout header, tabs and lists span; cards pair up. */
+  body.has-nav:is(:has(> .hero), .grid-page) > * { grid-column: 1 / -1; }
+  body.has-nav:is(:has(> .hero), .grid-page) > :is(section.card, a.branch-link):not(.hero):not(.hero-xp) { grid-column: auto; }
+  /* Hero band: instrument card and XP card side by side, same height. */
+  body.has-nav:has(> .hero) > .hero { grid-column: 1; align-self: stretch; }
+  body.has-nav:has(> .hero) > .hero-xp { grid-column: 2; align-self: stretch; }
+  body.has-nav:has(> .hero) > .hero:has(+ .hero-xp) { border-bottom-left-radius: calc(12px * var(--round)); border-bottom-right-radius: calc(12px * var(--round)); border-bottom-color: var(--border); }
+  body.has-nav:has(> .hero) > .hero-xp { border-top: 1px solid var(--border); border-radius: calc(12px * var(--round)); }
+  body.has-nav:has(> .hero) :is(.sleep-week, .dial, .money-rings, .home-hub) { max-width: 340px; margin-inline: auto; }
+  /* Long lists (Deen prayers) run in two columns instead of one 1000px-wide strip. */
+  #view-prayers #prayers { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 24px; }
 }
 
 /* Streak flame: the drawn icon, always shown (the .ic default is hidden until Appearance → Icons asks for it). */
@@ -1391,6 +1409,41 @@ html[data-layout]:not([data-layout="classic"]) .hero .summary-row { grid-templat
 summary { min-height: 44px; display: flex; align-items: center; cursor: pointer; }
 .money-form { align-items: stretch; }
 .money-form .filter-button { min-height: 44px; }
+a.branch-link { margin-bottom: 12px; }
+
+/* ================= Settings + Appearance tabs (js/settings-tabs.js) ================= */
+
+/* Wide: one centred column with a tab bar under the title. Phone: the same links as a list of rows. */
 @media (min-width: 1000px) {
-  body.has-nav:has(> .hero) > a.branch-link { grid-column: auto; margin-bottom: 12px; }
+  body.has-nav.set-page { --page-width: 720px; }
+}
+
+.set-tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--line); margin-bottom: 20px; }
+.set-tabs a {
+  display: block;
+  padding: 10px 16px;
+  min-height: 44px;
+  color: var(--muted);
+  text-decoration: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+}
+.set-tabs a small { display: none; }
+.set-tabs a[aria-current] { color: var(--text); border-bottom-color: var(--accent); }
+.set-tabs a:hover { color: var(--text); }
+
+[data-panel] { display: none; }
+body[data-tab="general"] [data-panel="general"],
+body[data-tab="sync"] [data-panel="sync"],
+body[data-tab="backup"] [data-panel="backup"] { display: block; }
+
+@media (max-width: 699px) {
+  .set-tabs { display: grid; gap: 0; border: 1px solid var(--border); border-radius: calc(12px * var(--round)); background: var(--surface); padding: 0 12px; }
+  .set-tabs a { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 12px 0; margin: 0; border-bottom: 1px solid var(--line); }
+  .set-tabs a:last-child { border-bottom: 0; }
+  .set-tabs a small { display: inline; font-size: 0.8125rem; margin-left: auto; text-align: right; }
+  .set-tabs a::after { content: "›"; color: var(--muted); }
+  .set-tabs a[aria-current] { border-bottom-color: var(--line); }
+  /* Inside a section the list steps aside (the back link returns to it). */
+  .set-tabs:not([data-current=""]) { display: none; }
 }

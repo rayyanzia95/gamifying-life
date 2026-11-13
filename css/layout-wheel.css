@@ -150,10 +150,5 @@
 .cw-hint { font-size: 0.78rem; }
 
 /* Title and wheel header first, then the page's own cards, as in the Orrery. */
-[data-layout="wheel"] body.cw-branch {
-  display: flex;
-  flex-direction: column;
-}
-
 [data-layout="wheel"] body.cw-branch > .back { order: -2; align-self: flex-start; }
 [data-layout="wheel"] body.cw-branch > :is(h1, .cw-header) { order: -1; }

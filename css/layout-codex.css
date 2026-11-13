@@ -177,6 +177,5 @@ a.cx-bc:is(:hover, :focus-visible) { background: color-mix(in srgb, var(--c) 8%,
 .cx-header .cx-bars { flex: none; width: 96px; }
 
 /* Title and chapter header first, then the page's own cards. */
-[data-layout="codex"] body.cx-branch { display: flex; flex-direction: column; }
 [data-layout="codex"] body.cx-branch > .back { order: -2; align-self: flex-start; }
 [data-layout="codex"] body.cx-branch > :is(h1, .cx-header) { order: -1; }
