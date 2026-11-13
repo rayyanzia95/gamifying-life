@@ -233,3 +233,54 @@
 }
 
 .hud-status b { color: var(--accent); }
+
+/* ---- Branch pages (body.hud-branch, set by js/hud-page.js) ---- */
+
+/* Title first, then the status strip, then the instruments. Phone: one column. */
+[data-layout="hud"] body.hud-branch {
+  display: flex;
+  flex-direction: column;
+}
+
+[data-layout="hud"] body.hud-branch > .back { order: -2; align-self: flex-start; }
+[data-layout="hud"] body.hud-branch > :is(h1, .hud-strip) { order: -1; }
+
+.hud-strip {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 16px;
+  margin-bottom: 24px;
+  font-family: var(--hud-mono);
+  font-size: 0.74rem;
+  color: var(--muted);
+}
+
+.hud-strip b { color: var(--accent); }
+.hud-strip-name { color: var(--c); font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; }
+.hud-strip-name b { color: inherit; }
+
+.hud-strip-bar {
+  display: grid;
+  grid-template-columns: repeat(20, 1fr);
+  gap: 2px;
+  flex: 1 1 120px;
+}
+
+.hud-strip-bar i { height: 6px; background: var(--hud-track); }
+.hud-strip-bar i.on { background: var(--c); }
+
+/* Wide screens: a wider cockpit. The top instruments and the bar span it, the cards after them pair up. */
+@media (min-width: 1100px) {
+  [data-layout="hud"] body.has-nav.hud-branch {
+    --page-width: min(1000px, calc(100vw - 268px));
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 16px;
+    align-items: start;
+  }
+
+  [data-layout="hud"] body.hud-branch > * { grid-column: 1 / -1; }
+  [data-layout="hud"] body.hud-branch > section.card:nth-of-type(n + 3) { grid-column: auto; }
+  [data-layout="hud"] body.hud-branch > .back { justify-self: start; }
+}
