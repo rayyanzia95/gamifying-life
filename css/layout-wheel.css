@@ -1,0 +1,158 @@
+/* Command wheel layout (Appearance → Layout = Command wheel, data-layout="wheel" on <html>). The wheel comes
+   from js/command-wheel.js (Home: js/wheel-home.js). Only colour variables are used, so it follows every palette,
+   light and dark. Motion None / reduced motion: palettes.css stops every animation, so the wheel simply appears. */
+
+[data-layout="wheel"] {
+  --cw-edge: color-mix(in srgb, var(--accent) 16%, var(--border));
+  --cw-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+/* Cards get a faint accent edge on every page. */
+[data-layout="wheel"] .card { border-color: var(--cw-edge); }
+
+/* ---- The wheel (Home and the branch headers) ---- */
+
+.cw-wheel {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.cw-sec { cursor: pointer; outline: none; }
+.cw-track { fill: color-mix(in srgb, var(--c) 10%, var(--surface)); stroke: var(--bg); stroke-width: 3; }
+.cw-fill { fill: color-mix(in srgb, var(--c) 42%, var(--surface)); pointer-events: none; }
+.cw-sec.full .cw-fill { fill: color-mix(in srgb, var(--c) 62%, var(--surface)); }
+.cw-sec.sel .cw-track { stroke: var(--c); stroke-width: 2.5; }
+.cw-sec:hover .cw-track { fill: color-mix(in srgb, var(--c) 20%, var(--surface)); }
+.cw-sec:focus-visible .cw-track { stroke: var(--text); stroke-width: 3; }
+
+.cw-name, .cw-sub {
+  text-anchor: middle;
+  pointer-events: none;
+  paint-order: stroke;
+  stroke: color-mix(in srgb, var(--c) 22%, var(--surface));
+  stroke-width: 4px;
+  stroke-linejoin: round;
+}
+
+.cw-name { font-size: 15px; font-weight: 700; fill: var(--text); }
+.cw-sub { font-size: 12px; fill: var(--muted); font-variant-numeric: tabular-nums; }
+.cw-sec.full .cw-sub { fill: var(--text); }
+
+.cw-hub { fill: var(--surface); stroke: var(--border); }
+.cw-hub-xp { fill: none; stroke: var(--gold); stroke-width: 4; stroke-linecap: round; transform: rotate(-90deg); }
+.cw-hub-n { font-size: 44px; font-weight: 700; fill: var(--text); text-anchor: middle; dominant-baseline: central; }
+.cw-hub-t { font-size: 11px; letter-spacing: 0.15em; fill: var(--muted); text-anchor: middle; }
+
+/* Sectors grow out from the hub on load. */
+.cw-sectors {
+  transform-box: view-box;
+  transform-origin: center;
+  animation: cw-open 0.5s var(--cw-ease) both;
+}
+
+@keyframes cw-open { from { transform: scale(0.82) rotate(-12deg); opacity: 0; } }
+
+/* ---- Home ---- */
+
+[data-layout="wheel"] #home-card {
+  padding: 0;
+  border: 0;
+  background: none;
+}
+
+.cw {
+  display: grid;
+  gap: 16px;
+}
+
+.cw > .cw-wheel { max-width: 440px; margin: 0 auto; }
+
+/* Wide screens: a wider page, the wheel on the left and the panel next to it. */
+@media (min-width: 900px) {
+  [data-layout="wheel"] body.has-nav:has(.cw) {
+    --page-width: min(1000px, calc(100vw - 268px));
+  }
+
+  .cw {
+    grid-template-columns: minmax(0, 1.3fr) minmax(240px, 1fr);
+    align-items: center;
+  }
+}
+
+.cw-side { display: grid; gap: 14px; min-width: 0; }
+.cw a { color: inherit; text-decoration: none; }
+
+.cw-panel {
+  display: grid;
+  gap: 8px;
+  padding: 14px;
+  border: 1px solid color-mix(in srgb, var(--c) 40%, var(--border));
+  border-radius: calc(14px * var(--round));
+  background: var(--surface);
+  animation: cw-panel 0.3s var(--cw-ease) both;
+}
+
+@keyframes cw-panel { from { opacity: 0; transform: translateY(6px); } }
+
+.cw-panel h2 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.cw-panel h2 i { width: 10px; height: 10px; border-radius: 50%; background: var(--c); }
+.cw-muted { margin: 0; color: var(--muted); font-size: 0.82rem; }
+.cw-today { margin: 4px 0 0; color: var(--muted); font-size: 0.9rem; }
+.cw-today strong { color: var(--text); font-size: 1.3rem; }
+
+.cw-parts { display: grid; gap: 6px; margin: 0; padding: 0; list-style: none; font-size: 0.85rem; }
+
+.cw-parts li {
+  display: grid;
+  grid-template-columns: 5.5rem minmax(0, 1fr) 2.8rem;
+  align-items: center;
+  gap: 8px;
+}
+
+.cw-parts .num { color: var(--muted); text-align: right; }
+
+.cw .cw-open { justify-self: start; color: var(--c); font-weight: 600; }
+.cw .cw-open:is(:hover, :focus-visible) { text-decoration: underline; }
+
+/* ---- Branch pages (body.cw-branch, set by js/command-wheel.js) ---- */
+
+.cw-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin: -4px 0 24px;
+}
+
+.cw-header .cw-mini { width: 112px; flex: none; }
+.cw-mini .cw-track { stroke-width: 2; }
+.cw-mini .cw-sec.sel .cw-track { stroke-width: 2; }
+.cw-mini .cw-hub-n { font-size: 26px; }
+.cw-mini .cw-hub-t { font-size: 7px; }
+
+.cw-header-text {
+  display: grid;
+  gap: 2px;
+  color: var(--muted);
+  font-size: 0.875rem;
+}
+
+.cw-header-text strong { color: var(--c); font-size: 1.1rem; }
+.cw-hint { font-size: 0.78rem; }
+
+/* Title and wheel header first, then the page's own cards, as in the Orrery. */
+[data-layout="wheel"] body.cw-branch {
+  display: flex;
+  flex-direction: column;
+}
+
+[data-layout="wheel"] body.cw-branch > .back { order: -2; align-self: flex-start; }
+[data-layout="wheel"] body.cw-branch > :is(h1, .cw-header) { order: -1; }
