@@ -1,0 +1,123 @@
+/* City layout (Appearance → Layout = City, data-layout="city" on <html>). Home is a small city, one building per branch
+   (js/city-home.js; the flat SVG from js/city-svg.js on phones and with reduced motion, the 3D scene from js/city/
+   on wide screens). Branch pages get a building portrait under the title. Only colour variables are used, so it
+   follows every palette, light and dark. */
+
+[data-layout="city"] {
+  --city-edge: color-mix(in srgb, var(--accent) 16%, var(--border));
+  --city-ground: color-mix(in srgb, var(--muted) 22%, var(--surface));
+  --city-window: var(--gold);
+}
+
+[data-layout="city"] .card { border-color: var(--city-edge); }
+
+/* ---- Flat SVG city and the branch portrait ---- */
+
+.city-map, .city-mini { display: block; width: 100%; height: auto; overflow: visible; }
+
+.city-l { fill: color-mix(in srgb, var(--c) 62%, #000); }
+.city-r { fill: color-mix(in srgb, var(--c) 80%, #000); }
+.city-t { fill: var(--c); }
+.city-plate.city-t { fill: var(--city-ground); }
+.city-plate.city-r { fill: color-mix(in srgb, var(--city-ground) 88%, #000); }
+.city-plate.city-l { fill: color-mix(in srgb, var(--city-ground) 78%, #000); }
+
+.city-win { fill: color-mix(in srgb, #000 30%, transparent); }
+.city-win.on { fill: var(--city-window); }
+.city-mast { stroke: var(--muted); stroke-width: 1.5; }
+.city-cap { fill: var(--city-window); }
+
+.city-park .city-tree { fill: var(--deen); }
+.city-park .city-trunk { stroke: color-mix(in srgb, var(--chores) 70%, #000); stroke-width: 2; }
+.city-water.city-t { fill: var(--academics); }
+.city-water.city-r { fill: color-mix(in srgb, var(--academics) 80%, #000); }
+.city-water.city-l { fill: color-mix(in srgb, var(--academics) 62%, #000); }
+
+.city-map a { outline: none; }
+.city-map a:is(:hover, :focus-visible) .city-t:not(.city-plate) { filter: brightness(1.2); }
+.city-map a:focus-visible .city-plate.city-t { stroke: var(--text); stroke-width: 2; }
+
+/* ---- Home ---- */
+
+[data-layout="city"] #home-card { padding: 0; border: 0; background: none; }
+
+.city { display: grid; gap: 16px; }
+.city a { color: inherit; text-decoration: none; }
+
+.city-stage {
+  position: relative;
+  min-width: 0;
+  padding: 12px;
+  border: 1px solid var(--city-edge);
+  border-radius: calc(18px * var(--round));
+  background: var(--surface);
+}
+
+/* The 3D canvas: only on wide screens without reduced motion (js/city-home.js decides). */
+.city-stage.is-3d { padding: 0; overflow: hidden; aspect-ratio: 4 / 3; }
+.city-stage.is-3d canvas { display: block; width: 100%; height: 100%; }
+
+.city-tag {
+  position: absolute;
+  left: 0; top: 0;
+  padding: 1px 7px;
+  border-radius: 99px;
+  background: color-mix(in srgb, var(--surface) 88%, transparent);
+  border: 1px solid var(--c);
+  color: var(--text);
+  font-size: 0.72rem;
+  line-height: 1.5;
+  white-space: nowrap;
+  will-change: transform;
+}
+
+.city-tag:is(:hover, :focus-visible) { background: var(--c); color: var(--bg); }
+
+.city-side { display: grid; gap: 14px; min-width: 0; }
+
+.city-next {
+  display: grid;
+  gap: 2px;
+  padding: 12px;
+  border: 1px solid var(--city-edge);
+  border-radius: calc(14px * var(--round));
+  background: var(--surface);
+  color: var(--muted);
+  font-size: 0.875rem;
+}
+
+.city-next strong { font-size: 1.4rem; line-height: 1.15; color: var(--text); }
+
+.city-rows { display: grid; }
+
+.city-row {
+  display: grid;
+  grid-template-columns: 10px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 12px;
+  border-bottom: 1px solid var(--line);
+  font-size: 0.9rem;
+}
+
+.city-row:last-child { border-bottom: 0; }
+.city-row i { width: 10px; height: 10px; border-radius: 50%; background: var(--c); }
+.city-row .num { color: var(--muted); font-size: 0.82rem; }
+.city-row:is(:hover, :focus-visible) span:first-of-type { color: var(--c); }
+
+.city-hint { margin: 0; color: var(--muted); font-size: 0.8rem; }
+
+@media (min-width: 900px) {
+  [data-layout="city"] body.has-nav:has(.city) { --page-width: min(1100px, calc(100vw - 268px)); }
+  .city { grid-template-columns: minmax(0, 2fr) minmax(220px, 1fr); align-items: start; }
+}
+
+/* ---- Branch pages (body.city-branch, set by js/city-svg.js) ---- */
+
+.city-header { display: flex; align-items: center; gap: 16px; margin: -4px 0 24px; }
+.city-header .city-mini { width: 96px; flex: none; }
+.city-header-text { display: grid; gap: 2px; color: var(--muted); font-size: 0.875rem; }
+.city-header-text strong { color: var(--c); font-size: 1.1rem; }
+
+[data-layout="city"] body.city-branch > .back { order: -2; align-self: flex-start; }
+[data-layout="city"] body.city-branch > :is(h1, .city-header) { order: -1; }
