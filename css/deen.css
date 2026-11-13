@@ -4,6 +4,7 @@
   flex-wrap: wrap;
   gap: 4px 16px;
   margin: 6px 0 0 24px;
+  min-height: 32px; /* an unticked prayer keeps the room its sub-ticks take, so rows don't jump */
   font-size: 0.875rem;
   color: var(--muted);
 }
