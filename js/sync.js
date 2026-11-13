@@ -145,7 +145,11 @@ function canonicalList(events) {
 
 // Every page (Home too) has a render() that redraws in place. A redraw is not a page open: rebuilt nodes would replay their entrance
 // animations (row-rise, anim-rise...), so the one-shot animations the redraw starts are finished at once.
-function redrawPage() {
+// If the page just opened, wait for its entrance animations to end first: rebuilding mid-animation makes
+// everything jump to its end state, which looks like the page loading a second time.
+async function redrawPage() {
+  const opening = document.getAnimations().filter(a => a.effect.getComputedTiming().endTime !== Infinity);
+  await Promise.allSettled(opening.map(a => a.finished)); // settled: a cancelled animation must not block the redraw
   const running = new Set(document.getAnimations());
   render();
   document.getAnimations()
@@ -161,7 +165,7 @@ async function syncOnce() {
   if (!syncClient || !navigator.onLine || !(await currentEmail())) return;
   const changed = await pullEvents();
   await sendUnsent();
-  if (changed) redrawPage();
+  if (changed) await redrawPage();
 }
 
 async function sendUnsent() {
