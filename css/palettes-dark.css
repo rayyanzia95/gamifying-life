@@ -1,0 +1,255 @@
+/* Round-2 palettes (Appearance → Colours), dark only: they sit in the dark-mode slot, so light mode
+   keeps its own palette. Colours from .claude/mockups/palettes-more.html; branch shades are its saturation and
+   lightness rule (each clears 3:1 on the card), on the app’s own branch hues so Health stays pink etc. */
+
+/* Deep space */
+:is(:root, *)[data-palette="r2-space"] {
+  color-scheme: dark;
+  --bg: #0a1020;
+  --surface: #111a2e;
+  --text: #e6eefc;
+  --muted: #93a3bf;
+  --border: #22304a;
+  --accent: #4fd8f0;
+  --deen: #6ce5a8;
+  --chores: #e5b26c;
+  --health: #e56c94;
+  --academics: #766ce5;
+  --money: #6ce5d1;
+  --personal: #c76ce5;
+  --people: #6c9ee5;
+}
+
+/* Scriptorium */
+:is(:root, *)[data-palette="r2-script"] {
+  color-scheme: dark;
+  --bg: #1a1712;
+  --surface: #241f18;
+  --text: #f1e6cf;
+  --muted: #b3a387;
+  --border: #3a3226;
+  --accent: #d9b45a;
+  --deen: #81cfa8;
+  --chores: #cfaf81;
+  --health: #cf819b;
+  --academics: #8881cf;
+  --money: #81cfc2;
+  --personal: #bc81cf;
+  --people: #81a2cf;
+}
+
+/* Forest & brass */
+:is(:root, *)[data-palette="r2-forest"] {
+  color-scheme: dark;
+  --bg: #0f1712;
+  --surface: #16211a;
+  --text: #e5eee4;
+  --muted: #9aae9d;
+  --border: #26362b;
+  --accent: #c9a24e;
+  --deen: #7dd4a8;
+  --chores: #d4b07d;
+  --health: #d47d9a;
+  --academics: #847dd4;
+  --money: #7dd4c5;
+  --personal: #be7dd4;
+  --people: #7da1d4;
+}
+
+/* Dusk drive */
+:is(:root, *)[data-palette="r2-dusk"] {
+  color-scheme: dark;
+  --bg: #16121f;
+  --surface: #1f1a2c;
+  --text: #efe8f7;
+  --muted: #a89cbd;
+  --border: #33294a;
+  --accent: #ff8fa3;
+  --deen: #70e1a8;
+  --chores: #e1b270;
+  --health: #e17096;
+  --academics: #7970e1;
+  --money: #70e1ce;
+  --personal: #c470e1;
+  --people: #709fe1;
+}
+
+/* Flight deck */
+:is(:root, *)[data-palette="r2-deck"] {
+  color-scheme: dark;
+  --bg: #111417;
+  --surface: #1a1e23;
+  --text: #e9edf1;
+  --muted: #98a2ad;
+  --border: #2b3138;
+  --accent: #f5a524;
+  --deen: #74dca8;
+  --chores: #dcb174;
+  --health: #dc7497;
+  --academics: #7d74dc;
+  --money: #74dccb;
+  --personal: #c274dc;
+  --people: #74a0dc;
+}
+
+/* Arcane tide */
+:is(:root, *)[data-palette="r2-arcane"] {
+  color-scheme: dark;
+  --bg: #120f1e;
+  --surface: #1b172b;
+  --text: #ece6fb;
+  --muted: #a49cc0;
+  --border: #2f2847;
+  --accent: #4fd1c5;
+  --deen: #73dea8;
+  --chores: #deb173;
+  --health: #de7396;
+  --academics: #7c73de;
+  --money: #73decc;
+  --personal: #c373de;
+  --people: #739fde;
+}
+
+/* Ember forge */
+:is(:root, *)[data-palette="r2-ember"] {
+  color-scheme: dark;
+  --bg: #141110;
+  --surface: #1e1917;
+  --text: #f3e9e3;
+  --muted: #ae9d93;
+  --border: #352c28;
+  --accent: #ff7a3d;
+  --deen: #79d8a8;
+  --chores: #d8b079;
+  --health: #d87998;
+  --academics: #8179d8;
+  --money: #79d8c8;
+  --personal: #c079d8;
+  --people: #79a0d8;
+}
+
+/* Observatory */
+:is(:root, *)[data-palette="r2-obs"] {
+  color-scheme: dark;
+  --bg: #0c1424;
+  --surface: #13203a;
+  --text: #e8edf7;
+  --muted: #9aa7c0;
+  --border: #24344f;
+  --accent: #e0b45c;
+  --deen: #76dba8;
+  --chores: #dbb176;
+  --health: #db7698;
+  --academics: #7e76db;
+  --money: #76dbca;
+  --personal: #c176db;
+  --people: #76a0db;
+}
+
+/* Moss & stone */
+:is(:root, *)[data-palette="r2-moss"] {
+  color-scheme: dark;
+  --bg: #131614;
+  --surface: #1b1f1c;
+  --text: #e7ebe6;
+  --muted: #9ca59d;
+  --border: #2c322d;
+  --accent: #9cc58a;
+  --deen: #87c9a8;
+  --chores: #c9ae87;
+  --health: #c9879d;
+  --academics: #8d87c9;
+  --money: #87c9be;
+  --personal: #b987c9;
+  --people: #87a3c9;
+}
+
+/* Ronin */
+:is(:root, *)[data-palette="r2-ronin"] {
+  color-scheme: dark;
+  --bg: #121212;
+  --surface: #1b1a19;
+  --text: #f0ebe2;
+  --muted: #a8a196;
+  --border: #302d2a;
+  --accent: #e5533d;
+  --deen: #81cfa8;
+  --chores: #cfaf81;
+  --health: #cf819b;
+  --academics: #8881cf;
+  --money: #81cfc2;
+  --personal: #bc81cf;
+  --people: #81a2cf;
+}
+
+/* Lab bench */
+:is(:root, *)[data-palette="r2-lab"] {
+  color-scheme: dark;
+  --bg: #0f1313;
+  --surface: #171c1c;
+  --text: #e6f0ee;
+  --muted: #95a6a3;
+  --border: #263130;
+  --accent: #5ee6b5;
+  --deen: #76dba8;
+  --chores: #dbb176;
+  --health: #db7698;
+  --academics: #7e76db;
+  --money: #76dbca;
+  --personal: #c176db;
+  --people: #76a0db;
+}
+
+/* Royal court */
+:is(:root, *)[data-palette="r2-court"] {
+  color-scheme: dark;
+  --bg: #170f12;
+  --surface: #22161a;
+  --text: #f5e9ea;
+  --muted: #b49ca1;
+  --border: #3a272c;
+  --accent: #e3bb5d;
+  --deen: #7bd5a8;
+  --chores: #d5b07b;
+  --health: #d57b99;
+  --academics: #837bd5;
+  --money: #7bd5c6;
+  --personal: #bf7bd5;
+  --people: #7ba1d5;
+}
+
+/* Chart room */
+:is(:root, *)[data-palette="r2-chart"] {
+  color-scheme: dark;
+  --bg: #0e1719;
+  --surface: #142225;
+  --text: #e7f0ee;
+  --muted: #97aaa8;
+  --border: #23373a;
+  --accent: #f0c987;
+  --deen: #7bd5a8;
+  --chores: #d5b07b;
+  --health: #d57b99;
+  --academics: #837bd5;
+  --money: #7bd5c6;
+  --personal: #bf7bd5;
+  --people: #7ba1d5;
+}
+
+/* Signal */
+:is(:root, *)[data-palette="r2-signal"] {
+  color-scheme: dark;
+  --bg: #0e0f12;
+  --surface: #16181c;
+  --text: #eceef2;
+  --muted: #9a9fa9;
+  --border: #272a30;
+  --accent: #6ea8ff;
+  --deen: #6fe2a8;
+  --chores: #e2b26f;
+  --health: #e26f95;
+  --academics: #796fe2;
+  --money: #6fe2ce;
+  --personal: #c56fe2;
+  --people: #6f9fe2;
+}
