@@ -267,7 +267,7 @@ const APPEARANCE_CHOICES = {
       { value: "city", label: "City", soon: true },
       { value: "orrery", label: "Orrery" },
       { value: "wheel", label: "Command wheel" },
-      { value: "codex", label: "Grimoire ledger", soon: true },
+      { value: "codex", label: "Grimoire ledger" },
     ],
   },
 };

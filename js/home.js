@@ -55,9 +55,9 @@ function branchShare(branch) {
 
 const branches = BRANCHES.map(b => ({ ...b, ...levelOf(totals, b.id), share: branchShare(b) }));
 const overall = levelInfo(overallXp, LEVELS.overallMultiplier);
-// Appearance → Layout: the Cockpit HUD (hud-home.js), the Orrery (orrery-home.js) and the Command wheel
-// (wheel-home.js) draw their own Home; every other layout keeps the card.
-const HOME_LAYOUTS = { hud: hudHomeHtml, orrery: orreryHomeHtml, wheel: wheelHomeHtml };
+// Appearance → Layout: the Cockpit HUD (hud-home.js), the Orrery (orrery-home.js), the Command wheel
+// (wheel-home.js) and the Grimoire ledger (codex.js) draw their own Home; every other layout keeps the card.
+const HOME_LAYOUTS = { hud: hudHomeHtml, orrery: orreryHomeHtml, wheel: wheelHomeHtml, codex: codexHomeHtml };
 const layoutHome = HOME_LAYOUTS[document.documentElement.dataset.layout];
 document.getElementById("home-card").innerHTML =
   layoutHome ? layoutHome(events, overall, overallXp, branches) : homeCardHtml(overall, branches);
