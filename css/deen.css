@@ -1,0 +1,110 @@
+/* Deen page only. */
+.addons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  margin: 6px 0 0 24px;
+  font-size: 0.875rem;
+  color: var(--muted);
+}
+
+/* Dua on the dial: a line of sun, beads and moon in the centre, plus a halo for the day.
+   Everything is a faint outline until done, then gold. */
+.dua-bead,
+.dua-mark {
+  fill: none;
+  stroke: var(--disabled-text);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+}
+
+.dua-bead {
+  stroke-width: 1;
+}
+
+.dua-bead.done,
+.dua-mark.done {
+  fill: var(--gold);
+  stroke: var(--gold);
+}
+
+.dua-halo-track {
+  stroke: var(--line);
+}
+
+.dial-hand {
+  stroke: var(--now);
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+
+.tiles {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.tile {
+  border: 1px solid var(--border);
+  border-radius: calc(12px * var(--round));
+  padding: 12px;
+  cursor: pointer;
+  font-size: 0.875rem;
+}
+
+.tile.selected {
+  border-color: var(--accent);
+  box-shadow: inset 0 0 0 1px var(--accent);
+}
+
+.tile-title {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--text);
+  font: inherit;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.tile p {
+  margin: 2px 0 8px;
+  color: var(--muted);
+}
+
+#quran-progress {
+  margin-top: 12px;
+}
+
+.summary-label {
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+/* A lone last tile (3 tiles in 2 columns) stretches across the row. */
+.tile:last-child:nth-child(odd) {
+  grid-column: 1 / -1;
+}
+
+.tile label {
+  display: inline-block;
+  margin-right: 12px;
+}
+
+.dua-group {
+  margin-top: 14px;
+}
+
+.tick-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+  margin-top: 6px;
+  font-size: 0.875rem;
+}
+
+.tick-row label:has(input:disabled) {
+  color: var(--disabled-text);
+}

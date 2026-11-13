@@ -1,0 +1,1309 @@
+/* Shared by every page: colour variables, dark mode, cards, bars, badges, buttons, nav, level-up, sync dot, split bars, Home ring parts, and rules used by 2+ pages. */
+/* Colours live here as variables, so dark mode only has to swap the values. */
+:root {
+  color-scheme: light;
+  --round: 1; /* corner setting: 0 square, 1 slight, 1.75 round */
+  --bg: #ffffff;
+  --surface: #ffffff;
+  --text: #1f1f1d;
+  --muted: #5f5e5a;
+  --border: #e2e2dc;
+  --line: #ecece6;
+  --control-border: #d9d9d2;
+  --disabled-text: #c4c4bd;
+  --disabled-bg: #f4f4f0;
+  --accent: #2e7d4f;
+  --accent-soft: #8cc5a1;
+  --dial-open: #cfe5d6;
+  --bonus: #7f77dd;
+  --bonus-soft: #dcd9f5;
+  --now: #d85a30;
+  --gold: #c8901a;
+  --sleep: #4a63c9;
+  --diet: #c9507a;
+  --study: #5b5bd6;
+  --phys: #2563c9;
+  --cmput: #16865a;
+  --econ: #b86a0b;
+  --astro: #7a4cc2;
+  --skills: #5f6b7a;
+  --deen: #2e7d4f;
+  --chores: #b8730f;
+  --health: #c9507a;
+  --academics: #5b5bd6;
+  --money: #0f8a7a;
+  --personal: #8a4cc2;
+  --people: #2563c9;
+}
+
+/* Dark values. Used when the device is in dark mode (unless you picked light),
+   or when you picked dark with the toggle. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bg: #1a1a18;
+    --surface: #262624;
+    --text: #ecebe6;
+    --muted: #a3a29b;
+    --border: #383835;
+    --line: #2e2e2b;
+    --control-border: #4a4a45;
+    --disabled-text: #5f5e5a;
+    --disabled-bg: #222220;
+    --accent: #4fae78;
+    --accent-soft: #2f6146;
+    --dial-open: #23402f;
+    --bonus: #9d96ec;
+    --bonus-soft: #33305a;
+    --now: #ef7a4f;
+    --gold: #e8b64c;
+    --sleep: #7b8fe6;
+    --diet: #e57ea3;
+  --study: #8f8ff0;
+  --phys: #6fa0f2;
+  --cmput: #4cc28f;
+  --econ: #e3a24a;
+  --astro: #a989e6;
+  --skills: #9aa5b4;
+    --deen: #4fae78;
+    --chores: #e3a24a;
+    --health: #e57ea3;
+    --academics: #8f8ff0;
+    --money: #5cc8b0;
+    --personal: #b98ae6;
+    --people: #6fa0f2;
+    }
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #1a1a18;
+  --surface: #262624;
+  --text: #ecebe6;
+  --muted: #a3a29b;
+  --border: #383835;
+  --line: #2e2e2b;
+  --control-border: #4a4a45;
+  --disabled-text: #5f5e5a;
+  --disabled-bg: #222220;
+  --accent: #4fae78;
+  --accent-soft: #2f6146;
+  --dial-open: #23402f;
+  --bonus: #9d96ec;
+  --bonus-soft: #33305a;
+  --now: #ef7a4f;
+  --gold: #e8b64c;
+  --sleep: #7b8fe6;
+  --diet: #e57ea3;
+  --study: #8f8ff0;
+  --phys: #6fa0f2;
+  --cmput: #4cc28f;
+  --econ: #e3a24a;
+  --astro: #a989e6;
+  --skills: #9aa5b4;
+  --deen: #4fae78;
+  --chores: #e3a24a;
+  --health: #e57ea3;
+  --academics: #8f8ff0;
+  --money: #5cc8b0;
+  --personal: #b98ae6;
+  --people: #6fa0f2;
+}
+
+/* hidden always hides, even on elements whose class sets display: flex or grid. */
+[hidden] {
+  display: none !important;
+}
+
+body {
+  font-family: system-ui, sans-serif;
+  position: relative;
+  background: var(--bg);
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 24px 16px;
+  color: var(--text);
+}
+
+h1 {
+  font-size: 1.375rem;
+  font-weight: 500;
+  margin: 0 0 16px;
+}
+
+.card {
+  border: 1px solid var(--border);
+  border-radius: calc(12px * var(--round));
+  padding: 16px;
+  margin-bottom: 24px;
+}
+
+.card p {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--muted);
+}
+
+.bar {
+  height: 8px;
+  background: var(--line);
+  border-radius: calc(4px * var(--round));
+  margin: 10px 0;
+  overflow: hidden;
+  display: flex;
+}
+
+.bar-fill {
+  height: 100%;
+  width: 0;
+  background: var(--accent);
+  transition: width var(--fill-time) var(--fill-ease);
+}
+
+.bonus-fill {
+  height: 100%;
+  width: 0;
+  background: var(--accent-soft);
+  transition: width var(--fill-time) var(--fill-ease);
+}
+
+#prayers,
+#quests {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+#prayers li,
+#quests li {
+  padding: 10px 0;
+  border-top: 1px solid var(--line);
+}
+
+/* Chores: the tick or counter on the left, the faint hint on the right. */
+.quest {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+#quests li:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+
+#prayers li > div:first-child {
+  font-weight: 500;
+}
+.levels {
+  display: flex;
+  justify-content: space-around;
+}
+
+/* Home: one card. Outer ring of today segments, the level web inside, a row per branch. */
+.home-hub {
+  display: block;
+  width: 100%;
+  max-width: 320px;
+  margin: 0 auto;
+}
+
+.overall-level {
+  font-size: 17px;
+  font-weight: 800;
+  fill: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+
+.level-row {
+  display: grid;
+  grid-template-columns: 84px 26px 1fr 22px;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 0;
+  border-top: 1px solid var(--line);
+  color: inherit;
+  text-decoration: none;
+  font-size: 0.875rem;
+}
+
+.level-row:first-child {
+  border-top: 0;
+}
+
+.level-row:hover span:first-child {
+  text-decoration: underline;
+}
+
+.level-chip {
+  text-align: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  line-height: 18px;
+  border-radius: calc(6px * var(--round));
+  color: var(--bg);
+  font-variant-numeric: tabular-nums;
+}
+
+.badge {
+  text-align: center;
+}
+
+.badge svg {
+  width: 96px;
+  height: 96px;
+}
+
+.ring-track {
+  fill: none;
+  stroke: var(--line);
+  stroke-width: 8;
+}
+
+.ring-fill {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 8;
+}
+
+.badge-level {
+  font-size: 32px;
+  font-weight: 500;
+  fill: var(--text);
+}
+
+.badge-name {
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.badge-xp {
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+.stepper {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.stepper button {
+  width: 28px;
+  height: 28px;
+  border: 1px solid var(--control-border);
+  border-radius: calc(6px * var(--round));
+  background: var(--surface);
+  font-size: 1rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.stepper button:disabled {
+  color: var(--disabled-text);
+  background: var(--disabled-bg);
+  cursor: default;
+}
+
+.stepper-value {
+  min-width: 36px;
+  text-align: center;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.ring-bonus {
+  fill: none;
+  stroke: var(--accent-soft);
+  stroke-width: 8;
+}
+
+/* A split Home ring (Health): each part in its own colour, over a faint
+   track in that colour. Sleep is night blue, diet rose, exercise the usual green. */
+.ring-part,
+.ring-part-track {
+  fill: none;
+  stroke-width: 8;
+}
+
+.ring-part-track {
+  opacity: 0.18;
+}
+
+.part-sleep {
+  stroke: var(--sleep);
+  background: var(--sleep);
+}
+
+.part-exercise {
+  stroke: var(--accent);
+  background: var(--accent);
+}
+
+.part-diet {
+  stroke: var(--diet);
+  background: var(--diet);
+}
+
+/* Academics: study blocks today in indigo, this week's deadlines in gold. */
+.part-study {
+  stroke: var(--study);
+  background: var(--study);
+}
+
+.part-due {
+  stroke: var(--gold);
+  background: var(--gold);
+}
+
+.back {
+  display: inline-block;
+  margin-bottom: 12px;
+  font-size: 0.875rem;
+  color: var(--muted);
+  text-decoration: none;
+}
+.dial {
+  display: block;
+  width: 100%;
+  max-width: 300px;
+  height: auto;
+  margin: 0 auto;
+}
+
+.dial-track {
+  fill: none;
+  stroke: var(--line);
+  stroke-width: 14;
+}
+
+.dial-arc {
+  fill: none;
+  stroke: var(--dial-open);
+  stroke-width: 14;
+}
+
+.dial-arc.prayed {
+  stroke: var(--accent);
+}
+
+.dial-arc.bonus {
+  stroke: var(--bonus-soft);
+}
+
+.dial-arc.bonus.prayed {
+  stroke: var(--bonus);
+}
+
+/* Prayer names around the dial. Position and anchoring come from dial.js. */
+.dial-label,
+.wheel-label {
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  fill: var(--muted);
+}
+
+.dial-label.prayed,
+.wheel-label.done,
+.wheel-heading.done {
+  fill: var(--accent);
+}
+
+.dua-halo-track,
+.dua-halo {
+  fill: none;
+  stroke-width: 3;
+}
+
+.dua-halo {
+  stroke: var(--gold);
+  stroke-linecap: round;
+}
+
+/* Pop: grows past full size then settles. transform-box makes it scale around its own centre. */
+.pop {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: pop 0.6s ease-out;
+}
+
+@keyframes pop {
+  0% { transform: scale(0); opacity: 0; }
+  60% { transform: scale(1.5); opacity: 1; }
+  100% { transform: scale(1); }
+}
+
+/* The halo sweeps forward from where it was (--from) to its new length. */
+.dua-halo.grow {
+  animation: halo-grow 0.9s ease-out;
+}
+
+@keyframes halo-grow {
+  from { stroke-dasharray: var(--from) var(--length); }
+}
+
+/* Chores quest wheel: a newly done slice fades in from a thicker stroke. */
+.wheel-slice.fresh {
+  animation: slice-in 0.5s ease-out;
+}
+
+@keyframes slice-in {
+  from { opacity: 0; stroke-width: 20; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wheel-slice.fresh,
+  .pop,
+  .dua-halo.grow {
+    animation: none;
+  }
+}
+
+.dial-now,
+.wheel-heading {
+  font-size: 18px;
+  font-weight: 500;
+  fill: var(--text);
+  text-anchor: middle;
+}
+
+.dial-next,
+.wheel-sub {
+  font-size: 12px;
+  fill: var(--muted);
+  text-anchor: middle;
+}
+
+/* Top-right buttons: settings gear and theme toggle. */
+.corner {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  display: flex;
+  gap: 8px;
+}
+
+.icon-button {
+  display: grid;
+  place-items: center;
+  box-sizing: border-box;
+  text-decoration: none;
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--control-border);
+  border-radius: calc(8px * var(--round));
+  background: var(--surface);
+  color: var(--text);
+  font-size: 1rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.card-title {
+  font-weight: 500;
+  margin-bottom: 10px;
+}
+
+#revision p {
+  margin-top: 6px;
+}
+
+.card-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.muted {
+  font-size: 0.875rem;
+  color: var(--muted);
+}
+
+/* Settings: one borderless group per choice. */
+.choice {
+  border: 0;
+  margin: 0 0 16px;
+  padding: 0;
+}
+
+.choice legend {
+  font-weight: 500;
+  margin-bottom: 8px;
+  padding: 0;
+}
+
+.choice label {
+  display: block;
+  padding: 6px 0;
+}
+
+/* Appearance page: short groups sit in a row; the long palette lists fill a grid of columns. */
+.appearance-form .choice label {
+  display: inline-block;
+  margin-right: 14px;
+}
+
+.appearance-form .choice[data-key^="palette"] {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  column-gap: 10px;
+}
+
+.appearance-form .choice[data-key^="palette"] label {
+  display: block;
+  margin-right: 0;
+}
+
+.choice label:has(input:disabled) {
+  color: var(--muted);
+}
+
+.soon {
+  font-size: 0.8125rem;
+}
+
+/* Three dots in a palette's own colours: background, accent, a branch colour. */
+.swatch {
+  display: inline-flex;
+  gap: 3px;
+  padding: 3px 5px;
+  border-radius: calc(999px * var(--round));
+  background: var(--bg);
+  border: 1px solid var(--border);
+  vertical-align: middle;
+}
+
+.swatch i {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+.swatch i:nth-child(2) { background: var(--health); }
+.swatch i:nth-child(3) { background: var(--money); }
+
+/* Deen top card: level badge beside the prayer dial, Quran bar underneath. */
+.summary-row {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 8px;
+}
+
+.streak.paused {
+  opacity: 0.45;
+}
+
+/* Health: the Sleep card. A label on the left, its time or counter on the right. */
+#sleep h2,
+#diet h2,
+#exercise h2 {
+  font-size: 1rem;
+  font-weight: 500;
+  margin: 0 0 8px;
+}
+
+.field {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 0;
+}
+
+.field input[type="time"] {
+  font: inherit;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--control-border);
+  border-radius: calc(6px * var(--round));
+  padding: 4px 8px;
+}
+
+/* Diet: Healthy / Okay / Junk for each meal. The picked one is filled green. */
+.rating {
+  display: flex;
+  gap: 4px;
+}
+
+.rating button {
+  font: inherit;
+  font-size: 0.8125rem;
+  padding: 4px 8px;
+  border-radius: calc(6px * var(--round));
+  border: 1px solid var(--control-border);
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+}
+
+.rating button[aria-pressed="true"] {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--bg);
+}
+
+.checks {
+  list-style: none;
+  padding: 0;
+  margin: 6px 0 0;
+  font-size: 0.875rem;
+}
+
+.checks li {
+  padding: 2px 0;
+}
+
+.checks .met {
+  color: var(--accent);
+}
+
+.week-grid {
+  stroke: var(--line);
+}
+
+/* Health: the Exercise card. Sun–Sat dots under the sessions counter. */
+.session-days {
+  display: flex;
+  justify-content: space-between;
+  margin: 12px 0 4px;
+}
+
+.session-days div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+.session-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid var(--line);
+}
+
+.session-dot.done {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.session-dot.today {
+  border-color: var(--text);
+}
+
+/* Academics: the Study today card and this week's deadlines. */
+#study h2,
+#this-week h2,
+#bosses h2,
+#guides h2,
+#day h2 {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  margin: 0 0 8px;
+}
+
+#study h2 .muted,
+#this-week h2 .muted,
+#bosses h2 .muted,
+#day h2 .muted {
+  font-size: 0.8125rem;
+  font-weight: 400;
+}
+
+.plain-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.plain-list li {
+  padding: 6px 0;
+}
+
+.plain-list li + li {
+  border-top: 1px solid var(--line);
+}
+
+.kind-tag {
+  font-size: 0.6875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+  border: 1px solid var(--line);
+  border-radius: calc(4px * var(--round));
+  padding: 0 5px;
+  margin-left: 6px;
+}
+
+label.done {
+  color: var(--muted);
+  text-decoration: line-through;
+}
+
+.deadline-note {
+  font-size: 0.8125rem;
+  margin-left: 24px;
+}
+
+.boss {
+  padding: 6px 0;
+}
+
+.boss + .boss {
+  border-top: 1px solid var(--line);
+}
+
+.hp-bar {
+  height: 8px;
+  margin: 5px 0 2px;
+  border-radius: calc(4px * var(--round));
+  background: var(--line);
+  overflow: hidden;
+}
+
+.hp-fill {
+  height: 100%;
+  background: var(--now);
+}
+
+/* Planner: day arrows, then the day's blocks with the time on the left. */
+.day-nav {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.day-nav button {
+  min-width: 40px;
+  padding: 6px 12px;
+  border: 1px solid var(--control-border);
+  border-radius: calc(8px * var(--round));
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  font-size: 0.875rem;
+  cursor: pointer;
+}
+
+.day-nav button:disabled {
+  color: var(--disabled-text);
+  cursor: default;
+}
+
+.day-nav {
+  align-items: center;
+}
+
+/* Planner: course colours (from the Fall 2026 Planner). */
+.course-phys  { --course: var(--phys); }
+.course-cmput { --course: var(--cmput); }
+.course-econ  { --course: var(--econ); }
+.course-astro { --course: var(--astro); }
+.course-study { --course: var(--skills); }
+.course-none  { --course: var(--muted); }
+
+.week-grid {
+  display: grid;
+  grid-template-columns: 28px repeat(7, minmax(92px, 1fr));
+  min-width: 700px;
+}
+
+/* Planner: wider page on a computer, so the Day sidebar can sit on the right.
+   On a phone the sidebar stacks under the day. */
+body.wide {
+  max-width: 1000px;
+}
+
+.list-heading {
+  display: flex;
+  justify-content: space-between;
+  margin: 14px 0 4px;
+  font-size: 0.9375rem;
+  font-weight: 500;
+}
+
+.list-heading:first-child {
+  margin-top: 0;
+}
+
+.list-heading .muted {
+  font-size: 0.8125rem;
+  font-weight: 400;
+}
+
+.deadline-when {
+  font-size: 0.8125rem;
+  text-align: right;
+}
+
+/* Planner: the Deadlines tab. */
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 12px;
+}
+
+.filter-chip,
+.filter-button {
+  padding: 5px 11px;
+  border: 1px solid var(--control-border);
+  border-radius: calc(999px * var(--round));
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  font-size: 0.8125rem;
+  cursor: pointer;
+}
+
+.filter-chip::before {
+  content: "";
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  margin-right: 6px;
+  border-radius: 50%;
+  background: var(--course);
+}
+
+.filter-chip[aria-pressed="false"] {
+  opacity: 0.45;
+}
+
+.filter-button[aria-pressed="true"] {
+  background: var(--text);
+  border-color: var(--text);
+  color: var(--bg);
+}
+
+/* Planner: the next exams across the top, with a countdown. Scrolls sideways if it must. */
+.exam-strip {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+  overflow-x: auto;
+}
+
+.exam-strip:empty {
+  display: none;
+}
+
+.exam-chip {
+  flex: 0 0 auto;
+  padding: 5px 10px;
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--course);
+  border-radius: calc(8px * var(--round));
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  font-size: 0.8125rem;
+  text-align: left;
+  cursor: pointer;
+}
+
+.exam-chip b {
+  font-weight: 600;
+  color: var(--now);
+}
+
+/* Academics: study guides, one fold per course with its colour. */
+.guide-fold {
+  border-top: 1px solid var(--line);
+}
+
+.guide-fold summary {
+  padding: 8px 0;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.guide-fold summary::before {
+  content: "";
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  margin-right: 8px;
+  border-radius: 50%;
+  background: var(--course);
+}
+
+.guide-fold ul {
+  margin: 0 0 8px 17px;
+}
+
+.guide-fold a {
+  color: var(--text);
+}
+
+.session-dot.no-spend {
+  background: var(--gold);
+  border-color: var(--gold);
+}
+
+#log h2,
+#week h2,
+#savings h2 {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  margin: 0 0 8px;
+}
+
+#log h2 .muted,
+#week h2 .muted,
+#savings h2 .muted {
+  font-size: 0.8125rem;
+  font-weight: 400;
+}
+
+.money-input {
+  flex: 1;
+  min-width: 0;
+  font: inherit;
+  padding: 6px 10px;
+  border: 1px solid var(--control-border);
+  border-radius: calc(8px * var(--round));
+  background: var(--surface);
+  color: var(--text);
+}
+
+#log .filters {
+  margin: 10px 0;
+}
+
+.money-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.money-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.money-remove {
+  border: 0;
+  background: none;
+  color: var(--muted);
+  font: inherit;
+  font-size: 1.125rem;
+  cursor: pointer;
+}
+
+.money-hint {
+  font-size: 0.8125rem;
+  margin: 8px 0 0;
+}
+
+/* .card .money-error, so it wins over .card p's muted colour. */
+.card .money-error {
+  width: 100%;
+  margin: 4px 0 0;
+  font-size: 0.8125rem;
+  color: var(--now);
+}
+
+.money-fold summary {
+  margin-top: 8px;
+  font-size: 0.8125rem;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+/* A split XP bar (Health page), matching the split Home ring: one section per
+   part, sized by its goal, each filling in its own colour over a faint track. */
+.bar-parts {
+  display: flex;
+  gap: 3px;
+  height: 8px;
+  margin: 10px 0;
+}
+
+.bar-part {
+  position: relative;
+  flex-basis: 0;
+  border-radius: calc(4px * var(--round));
+  overflow: hidden;
+}
+
+.bar-part-track,
+.bar-part-fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+}
+
+.bar-part-track {
+  width: 100%;
+  opacity: 0.18;
+}
+
+.bar-part-fill {
+  transition: width var(--fill-time) var(--fill-ease);
+}
+
+/* Personal: plum for today (journal + reading), teal for this week (time alone +
+   friends), on the Home ring and the Personal bar. */
+:root {
+  --plum: #9a4f9e;
+  --teal: #1f8a8a;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --plum: #c784cb;
+    --teal: #4cbcbc;
+  }
+}
+
+:root[data-theme="dark"] {
+  --plum: #c784cb;
+  --teal: #4cbcbc;
+}
+
+.part-plum {
+  stroke: var(--plum);
+  background: var(--plum);
+}
+
+.part-teal {
+  stroke: var(--teal);
+  background: var(--teal);
+}
+
+#people h2,
+#dates h2 {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  margin: 0 0 8px;
+}
+
+#people h2 .muted,
+#dates h2 .muted {
+  font-size: 0.8125rem;
+  font-weight: 400;
+}
+
+/* Sync: status dot beside the light/dark button. Grey = not signed in, green = all sent,
+   gold = changes waiting to send. */
+.sync-dot::before {
+  content: "";
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--muted);
+}
+
+.sync-dot[data-state="synced"]::before {
+  background: var(--accent);
+}
+
+.sync-dot[data-state="waiting"]::before {
+  background: var(--gold);
+}
+
+/* Personal: Sun–Sat dots under Time alone and Friends, teal like the week part of
+   the ring (shapes from the Exercise card). Days still to come are faint. */
+.session-dot.teal.done {
+  background: var(--teal);
+  border-color: var(--teal);
+}
+
+.session-dot.teal.today {
+  border-color: var(--text);
+}
+
+.session-dot.teal.future {
+  opacity: 0.5;
+}
+
+.token {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid var(--sleep);
+  box-sizing: border-box;
+}
+
+.token.full {
+  background: var(--sleep);
+}
+
+/* Level-up day: gold outer ring on the badge, and Home's quiet line with a gold dot. */
+.ring-gold {
+  fill: none;
+  stroke: var(--gold);
+  stroke-width: 2;
+}
+
+/* Rest-day button beside a paused streak. */
+.rest-button {
+  padding: 2px 9px;
+  border: 1px solid var(--sleep);
+  border-radius: calc(999px * var(--round));
+  background: none;
+  color: var(--sleep);
+  font: inherit;
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+
+.stars {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 2px;
+  margin-top: 8px;
+  text-align: center;
+}
+
+.star {
+  font-size: 1.25rem;
+  line-height: 1;
+  color: var(--line);
+}
+
+.star.full {
+  color: var(--gold);
+}
+
+.star.now {
+  color: transparent;
+  -webkit-text-stroke: 1px var(--gold);
+}
+
+#streak {
+  color: var(--gold);
+  font-weight: 500;
+}
+
+/* ---- Money: day arrows on the Log card, tap-to-edit spend rows ---- */
+.day-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 0 0 8px;
+}
+
+.day-nav h2 {
+  margin: 0;
+  text-align: center;
+}
+
+.mini {
+  height: 6px;
+  background: var(--line);
+  border-radius: calc(3px * var(--round));
+  overflow: hidden;
+}
+
+.mini div {
+  height: 100%;
+  background: var(--accent-soft);
+}
+
+/* Navigation (js/nav.js): a ☰ drawer on phones, a fixed sidebar from 900px up. */
+#side-nav {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 220px;
+  z-index: 20;
+  box-sizing: border-box;
+  padding: 56px 8px 16px;
+  overflow-y: auto;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  transform: translateX(-100%);
+  transition: transform 0.2s;
+}
+
+body.nav-open #side-nav {
+  transform: none;
+}
+
+#side-nav a {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: calc(8px * var(--round));
+  color: var(--text);
+  text-decoration: none;
+  font-size: 0.9375rem;
+}
+
+#side-nav a.on {
+  background: var(--line);
+  font-weight: 500;
+}
+
+.nav-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+}
+
+.nav-level {
+  margin-left: auto;
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+#nav-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  background: rgba(0, 0, 0, 0.4);
+}
+
+body.nav-open #nav-backdrop {
+  display: block;
+}
+
+@media (min-width: 900px) {
+  #side-nav {
+    transform: none;
+    padding-top: 24px;
+  }
+
+  .nav-toggle,
+  #nav-backdrop {
+    display: none !important;
+  }
+
+  /* The page sits in the space right of the sidebar, centred there. */
+  body.has-nav {
+    --page-width: 520px;
+    margin-left: calc(220px + max(0px, (100vw - 220px - var(--page-width)) / 2));
+    margin-right: 0;
+    max-width: var(--page-width);
+  }
+
+  body.has-nav.wide {
+    --page-width: 1000px;
+  }
+}

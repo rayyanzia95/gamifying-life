@@ -1,0 +1,46 @@
+/* Appearance page only. */
+.appearance-preview {
+  display: grid;
+  gap: 10px;
+  padding: 12px;
+  margin-bottom: 12px;
+  border: 1px solid var(--line);
+  border-radius: calc(10px * var(--round));
+}
+
+.preview-row {
+  display: grid;
+  grid-template-columns: 28px 1fr;
+  gap: 10px;
+  align-items: center;
+}
+
+.preview-row .bar {
+  margin: 0;
+}
+
+.preview-row .level-chip {
+  padding: 2px 0;
+}
+
+/* Stays in view while scrolling the options, so each change shows at once. */
+.appearance-preview {
+  position: sticky;
+  top: 8px;
+  z-index: 5;
+  background: var(--bg);
+}
+
+.preview-icons {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.preview-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}

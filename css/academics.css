@@ -1,0 +1,47 @@
+/* Academics page only. */
+.branch-link {
+  display: block;
+  border: 1px solid var(--border);
+  border-radius: calc(12px * var(--round));
+  padding: 16px;
+  margin-bottom: 12px;
+  color: inherit;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.day-label {
+  font-size: 0.8125rem;
+  margin: 10px 0 0;
+}
+
+/* Academics: exams as bosses. A continuous HP bar that empties as you study. */
+#boss-lineup {
+  min-width: 0;
+}
+
+.boss-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+  font-size: 0.875rem;
+}
+
+.boss-top .muted {
+  font-size: 0.75rem;
+  white-space: nowrap;
+}
+
+.boss-name {
+  font-weight: 500;
+}
+
+.boss-status {
+  font-size: 0.75rem;
+}
+
+.boss.slain .boss-name,
+.boss.slain .boss-status {
+  color: var(--accent);
+}

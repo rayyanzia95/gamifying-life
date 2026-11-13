@@ -1,0 +1,69 @@
+/* Personal page only. */
+/* Personal page: current book beside the badge, then this week's counts. */
+.personal-top {
+  flex: 1;
+  min-width: 0;
+}
+
+.personal-book {
+  font-weight: 500;
+}
+
+.personal-book-bar {
+  height: 8px;
+  margin: 6px 0 2px;
+  border-radius: calc(4px * var(--round));
+  background: var(--line);
+  overflow: hidden;
+}
+
+.personal-book-bar span {
+  display: block;
+  height: 100%;
+  background: var(--plum);
+}
+
+.personal-counts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+  margin-top: 8px;
+  font-size: 0.8125rem;
+  color: var(--muted);
+}
+
+.personal-counts b {
+  color: var(--text);
+  font-weight: 500;
+}
+
+.card .personal-sub {
+  margin: 14px 0 4px;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.book-title {
+  font-weight: 500;
+}
+
+.book-pages {
+  flex: 0 0 80px;
+}
+
+.personal-counter + .personal-counter {
+  margin-top: 12px;
+}
+
+/* The quiet session tick: small and muted at the very bottom. */
+.personal-quiet {
+  font-size: 0.8125rem;
+  color: var(--muted);
+  padding: 0 4px;
+}
+
+.personal-card h2 {
+  font-size: 1rem;
+  font-weight: 500;
+  margin: 0 0 8px;
+}

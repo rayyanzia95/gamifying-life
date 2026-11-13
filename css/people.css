@@ -1,0 +1,50 @@
+/* People page only. */
+/* People: the Lahore clock's "now" dot, and a row per person with Call / Text / Visit. */
+.clock-now {
+  fill: var(--gold);
+}
+
+.people-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.people-who {
+  flex: 1;
+  min-width: 0;
+}
+
+.people-who small {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+.card .people-group {
+  margin: 12px 0 2px;
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.people-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.people-form .filters {
+  margin-top: 0;
+}
+
+/* .card .people-error, so it wins over .card p's muted colour. */
+.card .people-error {
+  width: 100%;
+  margin: 4px 0 0;
+  font-size: 0.8125rem;
+  color: var(--now);
+}

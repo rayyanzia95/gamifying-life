@@ -1,0 +1,70 @@
+/* Health page only. */
+.field-tick {
+  display: block;
+  padding: 6px 0;
+}
+
+#sleep .sleep-summary {
+  margin-top: 12px;
+  font-weight: 500;
+}
+
+/* Health top card: the week of nights (sleep-week.js). Bedtime at the bottom, wake at the top. */
+.sleep-week {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.sleep-week text {
+  font-size: 9px;
+  text-anchor: middle;
+  fill: var(--muted);
+}
+
+.week-band {
+  fill: var(--gold);
+  opacity: 0.12;
+}
+
+.week-bedby {
+  stroke: var(--gold);
+  stroke-dasharray: 2 3;
+}
+
+.sleep-week .week-label.fajr {
+  fill: var(--gold);
+}
+
+.sleep-week .week-hours.met {
+  fill: var(--accent);
+}
+
+.sleep-week .week-day.today {
+  fill: var(--text);
+  font-weight: 500;
+}
+
+.week-bar {
+  fill: var(--accent-soft);
+}
+
+.week-bar.today {
+  fill: var(--accent);
+}
+
+.week-missing {
+  fill: none;
+  stroke: var(--control-border);
+  stroke-dasharray: 3 3;
+}
+
+.week-dot {
+  fill: none;
+  stroke: var(--muted);
+}
+
+.week-dot.met {
+  fill: var(--gold);
+  stroke: var(--gold);
+}

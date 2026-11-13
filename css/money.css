@@ -1,0 +1,245 @@
+/* Money page only. */
+/* Money: budget-left ring with the savings ring inside, the log card, budget and savings. */
+.money-top {
+  text-align: center;
+}
+
+.money-rings {
+  width: 140px;
+  max-width: 100%;
+}
+
+.money-left-track,
+.money-saved-track {
+  fill: none;
+  stroke: var(--line);
+}
+
+.money-left-track,
+.money-left-ring {
+  stroke-width: 7;
+}
+
+.money-saved-track,
+.money-saved-ring {
+  stroke-width: 4;
+}
+
+.money-left-ring {
+  fill: none;
+  stroke: var(--accent);
+}
+
+.money-saved-ring {
+  fill: none;
+  stroke: var(--gold);
+}
+
+.money-left {
+  font-size: 15px;
+  font-weight: 500;
+  fill: var(--text);
+}
+
+.money-sub {
+  font-size: 7px;
+  fill: var(--muted);
+}
+
+.money-saved {
+  fill: var(--gold);
+}
+
+.amount-input {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  font-size: 1.375rem;
+}
+
+.money-categories {
+  margin-top: 6px;
+  font-size: 0.875rem;
+  color: var(--muted);
+}
+
+.money-goal {
+  margin: 0;
+  font-weight: 500;
+}
+
+.money-saved-fill {
+  background: var(--gold);
+}
+
+.arrow {
+  width: 34px;
+  height: 30px;
+  border: 1px solid var(--control-border);
+  border-radius: calc(8px * var(--round));
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+}
+
+.arrow:disabled {
+  opacity: 0.35;
+}
+
+.row-tap {
+  border: 0;
+  background: none;
+  padding: 0;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  text-decoration: underline dotted;
+  text-underline-offset: 3px;
+}
+
+/* ---- Money: calendar card ---- */
+.arrow.small {
+  width: 28px;
+  height: 24px;
+}
+
+.cal-arrows {
+  display: inline-flex;
+  gap: 4px;
+  margin-left: 6px;
+}
+
+.cal {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  text-align: center;
+  margin: 6px 0 10px;
+}
+
+.cal-head {
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+.cal-day {
+  min-height: 44px;
+  padding: 4px 0 3px;
+  border: 0;
+  border-radius: calc(8px * var(--round));
+  background: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  font: inherit;
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+button.cal-day {
+  background: var(--line);
+  cursor: pointer;
+}
+
+.cal-day.now {
+  outline: 1.5px solid var(--text);
+}
+
+.cal-day.future {
+  opacity: 0.4;
+}
+
+.cal-amount {
+  font-size: 0.625rem;
+  color: var(--text);
+}
+
+.cal-amount.zero {
+  color: var(--gold);
+}
+
+.cal-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 8px;
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+.cal-legend span::before {
+  content: "";
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  margin-right: 4px;
+  border: 2px solid var(--line);
+  border-radius: 50%;
+  box-sizing: border-box;
+  vertical-align: -1px;
+}
+
+.cal-legend .done::before {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.cal-legend .no-spend::before {
+  background: var(--gold);
+  border-color: var(--gold);
+}
+
+.cat-bar {
+  display: grid;
+  grid-template-columns: 82px 1fr 64px;
+  gap: 8px;
+  align-items: center;
+  padding: 3px 0;
+  font-size: 0.8125rem;
+}
+
+.cat-bar .amt {
+  text-align: right;
+}
+
+/* ---- Money: the draining budget bar on This week ---- */
+.big-bar {
+  position: relative;
+  height: 16px;
+  background: var(--line);
+  border-radius: calc(8px * var(--round));
+  overflow: hidden;
+}
+
+.big-fill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: calc(8px * var(--round));
+}
+
+.big-fill.low {
+  background: var(--gold);
+}
+
+.big-tick {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--text);
+  opacity: 0.6;
+}
+
+.bar-legend {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 4px;
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+.card .money-categories {
+  margin-top: 8px;
+}

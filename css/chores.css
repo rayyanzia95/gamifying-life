@@ -1,0 +1,77 @@
+/* Chores page only. */
+/* Chores quest wheel, beside the level badge. Sized and styled like the Deen dial. */
+.chore-wheel {
+  display: block;
+  width: 100%;
+  max-width: 300px;
+  height: auto;
+  margin: 0 auto;
+}
+
+.wheel-slice {
+  fill: none;
+  stroke-width: 14;
+  stroke: var(--line);
+}
+
+.wheel-slice.done,
+.wheel-slice.covered {
+  stroke: var(--accent);
+}
+
+/* Covered by last week's tick (every-two-weeks chores). */
+.wheel-slice.covered {
+  stroke-dasharray: 4 3;
+}
+
+/* Chores wheel: tap zones and the "ticked · Undo" line under it. */
+.chore-wheel {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-user-select: none;
+  user-select: none;
+  touch-action: manipulation;
+}
+
+.wheel-hit {
+  fill: none;
+  stroke: transparent;
+  stroke-width: 40;
+  pointer-events: stroke;
+  cursor: pointer;
+}
+
+.wheel-status {
+  min-height: 20px;
+  margin: 6px 0 0;
+  font-size: 0.8125rem;
+  color: var(--muted);
+  text-align: center;
+}
+
+.wheel-status button {
+  border: 0;
+  background: none;
+  color: var(--accent);
+  font: inherit;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 0 4px;
+}
+
+/* Chores: full-week streak, the last 8 weeks as stars under the week bar. */
+.star-row-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-top: 12px;
+}
+
+.star-row-label .muted {
+  font-size: 0.75rem;
+}
+
+.star-date {
+  font-size: 0.625rem;
+  color: var(--muted);
+  margin-top: 3px;
+}

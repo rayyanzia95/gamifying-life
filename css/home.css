@@ -1,0 +1,72 @@
+/* Home page (index.html) only. */
+.web-shape {
+  fill: var(--gold);
+  fill-opacity: 0.16;
+  stroke: var(--gold);
+  stroke-width: 1.5;
+  stroke-linejoin: round;
+}
+
+.web-label {
+  font-size: 8.5px;
+  fill: var(--muted);
+}
+
+.hub-key {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin: 4px 0 8px;
+  font-size: 0.6875rem;
+  color: var(--muted);
+}
+
+.hub-key span::before {
+  content: "";
+  display: inline-block;
+  margin-right: 5px;
+  vertical-align: middle;
+  background: var(--muted);
+}
+
+.key-today::before {
+  width: 14px;
+  height: 4px;
+  border-radius: calc(2px * var(--round));
+}
+
+.key-level::before {
+  width: 14px;
+  height: 6px;
+  border-radius: calc(3px * var(--round));
+}
+
+.level-bar {
+  position: relative;
+  height: 6px;
+  background: var(--line);
+  border-radius: calc(3px * var(--round));
+  overflow: hidden;
+}
+
+.level-bar i {
+  position: absolute;
+  inset: 0 auto 0 0;
+  border-radius: calc(3px * var(--round));
+}
+
+/* Home: one quiet line under the rings when a birthday or the anniversary is close. */
+.home-note {
+  margin: -4px 4px 12px;
+  font-size: 0.8125rem;
+}
+
+.level-note::before {
+  content: "";
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  margin-right: 6px;
+  border-radius: 50%;
+  background: var(--gold);
+}
