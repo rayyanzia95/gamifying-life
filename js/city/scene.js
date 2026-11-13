@@ -4,7 +4,6 @@
 // is hidden or the city is off screen. The scene is built once and kept; a redraw of Home only re-attaches it.
 
 const CityScene = (() => {
-  const CELL = 6; // spacing between districts, in scene units
   const GLOW_MIN = 0.15; // windows of a branch with nothing done today
   const FRAME_MS = 1000 / 30;
   const SCENERY_TIER = 4; // park and pool are always there at this tier
@@ -37,7 +36,12 @@ const CityScene = (() => {
     return (r << 16) | (g << 8) | b;
   }
 
-  const plotSpot = (col, row) => [(col - (CITY_COLS - 1) / 2) * CELL, (row - (CITY_ROWS - 1) / 2) * CELL];
+  // Stand a model on its pad (position from CITY_PLOT and the terrain under it, turned a little).
+  function place(group, id) {
+    const { x, y, z, turn } = CityTerrain.pad(id);
+    group.position.set(x, y + 0.05, z);
+    group.rotation.y = turn;
+  }
 
   // The glow parts are the ones with an emissive colour; a branch's lit share sets their brightness.
   function collect(group) {
@@ -57,8 +61,7 @@ const CityScene = (() => {
     if (old && old.tier === item.tier) { old.item = item; old.group.userData.base = brightness(item.lit); return; }
     if (old) s.scene.remove(old.group);
     const group = CityBuildings[item.id](item.tier, PALETTES[item.id]);
-    const [x, z] = plotSpot(...CITY_PLOT[item.id]);
-    group.position.set(x, 0.1, z);
+    place(group, item.id);
     group.userData.id = item.id;
     group.userData.base = brightness(item.lit);
     collect(group);
@@ -70,30 +73,37 @@ const CityScene = (() => {
   function addScenery() {
     ["park", "pool"].forEach(id => {
       const group = CityBuildings[id](SCENERY_TIER, PALETTES[id]);
-      const [x, z] = plotSpot(...CITY_PLOT[id]);
-      group.position.set(x, 0.1, z);
+      place(group, id);
       group.userData.base = 0.6;
       collect(group);
       s.scene.add(group);
       s.districts.set(id, { tier: SCENERY_TIER, group, item: null });
     });
-    // The two empty plots get a few trees; every crossing gets a lamp.
-    const prop = (kind, x, z) => {
+    // Trees on the ledges and lamps at the bridge ends, at the fixed spots the terrain lists.
+    const prop = (kind, { x, y, z }) => {
       const group = CityProps[kind](PALETTES.park);
       group.scale.setScalar(CityUtils.BUILDING_SCALE);
-      group.position.set(x, 0.1, z);
+      group.position.set(x, y + 0.05, z);
       group.userData.base = 0.8;
       collect(group);
       s.scene.add(group);
       s.districts.set(`${kind}-${x}-${z}`, { group, item: null });
     };
-    [[2, 2], [3, 2]].forEach(([col, row]) => {
-      const [x, z] = plotSpot(col, row);
-      [[-1.4, -1], [1.2, 0.6], [-0.2, 1.4]].forEach(([dx, dz]) => prop("tree", x + dx, z + dz));
-    });
-    for (let c = 0; c <= CITY_COLS; c++) for (let r = 0; r <= CITY_ROWS; r++) {
-      prop("lamp", (c - CITY_COLS / 2) * CELL, (r - CITY_ROWS / 2) * CELL);
-    }
+    const { trees, lamps } = CityTerrain.spots();
+    trees.forEach(spot => prop("tree", spot));
+    lamps.forEach(spot => prop("lamp", spot));
+  }
+
+  // The land's colours from the app's palette, resolved to hex: grass lighter on higher ground, two rock shades.
+  function terrainColours(host) {
+    const mix = (colour, pct, into) => cssColor(`color-mix(in srgb, ${colour} ${pct}%, ${into})`, host);
+    return {
+      grass: [42, 30, 20].map(pct => mix("var(--deen)", pct, "var(--city-ground)")),
+      rock: [mix("var(--muted)", 55, "var(--surface)"), mix(`color-mix(in srgb, var(--muted) 55%, var(--surface))`, 85, "#000")],
+      water: mix("var(--academics)", 55, "var(--surface)"),
+      deck: mix("var(--chores)", 35, "var(--surface)"),
+      rail: mix("var(--chores)", 70, "#000"),
+    };
   }
 
   function create(host) {
@@ -118,13 +128,15 @@ const CityScene = (() => {
     sun.position.set(15, 30, 10);
     sun.castShadow = true;
     sun.shadow.mapSize.set(2048, 2048);
-    Object.assign(sun.shadow.camera, { top: 24, bottom: -24, left: -24, right: 24 });
+    Object.assign(sun.shadow.camera, { top: 32, bottom: -32, left: -32, right: 32, far: 120 });
     scene.add(sun);
-    const floor = new THREE.Mesh(new THREE.PlaneGeometry(120, 120), new THREE.MeshStandardMaterial({ color: ground }));
+    const floor = new THREE.Mesh(new THREE.PlaneGeometry(160, 160), new THREE.MeshStandardMaterial({ color: ground }));
     floor.rotation.x = -Math.PI / 2;
+    floor.position.y = -2.6; // just under the land's edge
     floor.receiveShadow = true;
     scene.add(floor);
-    s = { canvas, renderer, scene, camera, controls, districts: new Map(), tags: new Map(), visible: true, last: 0, down: null };
+    CityTerrain.build(scene, terrainColours(host));
+    s ={ canvas, renderer, scene, camera, controls, districts: new Map(), tags: new Map(), visible: true, last: 0, down: null };
     addScenery();
     watchPointer();
     new IntersectionObserver(([e]) => { s.visible = e.isIntersecting; }).observe(canvas);
@@ -155,7 +167,7 @@ const CityScene = (() => {
     const w = s.canvas.clientWidth, h = s.canvas.clientHeight;
     if (!w || !h) return;
     s.renderer.setSize(w, h, false);
-    const aspect = w / h, half = Math.max(10.5, 14 / aspect);
+    const aspect = w / h, half = Math.max(15, 24 / aspect);
     Object.assign(s.camera, { left: -half * aspect, right: half * aspect, top: half, bottom: -half });
     s.camera.updateProjectionMatrix();
   }

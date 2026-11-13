@@ -13,7 +13,7 @@ const CITY_THREE = [
     integrity: "sha384-wagZhIFgY4hD+7awjQjR4e2E294y6J2HSnd8eTNc15ZubTeQeVRZwhQJ+W6hnBsf" },
 ];
 const CITY_DISTRICTS = ["money", "health", "deen", "academics", "chores", "personal", "people", "centre", "park", "pool"];
-const CITY_FILES = ["js/city/utils.js", "js/city/props.js", ...CITY_DISTRICTS.map(id => `js/city/buildings/${id}.js`), "js/city/scene.js"];
+const CITY_FILES = ["js/city/utils.js", "js/city/props.js", ...CITY_DISTRICTS.map(id => `js/city/buildings/${id}.js`), "js/city/terrain.js", "js/city/scene.js"];
 const CITY_WIDE = "(min-width: 900px)";
 
 let cityLoading = null; // the one fetch of three.js and the city files, shared by every redraw
