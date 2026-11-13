@@ -1,0 +1,172 @@
+/* Orrery layout (Appearance → Layout = Orrery, data-layout="orrery" on <html>). The sky comes from js/orrery.js
+   (Home: js/orrery-home.js). Only colour variables are used, so it follows every palette, light and dark.
+   Motion None / reduced motion: palettes.css stops every animation, so the planets simply sit in place. */
+
+[data-layout="orrery"] {
+  --orr-line: color-mix(in srgb, var(--muted) 45%, transparent);
+  --orr-track: color-mix(in srgb, var(--muted) 25%, transparent);
+  --orr-edge: color-mix(in srgb, var(--accent) 16%, var(--border));
+  --orr-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+/* Softer, rounder cards with a faint accent edge, on every page. */
+[data-layout="orrery"] .card {
+  border-color: var(--orr-edge);
+  border-radius: calc(18px * var(--round));
+}
+
+[data-layout="orrery"] h1 { font-weight: 600; }
+
+/* ---- The sky (Home and the branch headers) ---- */
+
+.orr-sky {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.orr-sky a:focus-visible { outline: none; }
+.orr-sky a:focus-visible .orr-ball { stroke: var(--text); stroke-width: 3; }
+.orr-sky a:is(:hover, :focus-visible) .orr-name { fill: var(--c); }
+
+.orr-glow { fill: color-mix(in srgb, var(--accent) 5%, transparent); }
+.orr-orbit { fill: none; stroke: var(--orr-line); stroke-width: 1.2; stroke-dasharray: 2 5; }
+
+.orr-progress {
+  fill: none;
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  transform: rotate(calc(var(--s, 0deg) - 90deg));
+  animation: orr-dash 1.6s var(--orr-ease) both;
+}
+
+@keyframes orr-dash { from { stroke-dasharray: 0 100; } }
+
+/* A planet is rotated to its place (--a), sweeping from where its lap starts (--s); the inner group turns
+   back so its labels stay upright. */
+.orr-planet { transform: rotate(var(--a)); animation: orr-sweep 1.6s var(--orr-ease) both; }
+.orr-upright { transform: rotate(calc(-1 * var(--a))); animation: orr-sweep-back 1.6s var(--orr-ease) both; }
+
+@keyframes orr-sweep { from { transform: rotate(var(--s, 0deg)); } }
+@keyframes orr-sweep-back { from { transform: rotate(calc(-1 * var(--s, 0deg))); } }
+
+.orr-ball { fill: var(--c); }
+.orr-today-track { fill: none; stroke: var(--orr-track); stroke-width: 2.5; }
+.orr-today { fill: none; stroke: var(--c); stroke-width: 2.5; stroke-linecap: round; transform: rotate(-90deg); }
+
+.orr-name, .orr-sub, .orr-comet-label {
+  paint-order: stroke;
+  stroke: var(--bg);
+  stroke-width: 5px;
+  stroke-linejoin: round;
+}
+
+.orr-name { font-size: 17px; font-weight: 700; fill: var(--text); text-anchor: middle; }
+.orr-sub { font-size: 14px; fill: var(--muted); text-anchor: middle; }
+
+.orr-sun { fill: var(--surface); stroke: var(--orr-line); stroke-width: 1.5; }
+.orr-sun-xp { fill: none; stroke: var(--gold); stroke-width: 4; stroke-linecap: round; transform: rotate(-90deg); }
+.orr-sun-n { font-size: 46px; font-weight: 700; fill: var(--text); text-anchor: middle; dominant-baseline: central; }
+.orr-sun-t { font-size: 11px; letter-spacing: 0.2em; fill: var(--muted); text-anchor: middle; }
+
+.orr-comet { fill: var(--academics); }
+.orr-tail { stroke: var(--academics); stroke-width: 2; stroke-linecap: round; opacity: 0.5; }
+.orr-comet-label { font-size: 14px; fill: var(--academics); }
+
+/* ---- Home ---- */
+
+[data-layout="orrery"] #home-card {
+  padding: 0;
+  border: 0;
+  background: none;
+}
+
+.orr {
+  display: grid;
+  gap: 16px;
+}
+
+/* Wide screens: a wider page, the sky on the left and the side panel next to it. */
+@media (min-width: 900px) {
+  [data-layout="orrery"] body.has-nav:has(.orr) {
+    --page-width: min(1000px, calc(100vw - 268px));
+  }
+
+  .orr {
+    grid-template-columns: minmax(0, 1.6fr) minmax(220px, 1fr);
+    align-items: start;
+  }
+}
+
+.orr-side {
+  display: grid;
+  gap: 14px;
+  min-width: 0;
+}
+
+.orr a { color: inherit; text-decoration: none; }
+
+.orr-next {
+  display: grid;
+  gap: 2px;
+  padding: 12px;
+  border: 1px solid var(--orr-edge);
+  border-radius: calc(14px * var(--round));
+  background: var(--surface);
+  color: var(--muted);
+  font-size: 0.875rem;
+}
+
+.orr-next strong { font-size: 1.4rem; line-height: 1.15; color: var(--text); }
+
+.orr-rows { display: grid; }
+
+.orr-row {
+  display: grid;
+  grid-template-columns: 10px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 2px;
+  border-bottom: 1px solid var(--line);
+  font-size: 0.9rem;
+}
+
+.orr-row:last-child { border-bottom: 0; }
+.orr-row i { width: 10px; height: 10px; border-radius: 50%; background: var(--c); }
+.orr-row .num { color: var(--muted); font-size: 0.82rem; }
+.orr-row:is(:hover, :focus-visible) span:first-of-type { color: var(--c); }
+
+.orr-hint { margin: 0; color: var(--muted); font-size: 0.8rem; }
+
+/* ---- Branch pages (body.orr-branch, set by js/orrery.js) ---- */
+
+.orr-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin: -4px 0 24px;
+}
+
+.orr-header .orr-mini { width: 96px; flex: none; }
+.orr-mini .orr-sun-n { font-size: 20px; }
+.orr-mini .orr-sun-t { font-size: 6px; letter-spacing: 0.15em; }
+.orr-mini .orr-progress { stroke-width: 2; }
+
+.orr-header-text {
+  display: grid;
+  gap: 2px;
+  color: var(--muted);
+  font-size: 0.875rem;
+}
+
+.orr-header-text strong { color: var(--c); font-size: 1.1rem; }
+
+/* Title and orbit header first, then the page's own cards, as in the Cockpit HUD. */
+[data-layout="orrery"] body.orr-branch {
+  display: flex;
+  flex-direction: column;
+}
+
+[data-layout="orrery"] body.orr-branch > .back { order: -2; align-self: flex-start; }
+[data-layout="orrery"] body.orr-branch > :is(h1, .orr-header) { order: -1; }

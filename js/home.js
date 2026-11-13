@@ -55,9 +55,11 @@ function branchShare(branch) {
 
 const branches = BRANCHES.map(b => ({ ...b, ...levelOf(totals, b.id), share: branchShare(b) }));
 const overall = levelInfo(overallXp, LEVELS.overallMultiplier);
-// Appearance → Layout: the Cockpit HUD draws its own Home (hud-home.js); every other layout keeps the card.
-const isHud = document.documentElement.dataset.layout === "hud";
+// Appearance → Layout: the Cockpit HUD (hud-home.js) and the Orrery (orrery-home.js) draw their own Home;
+// every other layout keeps the card.
+const HOME_LAYOUTS = { hud: hudHomeHtml, orrery: orreryHomeHtml };
+const layoutHome = HOME_LAYOUTS[document.documentElement.dataset.layout];
 document.getElementById("home-card").innerHTML =
-  isHud ? hudHomeHtml(events, overall, overallXp, branches) : homeCardHtml(overall, branches);
+  layoutHome ? layoutHome(events, overall, overallXp, branches) : homeCardHtml(overall, branches);
 drawPeopleNote();
 drawLevelNote();
