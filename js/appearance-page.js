@@ -9,7 +9,7 @@ const APPEARANCE_GROUPS = [
   { title: "Type and shape", keys: ["type", "size", "radius", "density"] },
   { title: "Bars, ticks and icons", keys: ["bars", "ticks", "icons"] },
   { title: "Motion", keys: ["motion", "levelUp"] },
-  { title: "Sci-fi FX", presets: true, keys: FX_KEYS,
+  { title: "Animations and sci-fi FX", presets: true, keys: EFFECT_KEYS,
     note: "Scanlines are under Background. All of these stay off with Motion set to None or the device's reduce-motion setting." },
   { title: "Background", keys: ["texture"] },
   { title: "Coming next", keys: ["centre", "layout"] },
@@ -22,11 +22,11 @@ function presetRow() {
   const row = Object.assign(document.createElement("div"), { className: "fx-presets" });
   const buttons = Object.entries(PRESET_LABELS).map(([preset, textContent]) => {
     const button = Object.assign(document.createElement("button"), { type: "button", className: "filter-button", textContent });
-    button.addEventListener("click", () => { saveSettings(FX_PRESETS[preset]); render(); fxPageOpen(); });
+    button.addEventListener("click", () => { saveSettings(FX_PRESETS[preset]); render(); fxPageOpen(); animPageOpen(); });
     return button;
   });
   const replay = Object.assign(document.createElement("button"), { type: "button", className: "filter-button", textContent: "Replay page open" });
-  replay.addEventListener("click", fxPageOpen);
+  replay.addEventListener("click", () => { fxPageOpen(); animPageOpen(); }); // anims.js
   row.append(...buttons, replay);
   return row;
 }

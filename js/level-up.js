@@ -55,11 +55,13 @@ function playLevelUp(el, key, level) {
     return true;
   }
   if (style === "banner") return showBanner(levelLabel(key, level));
+  if (style === "unfurl") return showUnfurl(levelLabel(key, level)); // anims.js
   if (!el) return false;
   el.classList.remove("level-up");
   void el.offsetWidth; // forces a reflow so the animation restarts when the class goes back on
   el.classList.add("level-up");
   el.addEventListener("animationend", () => el.classList.remove("level-up"), { once: true });
+  if (style === "ringburst" || style === "lockon") levelOverlay(el, style); // anims.js
   return true;
 }
 
@@ -79,12 +81,13 @@ function checkLevelUps() {
   const popup = isPopupStyle(style);
   // Popups still show with motion off (as a still card); the other effects are pure motion, so they skip.
   const quiet = style === "none" || (!popup && motionOff());
-  const banner = style === "banner";
+  const banner = style === "banner" || style === "unfurl";
+  const showAll = style === "unfurl" ? showUnfurl : showBanner; // anims.js
   // Branches first, overall last, so the biggest popup comes at the end.
   const risen = Object.keys(now).filter(key => now[key] > (seen[key] ?? now[key]))
     .sort((a, b) => (a === "overall") - (b === "overall"));
   // One banner names every new level at once; the other effects play each level.
-  if (banner && !quiet && risen.length) showBanner(risen.map(key => levelLabel(key, now[key])).join("   "));
+  if (banner && !quiet && risen.length) showAll(risen.map(key => levelLabel(key, now[key])).join("   "));
   const played = risen.filter(key => quiet || banner || playLevelUp(levelTarget(key), key, now[key]));
   // Keep the highest level each one has shown, so unticking then ticking again doesn't replay it;
   // a level that rose but found nowhere to play keeps its old value and waits for a page that shows it.

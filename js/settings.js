@@ -89,11 +89,25 @@ const FX_CHOICES = {
 };
 const FX_KEYS = Object.keys(FX_CHOICES);
 
-// The three preset buttons. The tenth effect, scanlines, is the Background texture setting.
+// Round-2 animations (Appearance → Animations and sci-fi FX), each on or off. js/anims.js and css/anims.css
+// draw them; the three level-up ones are choices under Level-up effect instead, since only one can play.
+const ANIM_CHOICES = {
+  animTick: { label: "Tick draws itself, bar springs forward", options: ON_OFF, default: "on" },
+  animCount: { label: "XP numbers count up when a page opens", options: ON_OFF, default: "off" },
+  animCascade: { label: "Cards rise in one after another", options: ON_OFF, default: "on" },
+  animWipe: { label: "Scan wipe when a page opens", options: ON_OFF, default: "off" },
+  animStreak: { label: "Streak flame flares and flickers", options: ON_OFF, default: "on" },
+  animDay: { label: "Day complete: the seven rings close and glow", options: ON_OFF, default: "on" },
+};
+const ANIM_KEYS = Object.keys(ANIM_CHOICES);
+const EFFECT_CHOICES = { ...ANIM_CHOICES, ...FX_CHOICES };
+const EFFECT_KEYS = Object.keys(EFFECT_CHOICES);
+
+// The three preset buttons, for the animations and the FX together. Scanlines are the Background texture setting.
 const FX_PRESETS = {
-  off: { ...Object.fromEntries(FX_KEYS.map(key => [key, "off"])), texture: "plain" },
-  recommended: { ...Object.fromEntries(FX_KEYS.map(key => [key, FX_CHOICES[key].default])), texture: "plain" },
-  on: { ...Object.fromEntries(FX_KEYS.map(key => [key, "on"])), texture: "scan" },
+  off: { ...Object.fromEntries(EFFECT_KEYS.map(key => [key, "off"])), texture: "plain" },
+  recommended: { ...Object.fromEntries(EFFECT_KEYS.map(key => [key, EFFECT_CHOICES[key].default])), texture: "plain" },
+  on: { ...Object.fromEntries(EFFECT_KEYS.map(key => [key, "on"])), texture: "scan" },
 };
 
 const APPEARANCE_CHOICES = {
@@ -125,7 +139,7 @@ const APPEARANCE_CHOICES = {
       { value: "3", label: "Neon" },
     ],
   },
-  ...FX_CHOICES,
+  ...EFFECT_CHOICES,
   type: {
     label: "Type",
     default: "serif",
@@ -205,6 +219,9 @@ const APPEARANCE_CHOICES = {
       { value: "hud", label: "Popup: sci-fi HUD" },
       { value: "rpg", label: "Popup: RPG card" },
       { value: "toast", label: "Popup: toast" },
+      { value: "ringburst", label: "Ring burst" },
+      { value: "lockon", label: "HUD lock-on" },
+      { value: "unfurl", label: "Banner unfurl" },
     ],
   },
   texture: {
@@ -350,7 +367,7 @@ function applyAppearance() {
     accent: s.accent === "custom" ? `custom-${dark ? "dark" : "light"}` : "palette",
     glow: s.glow, type: s.type, bars: s.bars, ticks: s.ticks, motion: s.motion, size: s.size, radius: s.radius,
     density: s.density, levelUp: s.levelUp, texture: s.texture, icons: s.icons, tint: s.tint,
-    ...Object.fromEntries(FX_KEYS.map(key => [key, s[key]])), // fxBoot → data-fx-boot, and so on
+    ...Object.fromEntries(EFFECT_KEYS.map(key => [key, s[key]])), // fxBoot → data-fx-boot, animTick → data-anim-tick
   });
   root.style.setProperty("--accent-hue", s.accentHue); // a number the CSS turns into an oklch colour
   loadTypeFont(s.type);

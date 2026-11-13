@@ -70,7 +70,7 @@ function makeStepper(text, current, max, onStep, {
 function streakBadge({ days, paused, id, rest }) {
   const badge = document.createElement("span");
   badge.className = paused ? "streak paused" : "streak";
-  badge.textContent = `🔥 ${days}`;
+  badge.innerHTML = `<span class="streak-flame" aria-hidden="true">🔥</span> ${Number(days)}`; // the flame flares on page open (anims.js)
   badge.setAttribute("aria-label", `${days}-day streak${paused ? ", paused" : ""}`);
   if (!rest) return badge;
 
