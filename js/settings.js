@@ -58,9 +58,60 @@ const PALETTES = [
 
 const palettesFor = mode => PALETTES.filter(p => p.mode === mode || p.mode === "both");
 
+// Sci-fi effects (Appearance → Sci-fi FX). Each is its own setting; three of them also have a quieter
+// "Subtle". The defaults are the Recommended preset. fx.js and css/appearance.css do the drawing.
+const ON_OFF = [{ value: "off", label: "Off" }, { value: "on", label: "On" }];
+const OFF_SUBTLE_FULL = [{ value: "off", label: "Off" }, { value: "subtle", label: "Subtle" }, { value: "on", label: "Full" }];
+const FX_CHOICES = {
+  fxBoot: { label: "Boot scan when a page opens", options: ON_OFF, default: "on" },
+  fxDecode: { label: "Level numbers decode up", options: ON_OFF, default: "on" },
+  fxSweep: { label: "Scanning sweep on the Home ring", options: OFF_SUBTLE_FULL, default: "subtle" },
+  fxBrackets: { label: "HUD corner brackets on cards", options: ON_OFF, default: "on" },
+  fxHolo: { label: "Holographic shimmer on level chips", options: OFF_SUBTLE_FULL, default: "subtle" },
+  fxGlitch: { label: "Glitch when you tick", options: ON_OFF, default: "on" },
+  fxCore: { label: "Pulsing core on Home", options: OFF_SUBTLE_FULL, default: "subtle" },
+  fxBurst: { label: "Level-up line burst", options: ON_OFF, default: "on" },
+  fxCursor: { label: "Typing-cursor page titles", options: ON_OFF, default: "off" },
+};
+const FX_KEYS = Object.keys(FX_CHOICES);
+
+// The three preset buttons. The tenth effect, scanlines, is the Background texture setting.
+const FX_PRESETS = {
+  off: { ...Object.fromEntries(FX_KEYS.map(key => [key, "off"])), texture: "plain" },
+  recommended: { ...Object.fromEntries(FX_KEYS.map(key => [key, FX_CHOICES[key].default])), texture: "plain" },
+  on: { ...Object.fromEntries(FX_KEYS.map(key => [key, "on"])), texture: "scan" },
+};
+
 const APPEARANCE_CHOICES = {
   paletteDark: { label: "Colours in dark mode", options: palettesFor("dark"), default: "ice" },
   paletteLight: { label: "Colours in light mode", options: palettesFor("light") },
+  black: {
+    label: "Black level (dark mode)",
+    options: [
+      { value: "palette", label: "Palette's own" },
+      { value: "oled", label: "True black (OLED)" },
+    ],
+  },
+  accent: {
+    label: "Accent",
+    options: [
+      { value: "palette", label: "Palette's own" },
+      { value: "custom", label: "Custom hue" },
+    ],
+  },
+  // A slider, not a list: any whole number in the range is allowed (loadSettings checks it).
+  accentHue: { label: "Accent hue", range: { min: 0, max: 359 }, default: 200 },
+  glow: {
+    label: "Glow strength",
+    default: "1",
+    options: [
+      { value: "0", label: "None" },
+      { value: "1", label: "Soft" },
+      { value: "2", label: "Medium" },
+      { value: "3", label: "Neon" },
+    ],
+  },
+  ...FX_CHOICES,
   type: {
     label: "Type",
     default: "serif",
@@ -200,27 +251,36 @@ function storedSettings() {
 
 const defaultChoice = choice => choice.default ?? choice.options[0].value;
 
+// A stored value is kept only if the setting still allows it: one of its options (not a "soon" one),
+// or a whole number inside its range.
+function isAllowed(choice, value) {
+  if (choice.range) return Number.isInteger(value) && value >= choice.range.min && value <= choice.range.max;
+  return choice.options.some(o => o.value === value && !o.soon);
+}
+
 // Every setting, with anything missing or no longer allowed replaced by its default.
 function loadSettings() {
   const stored = storedSettings();
   return Object.fromEntries(
-    Object.entries(SETTING_CHOICES).map(([key, choice]) => {
-      const allowed = choice.options.some(o => o.value === stored[key] && !o.soon);
-      return [key, allowed ? stored[key] : defaultChoice(choice)];
-    })
+    Object.entries(SETTING_CHOICES).map(([key, choice]) =>
+      [key, isAllowed(choice, stored[key]) ? stored[key] : defaultChoice(choice)])
   );
 }
 
-function saveSetting(key, value) {
-  const next = { ...loadSettings(), [key]: value };
+// changes: { key: value, ... }. Only the ones that really change are saved (and synced).
+function saveSettings(changes) {
+  const before = loadSettings();
+  const changed = Object.entries(changes).filter(([key, value]) => before[key] !== value);
   try {
-    localStorage.setItem(SETTINGS_KEY, JSON.stringify(next));
+    localStorage.setItem(SETTINGS_KEY, JSON.stringify({ ...before, ...Object.fromEntries(changed) }));
   } catch {
     // Private browsing can block storage; the choice lasts until reload.
   }
-  saveSettingEvent(key, value); // the synced copy (storage.js)
+  changed.forEach(([key, value]) => saveSettingEvent(key, value)); // the synced copies (storage.js)
   applyAppearance();
 }
+
+const saveSetting = (key, value) => saveSettings({ [key]: value });
 
 // True only for the first page you open in this tab. sessionStorage is wiped
 // when the tab closes, so "Open the app on" applies each time you open the app,
@@ -264,13 +324,21 @@ function loadTypeFont(type) {
 
 // Two palette slots: light/dark (the toggle, or the device) decides which one shows.
 // currentTheme() is in theme.js, which loads just before this file.
+// True black and the custom accent both depend on light/dark, so the mode is folded into the attribute
+// here (data-black="oled" only in dark; data-accent="custom-dark" / "custom-light") and the CSS stays plain.
 function applyAppearance() {
   const s = loadSettings();
-  const palette = currentTheme() === "dark" ? s.paletteDark : s.paletteLight;
-  Object.assign(document.documentElement.dataset, {
-    palette, type: s.type, bars: s.bars, ticks: s.ticks, motion: s.motion, size: s.size, radius: s.radius,
+  const dark = currentTheme() === "dark";
+  const root = document.documentElement;
+  Object.assign(root.dataset, {
+    palette: dark ? s.paletteDark : s.paletteLight,
+    black: dark ? s.black : "palette",
+    accent: s.accent === "custom" ? `custom-${dark ? "dark" : "light"}` : "palette",
+    glow: s.glow, type: s.type, bars: s.bars, ticks: s.ticks, motion: s.motion, size: s.size, radius: s.radius,
     density: s.density, levelUp: s.levelUp, texture: s.texture, icons: s.icons, tint: s.tint,
+    ...Object.fromEntries(FX_KEYS.map(key => [key, s[key]])), // fxBoot → data-fx-boot, and so on
   });
+  root.style.setProperty("--accent-hue", s.accentHue); // a number the CSS turns into an oklch colour
   loadTypeFont(s.type);
 }
 

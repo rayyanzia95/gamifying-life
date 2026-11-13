@@ -4,21 +4,40 @@
 
 // Cards on the page, in order: a title and the settings in it (keys of APPEARANCE_CHOICES).
 const APPEARANCE_GROUPS = [
-  { title: "Colours", note: "The light/dark button picks which of the two colour sets shows.", keys: ["paletteDark", "paletteLight", "tint"] },
+  { title: "Colours", note: "The light/dark button picks which of the two colour sets shows.",
+    keys: ["paletteDark", "paletteLight", "black", "accent", "accentHue", "glow", "tint"] },
   { title: "Type and shape", keys: ["type", "size", "radius", "density"] },
   { title: "Bars, ticks and icons", keys: ["bars", "ticks", "icons"] },
   { title: "Motion", keys: ["motion", "levelUp"] },
+  { title: "Sci-fi FX", presets: true, keys: FX_KEYS,
+    note: "Scanlines are under Background. All of these stay off with Motion set to None or the device's reduce-motion setting." },
   { title: "Background", keys: ["texture"] },
   { title: "Coming next", keys: ["centre", "layout"] },
 ];
 
-function groupCard({ title, note, keys }, current) {
+const PRESET_LABELS = { off: "All off", recommended: "Recommended", on: "All on" };
+
+// One button per FX_PRESETS entry (settings.js); each saves every effect at once, then the page redraws.
+function presetRow() {
+  const row = Object.assign(document.createElement("div"), { className: "fx-presets" });
+  const buttons = Object.entries(PRESET_LABELS).map(([preset, textContent]) => {
+    const button = Object.assign(document.createElement("button"), { type: "button", className: "filter-button", textContent });
+    button.addEventListener("click", () => { saveSettings(FX_PRESETS[preset]); render(); fxPageOpen(); });
+    return button;
+  });
+  const replay = Object.assign(document.createElement("button"), { type: "button", className: "filter-button", textContent: "Replay page open" });
+  replay.addEventListener("click", fxPageOpen);
+  row.append(...buttons, replay);
+  return row;
+}
+
+function groupCard({ title, note, keys, presets }, current) {
   const card = Object.assign(document.createElement("section"), { className: "card" });
   const heading = Object.assign(document.createElement("div"), { className: "card-title", textContent: title });
   const form = Object.assign(document.createElement("form"), { className: "appearance-form" });
   form.append(...groupsFor(keys, current));
   const extra = note ? [Object.assign(document.createElement("p"), { className: "muted", textContent: note })] : [];
-  card.append(heading, form, ...extra);
+  card.append(heading, ...(presets ? [presetRow()] : []), form, ...extra);
   return card;
 }
 

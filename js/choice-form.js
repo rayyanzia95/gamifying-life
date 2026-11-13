@@ -25,13 +25,26 @@ function choiceRow(key, option, current) {
   return row;
 }
 
-function choiceGroup(key, { label, options }, current) {
+// A range setting (the accent hue) is one slider with a dot in the colour it gives. Dragging shows the
+// colour at once through --accent-hue on <html>; letting go saves (one synced event, not one per pixel).
+function rangeRow(key, { min, max }, current) {
+  const row = Object.assign(document.createElement("label"), { className: "range-row" });
+  const slider = Object.assign(document.createElement("input"), { type: "range", min, max, value: current });
+  const dot = Object.assign(document.createElement("span"), { className: "hue-dot" });
+  slider.addEventListener("input", () => document.documentElement.style.setProperty("--accent-hue", slider.value));
+  slider.addEventListener("change", () => saveSetting(key, Number(slider.value)));
+  row.append(slider, dot);
+  return row;
+}
+
+function choiceGroup(key, { label, options, range }, current) {
   const group = document.createElement("fieldset");
   group.className = "choice";
   group.dataset.key = key; // lets CSS lay out long groups (the palettes) differently
   const legend = document.createElement("legend");
   legend.textContent = label;
-  group.append(legend, ...options.map(option => choiceRow(key, option, current)));
+  const rows = range ? [rangeRow(key, range, current)] : options.map(option => choiceRow(key, option, current));
+  group.append(legend, ...rows);
   return group;
 }
 
