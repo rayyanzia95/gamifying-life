@@ -95,7 +95,7 @@
   position: absolute;
   right: 4px;
   transform: translateY(-50%);
-  font-size: 0.625rem;
+  font-size: 0.75rem;
   color: var(--muted);
 }
 
@@ -117,7 +117,7 @@
   background: color-mix(in srgb, var(--course) 18%, var(--surface));
   color: var(--text);
   font: inherit;
-  font-size: 0.6875rem;
+  font-size: 0.75rem;
   line-height: 1.25;
   text-align: left;
 }
@@ -145,7 +145,7 @@ button.week-block {
 .week-eve-label {
   padding: 6px 4px;
   border-top: 1px solid var(--line);
-  font-size: 0.625rem;
+  font-size: 0.75rem;
   color: var(--muted);
   text-align: right;
 }
@@ -177,7 +177,7 @@ button.week-block {
 .month-name {
   padding: 6px 2px;
   border-bottom: 1px solid var(--line);
-  font-size: 0.6875rem;
+  font-size: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   color: var(--muted);
@@ -224,7 +224,7 @@ button.week-block {
 }
 
 .month-date small {
-  font-size: 0.625rem;
+  font-size: 0.75rem;
   font-weight: 400;
   color: var(--muted);
 }
@@ -235,7 +235,7 @@ button.week-block {
   border-left: 3px solid var(--course);
   border-radius: calc(3px * var(--round));
   background: color-mix(in srgb, var(--course) 15%, var(--surface));
-  font-size: 0.625rem;
+  font-size: 0.75rem;
   line-height: 1.25;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -254,7 +254,7 @@ button.week-block {
 }
 
 .month-more {
-  font-size: 0.625rem;
+  font-size: 0.75rem;
   color: var(--muted);
 }
 

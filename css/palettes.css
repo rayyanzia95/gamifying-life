@@ -269,9 +269,8 @@
 }
 
 [data-type="serif"] {
-  --font-body: "EB Garamond", Georgia, serif;
+  --font-body: system-ui, sans-serif; /* labels, fields, buttons: plain sans; the serif is for titles only */
   --font-head: "Cinzel", Georgia, serif;
-  font-size-adjust: 0.5;
 }
 
 body,
@@ -408,7 +407,7 @@ h2,
 [data-ticks="stamp"] .tick input:checked::before {
   content: "DONE";
   color: var(--accent);
-  font: 700 0.625rem var(--font-head);
+  font: 700 0.75rem var(--font-head);
   letter-spacing: 0.1em;
 }
 

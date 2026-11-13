@@ -36,7 +36,7 @@
 [data-layout="hud"] .card-title {
   margin: 0 0 8px;
   font-family: var(--hud-mono);
-  font-size: 0.72rem;
+  font-size: 0.75rem;
   font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -179,7 +179,7 @@
 @keyframes hud-rise { from { height: 0; } }
 
 .hud-col b { font-size: 1rem; color: var(--c); }
-.hud-col span:last-child { font-size: 0.62rem; color: var(--muted); }
+.hud-col span:last-child { font-size: 0.75rem; color: var(--muted); }
 
 /* Targets: the next exams, the soonest locked on */
 .hud-targets {
@@ -228,7 +228,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 6px 20px;
-  font-size: 0.74rem;
+  font-size: 0.75rem;
   color: var(--muted);
 }
 
@@ -252,7 +252,7 @@
   gap: 6px 16px;
   margin-bottom: 24px;
   font-family: var(--hud-mono);
-  font-size: 0.74rem;
+  font-size: 0.75rem;
   color: var(--muted);
 }
 

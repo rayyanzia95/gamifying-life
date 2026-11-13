@@ -80,7 +80,7 @@ const FX_CHOICES = {
   fxBoot: { label: "Boot scan when a page opens", options: ON_OFF, default: "on" },
   fxDecode: { label: "Level numbers decode up", options: ON_OFF, default: "on" },
   fxSweep: { label: "Scanning sweep on the Home ring", options: OFF_SUBTLE_FULL, default: "subtle" },
-  fxBrackets: { label: "HUD corner brackets on cards", options: ON_OFF, default: "on" },
+  fxBrackets: { label: "HUD corner brackets on cards", options: ON_OFF, default: "off" },
   fxHolo: { label: "Holographic shimmer on level chips", options: OFF_SUBTLE_FULL, default: "subtle" },
   fxGlitch: { label: "Glitch when you tick", options: ON_OFF, default: "on" },
   fxCore: { label: "Pulsing core on Home", options: OFF_SUBTLE_FULL, default: "subtle" },
