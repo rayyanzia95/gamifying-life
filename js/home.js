@@ -65,6 +65,8 @@ function render() {
     layoutHome ? layoutHome(events, overall, overallXp, branches) : homeCardHtml(overall, branches);
   drawPeopleNote();
   drawLevelNote();
+  drawQuickLog(events);
 }
 
+setupQuickLog();
 render();

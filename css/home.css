@@ -70,3 +70,32 @@
   border-radius: 50%;
   background: var(--gold);
 }
+
+/* ---- Home layout: A "Now" strip + C quick chips (.home-side), the centrepiece (#home-card), B Today list.
+   Phone: side, centrepiece, list stacked. Desktop (>=1000px): three columns, centrepiece in the middle.
+   Other layouts (HUD, Orrery, Wheel, Grimoire) keep their own Home first, with side + list in two columns under it. ---- */
+.home-head {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  margin-bottom: 16px;
+}
+
+.home-head h1 { margin: 0; }
+.home-date { color: var(--muted); font-size: 0.9375rem; font-family: system-ui, sans-serif; }
+
+.home-grid { display: grid; gap: 16px; align-items: start; }
+.home-side { display: grid; gap: 16px; align-content: start; min-width: 0; }
+.home-grid > .card, .home-side > .card { margin-bottom: 0; min-width: 0; }
+
+[data-layout]:not([data-layout="classic"]) .home-centre { order: -1; }
+
+@media (min-width: 1000px) {
+  body.has-nav.home-page { --page-width: min(1280px, calc(100vw - 268px)); }
+
+  .home-grid { grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr) minmax(0, 1fr); gap: 20px; }
+
+  [data-layout]:not([data-layout="classic"]) .home-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  [data-layout]:not([data-layout="classic"]) .home-centre { grid-column: 1 / -1; }
+}
