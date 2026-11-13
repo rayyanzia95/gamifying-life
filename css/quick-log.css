@@ -3,8 +3,8 @@
 .ql-card { font-family: system-ui, sans-serif; color: var(--text); }
 .ql-card button, .ql-sheet button, .ql-toast button { font: inherit; color: inherit; cursor: pointer; }
 
-.ql-hd { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; margin-bottom: 10px; }
-.ql-hd h2 { margin: 0; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+.ql-hd { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 0 8px; margin-bottom: 10px; }
+.ql-hd h2 { white-space: nowrap; margin: 0; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
 .ql-hd small, .ql-cap { font-size: 0.8125rem; color: var(--muted); }
 .ql-cap { margin: 12px 0 8px !important; }
 .ql-sub { font-size: 0.8125rem; color: var(--muted); margin-top: 2px; }
