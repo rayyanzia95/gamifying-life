@@ -59,10 +59,11 @@ function render() {
   overall = levelInfo(overallXp, LEVELS.overallMultiplier);
   // Appearance → Layout: the Cockpit HUD (hud-home.js), the Orrery (orrery-home.js), the Command wheel
   // (wheel-home.js) and the Grimoire ledger (codex.js) draw their own Home; every other layout keeps the card.
-  const HOME_LAYOUTS = { hud: hudHomeHtml, orrery: orreryHomeHtml, wheel: wheelHomeHtml, codex: codexHomeHtml };
+  const HOME_LAYOUTS = { hud: hudHomeHtml, orrery: orreryHomeHtml, wheel: wheelHomeHtml, codex: codexHomeHtml, city: cityHomeHtml };
   const layoutHome = HOME_LAYOUTS[document.documentElement.dataset.layout];
   document.getElementById("home-card").innerHTML =
     layoutHome ? layoutHome(events, overall, overallXp, branches) : homeCardHtml(overall, branches);
+  if (document.documentElement.dataset.layout === "city") cityHomeMount();
   drawPeopleNote();
   drawLevelNote();
   drawQuickLog(events);

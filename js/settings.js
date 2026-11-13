@@ -264,7 +264,7 @@ const APPEARANCE_CHOICES = {
     options: [
       { value: "classic", label: "Classic" },
       { value: "hud", label: "Cockpit HUD" },
-      { value: "city", label: "City", soon: true },
+      { value: "city", label: "City" },
       { value: "orrery", label: "Orrery" },
       { value: "wheel", label: "Command wheel" },
       { value: "codex", label: "Grimoire ledger" },
