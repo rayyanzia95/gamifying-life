@@ -107,9 +107,13 @@ async function pullEvents() {
   const seeded = withSettingSeeds(events, localSettingValues(), todayString());
   const merged = mergeDuplicates(seeded);
   const changed = canonicalList(merged) !== canonicalList(before);
-  if (changed) saveEvents(merged);
+  if (changed) {
+    logSyncDebug("events changed", changedEventIds(before, merged));
+    saveEvents(merged);
+  }
   saveSynced(synced);
   const settingsChanged = applySettingValues(merged);
+  if (settingsChanged) logSyncDebug("settings changed", localSettingValues());
   if (rows.length > 0) localStorage.setItem(PULLED_AT_KEY, rows[rows.length - 1].updated_at);
   return changed || settingsChanged;
 }
@@ -137,6 +141,18 @@ function applySettingValues(events) {
     updateButton();
   }
   return JSON.stringify(localSettingValues()) !== before;
+}
+
+// Off unless localStorage.debugSync = "1": says why a pull redrew the page (which events or settings differed).
+function logSyncDebug(what, detail) {
+  if (localStorage.getItem("debugSync") === "1") console.info(`[sync] ${what}`, detail);
+}
+
+// Ids whose content differs between two event lists (added, removed or edited).
+function changedEventIds(before, after) {
+  const was = new Map(before.map(e => [e.id, canonical(e)]));
+  const now = new Map(after.map(e => [e.id, canonical(e)]));
+  return [...new Set([...was.keys(), ...now.keys()])].filter(id => was.get(id) !== now.get(id));
 }
 
 function canonicalList(events) {
