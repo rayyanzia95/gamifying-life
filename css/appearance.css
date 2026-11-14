@@ -224,6 +224,8 @@
   --text-3: #867d93;
   --accent: #eda253;
   --on-accent: #221203;
+  --ink-accent: #eda253;
+  --ink-mark: #72697e;
   --c-deen: #2fc3b6;
   --c-health: #7fbe75;
   --c-academics: #7fabf6;
@@ -245,6 +247,8 @@
   --text-3: #698785;
   --accent: #cbb267;
   --on-accent: #1b1605;
+  --ink-accent: #cbb267;
+  --ink-mark: #577371;
   --c-deen: #67bcb3;
   --c-health: #8db986;
   --c-academics: #80b0df;
@@ -266,6 +270,8 @@
   --text-3: #82828e;
   --accent: #cdb438;
   --on-accent: #1b1601;
+  --ink-accent: #cdb438;
+  --ink-mark: #6c6c76;
   --c-deen: #2fc3b6;
   --c-health: #7fbe75;
   --c-academics: #7fabf6;
@@ -287,6 +293,8 @@
   --text-3: #738877;
   --accent: #48d45e;
   --on-accent: #091b0a;
+  --ink-accent: #48d45e;
+  --ink-mark: #5e7162;
   --c-deen: #00ceaa;
   --c-health: #63cd52;
   --c-academics: #6cb7ff;
@@ -308,6 +316,8 @@
   --text-3: #957b73;
   --accent: #ff9369;
   --on-accent: #250f07;
+  --ink-accent: #ff9369;
+  --ink-mark: #7f6860;
   --c-deen: #00ceaa;
   --c-health: #8bc725;
   --c-academics: #84b1ff;
@@ -329,6 +339,8 @@
   --text-3: #796f59;
   --accent: #ba5829;
   --on-accent: #fffbf9;
+  --ink-accent: #b25020;
+  --ink-mark: #8e846e;
   --c-deen: #00836b;
   --c-health: #5a7d28;
   --c-academics: #2e74b2;
@@ -350,6 +362,8 @@
   --text-3: #62708e;
   --accent: #c14f40;
   --on-accent: #fffbfa;
+  --ink-accent: #b84739;
+  --ink-mark: #7a859d;
   --c-deen: #00836b;
   --c-health: #5a7d28;
   --c-academics: #2e74b2;
@@ -371,6 +385,8 @@
   --text-3: #667085;
   --accent: #c24e44;
   --on-accent: #fffbfa;
+  --ink-accent: #b9463d;
+  --ink-mark: #7c8599;
   --c-deen: #00837a;
   --c-health: #46823d;
   --c-academics: #4870b7;
@@ -392,6 +408,8 @@
   --text-3: #76705b;
   --accent: #d33e21;
   --on-accent: #fffbfa;
+  --ink-accent: #ca3517;
+  --ink-mark: #8b8572;
   --c-deen: #00836b;
   --c-health: #557f00;
   --c-academics: #0073c3;
@@ -413,6 +431,8 @@
   --text-3: #63727f;
   --accent: #2e79ae;
   --on-accent: #f9fcff;
+  --ink-accent: #2572a6;
+  --ink-mark: #798793;
   --c-deen: #258179;
   --c-health: #557e4e;
   --c-academics: #4875a1;
@@ -434,6 +454,8 @@
   --text-3: #80696e;
   --accent: #bf4d70;
   --on-accent: #fffafb;
+  --ink-accent: #b64569;
+  --ink-mark: #947f83;
   --c-deen: #00836b;
   --c-health: #5a7d28;
   --c-academics: #476fb5;

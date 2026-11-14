@@ -47,8 +47,8 @@ function readPalettes() {
 }
 
 // ---- the rules ----
-const SCHEMA = ["bg", "surface", "surface-2", "border", "text", "text-2", "text-3", "accent", "on-accent", ...BRANCHES.map(b => "c-" + b)];
-const NEED = { text: TEXT_MIN, "text-2": TEXT_MIN, "text-3": TEXT_MIN, accent: UI_MIN, "on-acc": TEXT_MIN, branch: UI_MIN, chip: TEXT_MIN };
+const SCHEMA = ["bg", "surface", "surface-2", "border", "text", "text-2", "text-3", "accent", "on-accent", "ink-accent", "ink-mark", ...BRANCHES.map(b => "c-" + b)];
+const NEED = { text: TEXT_MIN, "text-2": TEXT_MIN, "text-3": TEXT_MIN, accent: UI_MIN, "on-acc": TEXT_MIN, "ink-acc": TEXT_MIN, "ink-mark": UI_MIN, branch: UI_MIN, chip: TEXT_MIN };
 
 function check({ vars }) {
   const v = name => vars["--" + name];
@@ -61,6 +61,8 @@ function check({ vars }) {
     "text-3": onCards(v("text-3")),
     accent: contrast(v("accent"), v("bg")),
     "on-acc": contrast(v("on-accent"), v("accent")),
+    "ink-acc": onCards(v("ink-accent")),
+    "ink-mark": onCards(v("ink-mark")),
     branch: Math.min(...BRANCHES.map(b => onCards(v("c-" + b)))),
     chip: Math.min(...BRANCHES.map(b => contrast(v("on-accent"), v("c-" + b)))), // level chips: on-accent text on a branch colour
   };
@@ -85,6 +87,6 @@ for (const row of rows) {
   console.log(row.id.padEnd(18) + cells + (row.failed.length ? "  FAIL" : "  pass"));
 }
 console.log(`\n${rows.length - failures}/${rows.length} pass. Needs: text, text-2, text-3 >= ${TEXT_MIN} on bg and surface;`
-  + ` accent >= ${UI_MIN} on bg; on-accent >= ${TEXT_MIN} on accent; each branch >= ${UI_MIN} on bg and surface;`
+  + ` accent >= ${UI_MIN} on bg; on-accent >= ${TEXT_MIN} on accent; ink-accent >= ${TEXT_MIN} and ink-mark >= ${UI_MIN} on bg and surface; each branch >= ${UI_MIN} on bg and surface;`
   + ` chip (on-accent text on each branch) >= ${TEXT_MIN}.`);
 process.exit(failures ? 1 : 0);
