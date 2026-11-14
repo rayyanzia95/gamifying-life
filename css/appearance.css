@@ -510,14 +510,21 @@
    settings.js folds light/dark into the attributes: data-black="oled" is only set in dark mode and
    data-accent is "custom-dark" or "custom-light". --accent-hue is a plain number set on <html>. */
 
-/* True black: the page and cards go #000 and a hairline of the accent lifts each card instead of grey. */
+/* True black: the page goes #000, cards drop to near-black in the palette's own hue (taken from --text-2,
+   because a property can't read its own old value) and the border steps up ~0.04 L so cards still read. */
 :root[data-black="oled"] {
   --bg: #000;
-  --surface: #000;
+  --surface: #0b0b0b;
+  --surface-2: #161616;
+  --border: #3a3a3a;
 }
 
-:root[data-black="oled"] .card {
-  border-color: color-mix(in srgb, var(--accent) 30%, var(--border));
+@supports (color: oklch(from red l c h)) {
+  :root[data-black="oled"] {
+    --surface: oklch(from var(--text-2) 0.10 min(c, 0.02) h);
+    --surface-2: oklch(from var(--text-2) 0.14 min(c, 0.02) h);
+    --border: oklch(from var(--text-2) 0.36 min(c, 0.03) h);
+  }
 }
 
 /* Custom accent: one hue, lightness fixed per mode so it stays readable. Page tint (data-tint) is more
@@ -555,15 +562,15 @@
   :root:not([data-theme="light"]) .hue-dot { background: oklch(0.82 0.14 calc(var(--accent-hue) * 1deg)); }
 }
 
-/* Glow: 0 none, 1 soft, 2 medium, 3 neon. Cards get a halo in the accent, bar fills a small one in their
-   own colour. Everything scales from the one --glow number. */
-:root[data-glow="1"] { --glow: 1; }
-:root[data-glow="2"] { --glow: 2; }
-:root[data-glow="3"] { --glow: 3; }
+/* Glow: 0 none, 1 soft, 2 medium, 3 neon. Cards get a halo of --accent at a fixed opacity (8/16/28%),
+   bar fills a small one in their own colour. --glow scales the blur, --glow-mix the strength. */
+:root[data-glow="1"] { --glow: 1; --glow-mix: 8%; }
+:root[data-glow="2"] { --glow: 2; --glow-mix: 16%; }
+:root[data-glow="3"] { --glow: 3; --glow-mix: 28%; }
 
 :root:is([data-glow="1"], [data-glow="2"], [data-glow="3"]) .card {
   box-shadow: 0 0 calc(var(--glow) * 14px) calc(var(--glow) * -2px)
-    color-mix(in srgb, var(--accent) calc(var(--glow) * 22%), transparent);
+    color-mix(in srgb, var(--accent) var(--glow-mix), transparent);
 }
 
 :root:is([data-glow="1"], [data-glow="2"], [data-glow="3"]) :is(.bar-fill, .bonus-fill, .bar-part-fill) {

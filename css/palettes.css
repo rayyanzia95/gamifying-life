@@ -533,7 +533,9 @@ h2,
   background-image: repeating-linear-gradient(0deg, color-mix(in srgb, var(--text) 5%, transparent) 0 1px, transparent 1px 3px);
 }
 
-/* Page tint: a branch page (data-branch, set by nav.js) takes its branch colour as the accent. */
+/* Page tint: a branch page (data-branch, set by nav.js) takes its branch colour as the accent, and the page
+   behind the cards gets 5% of it over --bg (painted on body: --bg can't be mixed into itself). */
+:root[data-tint="on"][data-branch] body { background-color: color-mix(in srgb, var(--accent) 5%, var(--bg)); }
 :root[data-tint="on"][data-branch] { --accent-soft: color-mix(in srgb, var(--accent) 40%, var(--bg)); }
 :root[data-tint="on"][data-branch="deen"] { --accent: var(--deen); }
 :root[data-tint="on"][data-branch="chores"] { --accent: var(--chores); }
