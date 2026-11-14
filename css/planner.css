@@ -143,7 +143,9 @@
 .pl-sp { display: block; }
 .pl-tt { display: flex; flex-wrap: wrap; align-items: center; gap: 2px 6px; }
 .pl-dd { font-size: 0.8125rem; color: var(--muted); margin-top: 2px; }
-.pl-row .tick { margin: 0; }
+/* Fixed 22px box, top-aligned: the grid row would otherwise stretch the tick into a tall oval.
+   Specific enough to beat Settings → Ticks sizing (pill: min-height 32px, padding). */
+.pl-row label.tick { margin: 0; align-self: start; width: 22px; height: 22px; min-width: 0; min-height: 0; padding: 0; box-sizing: border-box; justify-content: center; border-radius: calc(6px * var(--round, 1)); }
 
 .pl-tag, .pl-kind {
   font-size: 0.625rem;
