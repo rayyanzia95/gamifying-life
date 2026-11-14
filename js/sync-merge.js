@@ -117,3 +117,14 @@ function withSettingSeeds(events, local, date) {
     .map(([key, value]) => ({ date, activity: "setting", key, value, at: 0 }));
   return seeds.length > 0 ? [...events, ...seeds] : events;
 }
+
+// ---- Whose data is on this device? ----
+// `owner` is { id, email } of the account this device's data belongs to (null if never recorded).
+// "adopt": first sign-in ever, the local data becomes this account's. "proceed": same account.
+// "reset": different account but nothing local worth keeping, so just drop the old bookkeeping.
+// "ask": different account AND local data exists: never sync until the user chooses.
+function decideOwner(owner, userId, hasLocalData) {
+  if (!owner) return "adopt";
+  if (owner.id === userId) return "proceed";
+  return hasLocalData ? "ask" : "reset";
+}

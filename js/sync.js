@@ -14,6 +14,7 @@ const SYNCED_KEY = "gamifying-life-synced";
 const SYNC_DELAY_MS = 1500; // wait for a burst of ticks to finish, then send them together
 const PUSH_CHUNK = 500;     // rows per request, so a first big upload isn't one huge request
 const PULLED_AT_KEY = "gamifying-life-pulled-at"; // server time of the newest row fetched
+const OWNER_KEY = "gamifying-life-sync-owner"; // { id, email } of the account this device's data belongs to
 const PULL_PAGE = 1000;     // Supabase returns at most 1000 rows per request
 const PULL_OVERLAP_MS = 60 * 1000;
 
@@ -36,6 +37,55 @@ async function currentEmail() {
   if (!syncClient) return null;
   const { data } = await syncClient.auth.getSession();
   return data.session?.user.email ?? null;
+}
+
+// Who is signed in: { id, email }. The id (not the email) is what the cloud rows belong to.
+async function currentUser() {
+  if (!syncClient) return null;
+  const { data } = await syncClient.auth.getSession();
+  const user = data.session?.user;
+  return user ? { id: user.id, email: user.email } : null;
+}
+
+// ---- Which account owns the data on this device ----
+
+function loadOwner() {
+  try {
+    return JSON.parse(localStorage.getItem(OWNER_KEY));
+  } catch {
+    return null;
+  }
+}
+
+function saveOwner(user) {
+  localStorage.setItem(OWNER_KEY, JSON.stringify({ id: user.id, email: user.email }));
+}
+
+// Events, or a setting/theme chosen here, that would be mixed into another account.
+function hasLocalData() {
+  return loadEvents().length > 0 || Object.keys(localSettingValues()).length > 0;
+}
+
+// Forget everything that belonged to the old account. Back to a fresh device.
+function clearLocalData() {
+  [STORAGE_KEY, SYNCED_KEY, PULLED_AT_KEY, SETTINGS_KEY, THEME_KEY].forEach(key => localStorage.removeItem(key));
+}
+
+// Set when a different account signed in over local data: sync stays paused until the user picks.
+// { email: new account, oldEmail, unsent: changes the old account never received }
+let pendingSwitch = null;
+
+// True when it's fine to sync now. May record the owner or clear stale bookkeeping first.
+function ownerAllowsSync(user) {
+  const decision = decideOwner(loadOwner(), user.id, hasLocalData());
+  if (decision === "ask") {
+    pendingSwitch = { email: user.email, oldEmail: loadOwner()?.email ?? null, unsent: unsentRows().length };
+    return false;
+  }
+  pendingSwitch = null;
+  if (decision === "reset") clearLocalData();
+  if (decision !== "proceed") saveOwner(user);
+  return true;
 }
 
 // Offline with no library loaded we can't ask it, but its saved session tells us we signed in before.
@@ -178,7 +228,13 @@ let lastSentAt = null;
 
 // Fetch first, then send: fetching can merge duplicates, and those merges need sending too.
 async function syncOnce() {
-  if (!syncClient || !navigator.onLine || !(await currentEmail())) return;
+  if (!syncClient || !navigator.onLine) return;
+  const user = await currentUser();
+  if (!user) {
+    pendingSwitch = null;
+    return;
+  }
+  if (!ownerAllowsSync(user)) return;
   const changed = await pullEvents();
   await sendUnsent();
   if (changed) await redrawPage();
@@ -209,7 +265,7 @@ function syncEvents() {
     .finally(() => {
       syncing = null;
       drawSync();
-      if (!lastSyncError && unsentRows().length > 0) scheduleSync();
+      if (!lastSyncError && !pendingSwitch && unsentRows().length > 0) scheduleSync();
     });
   return syncing;
 }
@@ -296,6 +352,25 @@ async function signOut() {
   await syncClient.auth.signOut({ scope: "local" }); // this device only
 }
 
+// Replace: wipe the old account's data from this device and pull the new account's. Cancel: sign the new one out.
+async function replaceLocalData() {
+  clearLocalData();
+  pendingSwitch = null;
+  await syncEvents();
+  if (typeof render === "function") await redrawPage(); // an empty account pulls nothing, so redraw anyway
+}
+
+function switchParts({ email, oldEmail, unsent }) {
+  const from = oldEmail ? ` (${oldEmail})` : "";
+  const lost = unsent > 0 ? ` ${unsent} ${unsent === 1 ? "change" : "changes"} on this device ${unsent === 1 ? "was" : "were"} never sent to that account and will be lost.` : "";
+  return [
+    syncText(`This device has data from another account${from}. Replace it with ${email}'s data?${lost}`),
+    syncText("Nothing is synced until you choose."),
+    syncButton(`Replace with ${email}'s data`, replaceLocalData),
+    syncButton("Cancel and sign out", signOut),
+  ];
+}
+
 function signedOutParts() {
   if (pendingEmail) {
     return [
@@ -331,6 +406,7 @@ async function drawSyncCard() {
   const email = await currentEmail();
   if (email) {
     delete body.dataset.step; // so signing out draws the email box again
+    if (pendingSwitch) return body.replaceChildren(...switchParts(pendingSwitch));
     return body.replaceChildren(...signedInParts(email)); // no text box, safe to redraw
   }
   // Signed out: rebuild only when the step changes (email ↔ code). Every sync cycle calls this,

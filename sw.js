@@ -11,7 +11,7 @@
 //
 // To retire old files from the cache after deleting/renaming something, bump CACHE_VERSION.
 
-const CACHE_VERSION = "v2";
+const CACHE_VERSION = "v3";
 const CACHE = `gamifying-life-${CACHE_VERSION}`;
 const NETWORK_TIMEOUT_MS = 4000;
 

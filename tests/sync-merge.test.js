@@ -2,8 +2,8 @@
 // The app has no build step or modules, so this loads the file the same way a <script> tag would.
 const fs = require("fs"), vm = require("vm"), assert = require("assert");
 const ctx = {}; vm.createContext(ctx);
-vm.runInContext(fs.readFileSync(require("path").join(__dirname, "../js/sync-merge.js"), "utf8") + "\nthis.api={eventData,canonical,applyRows,mergeDuplicates,settingValues,withSettingSeeds};", ctx);
-const { eventData, canonical, applyRows, mergeDuplicates, settingValues, withSettingSeeds } = ctx.api;
+vm.runInContext(fs.readFileSync(require("path").join(__dirname, "../js/sync-merge.js"), "utf8") + "\nthis.api={eventData,canonical,applyRows,mergeDuplicates,settingValues,withSettingSeeds,decideOwner};", ctx);
+const { eventData, canonical, applyRows, mergeDuplicates, settingValues, withSettingSeeds, decideOwner } = ctx.api;
 const row = (id, data, deleted = false) => ({ id, data, deleted, updated_at: "2026-11-11T20:00:00Z" });
 const ok = (name, fn) => { fn(); console.log("ok -", name); };
 
@@ -115,4 +115,15 @@ ok("settings seeded from this device only when no event exists", () => {
   assert.deepEqual(settingValues(out), { theme: "light", startPage: "deen.html" });
   assert.equal(out.find(e => e.key === "startPage").at, 0);
   assert.equal(withSettingSeeds(evs, {}, "d"), evs);
+});
+
+ok("owner: first sign-in adopts, same account proceeds", () => {
+  assert.equal(decideOwner(null, "u1", true), "adopt");
+  assert.equal(decideOwner(null, "u1", false), "adopt");
+  assert.equal(decideOwner({ id: "u1" }, "u1", true), "proceed");
+});
+
+ok("owner: a different account asks when local data exists, else resets", () => {
+  assert.equal(decideOwner({ id: "u1" }, "u2", true), "ask");
+  assert.equal(decideOwner({ id: "u1" }, "u2", false), "reset");
 });
