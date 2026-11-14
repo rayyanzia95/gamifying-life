@@ -11,8 +11,6 @@
   --text-3: #727066;
   --accent: #318349;
   --on-accent: #f8fdf9;
-  --ink-accent: #287b42;
-  --ink-mark: #87857c;
   --c-deen: #00836b;
   --c-health: #5a7d28;
   --c-academics: #2e74b2;
@@ -55,8 +53,6 @@
     --text-3: #83827b;
     --accent: #79ca8b;
     --on-accent: #091b0d;
-    --ink-accent: #79ca8b;
-    --ink-mark: #6d6c66;
     --c-deen: #44c3a5;
     --c-health: #93ba65;
     --c-academics: #6bb0f3;
@@ -96,8 +92,6 @@
   --text-3: #83827b;
   --accent: #79ca8b;
   --on-accent: #091b0d;
-  --ink-accent: #79ca8b;
-  --ink-mark: #6d6c66;
   --c-deen: #44c3a5;
   --c-health: #93ba65;
   --c-academics: #6bb0f3;
@@ -413,7 +407,7 @@ h1 {
 
 .dial-arc {
   fill: none;
-  stroke: var(--ink-mark);
+  stroke: var(--dial-open);
   stroke-width: 14;
 }
 
@@ -422,7 +416,7 @@ h1 {
 }
 
 .dial-arc.bonus {
-  stroke: var(--ink-mark);
+  stroke: var(--bonus-soft);
 }
 
 .dial-arc.bonus.prayed {
@@ -1223,20 +1217,20 @@ body.wide {
 .star {
   font-size: 1.25rem;
   line-height: 1;
-  color: var(--ink-mark);
+  color: var(--line);
 }
 
 .star.full {
-  color: var(--ink-accent);
+  color: var(--gold);
 }
 
 .star.now {
   color: transparent;
-  -webkit-text-stroke: 1px var(--ink-accent);
+  -webkit-text-stroke: 1px var(--gold);
 }
 
 #streak {
-  color: var(--ink-accent);
+  color: var(--gold);
   font-weight: 500;
 }
 

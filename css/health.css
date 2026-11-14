@@ -28,12 +28,12 @@
 }
 
 .week-bedby {
-  stroke: var(--ink-accent);
+  stroke: var(--gold);
   stroke-dasharray: 2 3;
 }
 
 .sleep-week .week-label.fajr {
-  fill: var(--ink-accent);
+  fill: var(--gold);
 }
 
 .sleep-week .week-hours.met {
@@ -55,7 +55,7 @@
 
 .week-missing {
   fill: none;
-  stroke: var(--ink-mark);
+  stroke: var(--control-border);
   stroke-dasharray: 3 3;
 }
 

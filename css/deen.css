@@ -14,7 +14,7 @@
 .dua-bead,
 .dua-mark {
   fill: none;
-  stroke: var(--ink-mark);
+  stroke: var(--disabled-text);
   stroke-width: 1.5;
   stroke-linecap: round;
 }
