@@ -52,25 +52,25 @@
   --c-chores: #ff8a1f;
 }
 
-/* Ice on graphite */
+/* Ice on graphite · Calm · cool · hue 255, accent 245 · branches L 0.740 */
 :is(:root, *)[data-palette="ice"] {
   color-scheme: dark;
-  --bg: #14161a;
-  --surface: #1b1e23;
-  --surface-2: #22252a;
-  --border: #313840;
-  --text: #e8edf2;
-  --text-2: #8f99a5;
-  --text-3: #737c88;
-  --accent: #cfe3ff;
-  --on-accent: #14161a;
-  --c-deen: #e4ebf3;
-  --c-health: #9fb8d6;
-  --c-academics: #f4f4f0;
-  --c-money: #7fa6d6;
-  --c-people: #d9e4f4;
-  --c-personal: #c6d2e6;
-  --c-chores: #b8c9de;
+  --bg: #0f1318;
+  --surface: #161a1f;
+  --surface-2: #1d2126;
+  --border: #313943;
+  --text: #e3e8f0;
+  --text-2: #9ea9b7;
+  --text-3: #778392;
+  --accent: #89bae4;
+  --on-accent: #0d1720;
+  --c-deen: #67bcb3;
+  --c-health: #8db986;
+  --c-academics: #86aee0;
+  --c-money: #c1a86b;
+  --c-people: #d894a9;
+  --c-personal: #ada1dc;
+  --c-chores: #a1acbb;
 }
 
 /* Cyan / teal */

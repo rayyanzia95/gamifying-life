@@ -254,25 +254,25 @@
   --c-chores: #ff9f0a;
 }
 
-/* Chalkboard (dark) */
+/* Chalkboard · Calm · muted · hue 190, accent 92 · branches L 0.740 */
 :is(:root, *)[data-palette="noted"] {
   color-scheme: dark;
-  --bg: #233231;
-  --surface: #2a3b3a;
-  --surface-2: #324342;
-  --border: #4d615f;
-  --text: #f1f1e6;
-  --text-2: #adb9b2;
-  --text-3: #909c95;
-  --accent: #ffd86b;
-  --on-accent: #233231;
-  --c-deen: #9be28a;
-  --c-health: #ff9db8;
-  --c-academics: #adadff;
-  --c-money: #7fe8d6;
-  --c-people: #8fc7ff;
-  --c-personal: #dcabff;
-  --c-chores: #ffcf6b;
+  --bg: #071615;
+  --surface: #0e1c1b;
+  --surface-2: #152422;
+  --border: #253d3b;
+  --text: #deebea;
+  --text-2: #8fafac;
+  --text-3: #698785;
+  --accent: #cbb267;
+  --on-accent: #1b1605;
+  --c-deen: #67bcb3;
+  --c-health: #8db986;
+  --c-academics: #80b0df;
+  --c-money: #c1a86b;
+  --c-people: #d894a9;
+  --c-personal: #ada1dc;
+  --c-chores: #9ab0ae;
 }
 
 /* Console (dark) */

@@ -23,25 +23,25 @@
   --c-chores: #e5b26c;
 }
 
-/* Scriptorium */
+/* Scriptorium · Calm · warm · hue 82, accent 86 · branches L 0.740 */
 :is(:root, *)[data-palette="r2-script"] {
   color-scheme: dark;
-  --bg: #1a1712;
-  --surface: #241f18;
-  --surface-2: #2b261f;
-  --border: #3a3226;
-  --text: #f1e6cf;
-  --text-2: #b3a387;
-  --text-3: #938469;
-  --accent: #d9b45a;
-  --on-accent: #1a1712;
-  --c-deen: #81cfa8;
-  --c-health: #cf819b;
-  --c-academics: #8881cf;
-  --c-money: #81cfc2;
-  --c-people: #81a2cf;
-  --c-personal: #bc81cf;
-  --c-chores: #cfaf81;
+  --bg: #16120c;
+  --surface: #1d1912;
+  --surface-2: #242019;
+  --border: #3e372a;
+  --text: #ede7de;
+  --text-2: #b1a694;
+  --text-3: #8b806d;
+  --accent: #d1b067;
+  --on-accent: #1c1505;
+  --c-deen: #6ebda7;
+  --c-health: #9ab67c;
+  --c-academics: #80b0df;
+  --c-money: #c6a66b;
+  --c-people: #db959d;
+  --c-personal: #b89dd6;
+  --c-chores: #b3aa99;
 }
 
 /* Forest & brass */
@@ -149,46 +149,46 @@
   --c-chores: #d8b079;
 }
 
-/* Observatory */
+/* Observatory · Calm · cool · hue 262, accent 84 · branches L 0.740 */
 :is(:root, *)[data-palette="r2-obs"] {
   color-scheme: dark;
-  --bg: #0c1424;
-  --surface: #13203a;
-  --surface-2: #1a2742;
-  --border: #24344f;
-  --text: #e8edf7;
-  --text-2: #9aa7c0;
-  --text-3: #7a869e;
-  --accent: #e0b45c;
-  --on-accent: #0c1424;
-  --c-deen: #76dba8;
-  --c-health: #db7698;
-  --c-academics: #7e76db;
-  --c-money: #76dbca;
-  --c-people: #76a0db;
-  --c-personal: #c176db;
-  --c-chores: #dbb176;
+  --bg: #0c131f;
+  --surface: #121926;
+  --surface-2: #19212e;
+  --border: #2f3848;
+  --text: #e3e8f2;
+  --text-2: #9ca8be;
+  --text-3: #768297;
+  --accent: #d3af67;
+  --on-accent: #1d1506;
+  --c-deen: #67bcb3;
+  --c-health: #8db986;
+  --c-academics: #8dace1;
+  --c-money: #caa46d;
+  --c-people: #d894a9;
+  --c-personal: #ada1dc;
+  --c-chores: #a2abbb;
 }
 
-/* Moss & stone */
+/* Moss & stone · Calm · muted · hue 150, accent 136 · branches L 0.740 */
 :is(:root, *)[data-palette="r2-moss"] {
   color-scheme: dark;
-  --bg: #131614;
-  --surface: #1b1f1c;
-  --surface-2: #222623;
-  --border: #2c322d;
-  --text: #e7ebe6;
-  --text-2: #9ca59d;
-  --text-3: #7d867e;
-  --accent: #9cc58a;
-  --on-accent: #131614;
-  --c-deen: #87c9a8;
-  --c-health: #c9879d;
-  --c-academics: #8d87c9;
-  --c-money: #87c9be;
-  --c-people: #87a3c9;
-  --c-personal: #b987c9;
-  --c-chores: #c9ae87;
+  --bg: #101410;
+  --surface: #161b17;
+  --surface-2: #1d221e;
+  --border: #323b33;
+  --text: #e3eae4;
+  --text-2: #9faba1;
+  --text-3: #79867b;
+  --accent: #9cc18b;
+  --on-accent: #11190d;
+  --c-deen: #6ebda7;
+  --c-health: #8db986;
+  --c-academics: #80b0df;
+  --c-money: #c1a86b;
+  --c-people: #db959d;
+  --c-personal: #ada1dc;
+  --c-chores: #a0b0a3;
 }
 
 /* Ronin */
