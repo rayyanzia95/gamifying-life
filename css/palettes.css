@@ -136,46 +136,46 @@
   --c-chores: #b8730f;
 }
 
-/* Neon arcade */
+/* Neon arcade · Loud · playful · hue 294, accent 348 · anchor · branches L 0.760 */
 :is(:root, *)[data-palette="neon"] {
   color-scheme: dark;
-  --bg: #0b0716;
-  --surface: #140d26;
-  --surface-2: #1b142e;
-  --border: #33265e;
-  --text: #f1ecff;
-  --text-2: #a79bd0;
-  --text-3: #8478ab;
-  --accent: #ff2bd6;
-  --on-accent: #0b0716;
-  --c-deen: #39ff88;
-  --c-health: #ff3d9a;
-  --c-academics: #8a8bff;
-  --c-money: #19f0d0;
-  --c-people: #3db0ff;
-  --c-personal: #c45bff;
-  --c-chores: #ffb020;
+  --bg: #151024;
+  --surface: #1d1633;
+  --surface-2: #271d44;
+  --border: #413066;
+  --text: #f1edf8;
+  --text-2: #aea4c6;
+  --text-3: #877ea2;
+  --accent: #f068b4;
+  --on-accent: #26091a;
+  --c-deen: #3fd8cf;
+  --c-health: #8fdc5f;
+  --c-academics: #5fb0ff;
+  --c-money: #ffc44d;
+  --c-people: #ff7fa8;
+  --c-personal: #b48cff;
+  --c-chores: #93a3c0;
 }
 
-/* Sci-fi HUD */
+/* Sci-fi HUD · Loud · cool · hue 228, accent 215 · branches L 0.760 */
 :is(:root, *)[data-palette="hud"] {
   color-scheme: dark;
-  --bg: #050b10;
-  --surface: #08141c;
-  --surface-2: #0f1b23;
-  --border: #12414f;
-  --text: #d6f4ff;
-  --text-2: #76a9bd;
-  --text-3: #54879a;
-  --accent: #29d3ff;
-  --on-accent: #050b10;
-  --c-deen: #3dffa0;
-  --c-health: #ff5c8a;
-  --c-academics: #8794ff;
-  --c-money: #2de2c8;
-  --c-people: #4dc3ff;
-  --c-personal: #c885ff;
-  --c-chores: #ffc83d;
+  --bg: #05151c;
+  --surface: #0c1c23;
+  --surface-2: #13232a;
+  --border: #273b44;
+  --text: #dfeaef;
+  --text-2: #92adb9;
+  --text-3: #6c8692;
+  --accent: #00c9ea;
+  --on-accent: #001a20;
+  --c-deen: #00ccbe;
+  --c-health: #63cd52;
+  --c-academics: #6cb7ff;
+  --c-money: #daaa00;
+  --c-people: #ff83af;
+  --c-personal: #b69fff;
+  --c-chores: #97b7c5;
 }
 
 /* Parchment (light) */
@@ -220,25 +220,25 @@
   --c-chores: #b8a897;
 }
 
-/* Vaporwave */
+/* Vaporwave · Loud · playful · hue 302, accent 345 · branches L 0.760 */
 :is(:root, *)[data-palette="vapor"] {
   color-scheme: dark;
-  --bg: #1a0b33;
-  --surface: #241046;
-  --surface-2: #2b184f;
-  --border: #58308f;
-  --text: #fdeaff;
-  --text-2: #c3a6e8;
-  --text-3: #9f83c2;
-  --accent: #ff71ce;
-  --on-accent: #1a0b33;
-  --c-deen: #05ffa1;
-  --c-health: #ff71ce;
-  --c-academics: #9a98ff;
-  --c-money: #01cdfe;
-  --c-people: #62adff;
-  --c-personal: #b967ff;
-  --c-chores: #ffd166;
+  --bg: #150f1e;
+  --surface: #1c1625;
+  --surface-2: #231d2c;
+  --border: #3b3445;
+  --text: #e9e6f0;
+  --text-2: #aba3bb;
+  --text-3: #877f95;
+  --accent: #ff82cd;
+  --on-accent: #230e1a;
+  --c-deen: #00ccbe;
+  --c-health: #63cd52;
+  --c-academics: #84b1ff;
+  --c-money: #eaa000;
+  --c-people: #ff83af;
+  --c-personal: #c399ff;
+  --c-chores: #b5acc7;
 }
 
 /* Glass (light) */

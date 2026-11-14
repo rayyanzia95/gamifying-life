@@ -296,25 +296,25 @@
   --c-chores: #a8a9be;
 }
 
-/* Matrix (dark) */
+/* Matrix · Loud · playful · hue 150, accent 146 · branches L 0.760 */
 :is(:root, *)[data-palette="matrix"] {
   color-scheme: dark;
-  --bg: #020a04;
-  --surface: #06140a;
-  --surface-2: #0c1b10;
-  --border: #123a1d;
-  --text: #c8ffd4;
-  --text-2: #5f9a6c;
-  --text-3: #417c4f;
-  --accent: #3dff6e;
-  --on-accent: #020a04;
-  --c-deen: #3dff6e;
-  --c-health: #3dffc2;
-  --c-academics: #7dd68f;
-  --c-money: #00e5a0;
-  --c-people: #5cffd8;
-  --c-personal: #a6ff9e;
-  --c-chores: #b6ff3d;
+  --bg: #0a160d;
+  --surface: #111d13;
+  --surface-2: #18241a;
+  --border: #2d3c30;
+  --text: #e2ebe3;
+  --text-2: #99ae9c;
+  --text-3: #738877;
+  --accent: #48d45e;
+  --on-accent: #091b0a;
+  --c-deen: #00ceaa;
+  --c-health: #63cd52;
+  --c-academics: #6cb7ff;
+  --c-money: #daaa00;
+  --c-people: #ff869a;
+  --c-personal: #b69fff;
+  --c-chores: #a0b9a4;
 }
 
 /* Void violet · Standard · cool · hue 297, accent 295 · branches L 0.740 */
@@ -338,25 +338,25 @@
   --c-chores: #aca7bc;
 }
 
-/* Solar flare (dark) */
+/* Solar flare · Loud · warm · hue 38, accent 42 · branches L 0.760 */
 :is(:root, *)[data-palette="solar"] {
   color-scheme: dark;
-  --bg: #120806;
-  --surface: #1d0e09;
-  --surface-2: #24150f;
-  --border: #4a2418;
-  --text: #ffe6d6;
-  --text-2: #b58a78;
-  --text-3: #946b5a;
-  --accent: #ff6b35;
-  --on-accent: #120806;
-  --c-deen: #7bd88f;
-  --c-health: #ff4f6d;
-  --c-academics: #9b8cff;
-  --c-money: #3fd6c4;
-  --c-people: #5fb0ff;
-  --c-personal: #d68bff;
-  --c-chores: #ffb13b;
+  --bg: #1d0f0a;
+  --surface: #241511;
+  --surface-2: #2b1c17;
+  --border: #46332d;
+  --text: #f1e5e1;
+  --text-2: #bca198;
+  --text-3: #957b73;
+  --accent: #ff9369;
+  --on-accent: #250f07;
+  --c-deen: #00ceaa;
+  --c-health: #8bc725;
+  --c-academics: #84b1ff;
+  --c-money: #eaa000;
+  --c-people: #ff869a;
+  --c-personal: #ca95ff;
+  --c-chores: #c9a99f;
 }
 
 /* Abyss · Standard · cool · hue 248, accent 222 · branches L 0.740 */
