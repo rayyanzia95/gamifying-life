@@ -34,3 +34,16 @@ function calculatedPrayerTimes(date) {
 function prayerTimesFor(date) {
   return PRAYER_TIMES[date] ?? calculatedPrayerTimes(date);
 }
+
+// When a prayer's window opens today, in minutes after midnight; null for tahajjud (bonus, never gated).
+function prayerOpensAt(prayerId, date = todayString()) {
+  const hhmm = prayerTimesFor(date)[prayerId];
+  return hhmm ? toMinutes(hhmm) : null;
+}
+
+// Can this prayer be ticked now? Other days and tahajjud are always open; today's wait for their window.
+function prayerOpen(prayerId, date = todayString(), now = nowMinutes()) {
+  if (date !== todayString()) return true;
+  const opens = prayerOpensAt(prayerId, date);
+  return opens === null || now >= opens;
+}

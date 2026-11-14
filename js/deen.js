@@ -19,6 +19,8 @@ function toggleDone(prayerId, setId, date = prayerDate) {
   let events = loadEvents();
   const prayer = PRAYERS.find(p => p.id === prayerId);
   const isMain = setId === mainSet(prayer).id;
+  // Not before its window opens (a stale page); unticking is always fine.
+  if (!findEvent(events, prayerId, setId, date) && !prayerOpen(prayerId, date)) return render();
 
   if (findEvent(events, prayerId, setId, date)) {
     events = events.filter(e => {
@@ -114,7 +116,16 @@ function render() {
     const item = document.createElement("li");
     const heading = document.createElement("div");
     const name = prayer.name + (prayer.bonus ? " (bonus)" : "");
-    heading.append(makeCheckbox(name, Boolean(mainEvent), () => toggleDone(prayer.id, main.id)));
+    const tick = makeCheckbox(name, Boolean(mainEvent), () => toggleDone(prayer.id, main.id));
+    heading.append(tick);
+    if (!mainEvent && !prayerOpen(prayer.id, prayerDate)) {
+      tick.querySelector("input").disabled = true;
+      const opens = document.createElement("span");
+      opens.className = "muted opens-tag";
+      opens.dataset.opens = prayerOpensAt(prayer.id, prayerDate);
+      opens.textContent = " opens " + clock12(prayerOpensAt(prayer.id, prayerDate));
+      heading.append(opens);
+    }
     heading.append(lateTag(mainEvent));
     item.append(heading);
 
@@ -260,4 +271,7 @@ setInterval(() => {
   const events = loadEvents();
   drawTiles(events);
   drawDial(events);
+  const now = nowMinutes();
+  const opened = [...document.querySelectorAll("#prayers .opens-tag")].some(t => now >= Number(t.dataset.opens));
+  if (opened) render(); // a window just opened: un-grey its tick
 }, 60 * 1000);

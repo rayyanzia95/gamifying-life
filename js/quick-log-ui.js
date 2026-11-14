@@ -167,6 +167,7 @@ function qlTapItem(act, item) {
   const [kind, arg] = act.split(":");
   const verb = item.done ? "unticked" : "ticked";
   const say = (undo, text = `${item.label} ${verb}`) => qlDo(text, undo);
+  if (kind === "pray" && !item.done && !prayerOpen(arg)) return;
   if (kind === "pray") return say(qlTogglePrayer(arg));
   if (kind === "quran") return say(qlToggleQuran());
   if (kind === "adhkar") return say(qlToggleAdhkar(arg));

@@ -1485,3 +1485,25 @@ body[data-tab="backup"] [data-panel="backup"] { display: block; }
 .day-nav h3 { margin: 0; text-align: center; min-width: 0; }
 .day-nav h2, .day-nav h3 { overflow-wrap: anywhere; }
 .late-tag { margin-left: 6px; color: var(--muted); font-size: 0.75rem; font-style: italic; }
+
+/* Unavailable ticks (e.g. a prayer whose window hasn't opened): dimmed, no hover/press.
+   Selectors out-rank palettes.css pill and lively-motion rules, which load later. */
+.tick:has(input:disabled),
+[data-ticks] .tick:has(input:disabled) {
+  opacity: 0.45;
+  cursor: not-allowed;
+  pointer-events: auto;
+  transform: none;
+}
+[data-motion] .tick:has(input:disabled):active { transform: none; }
+.tick input:disabled { cursor: not-allowed; }
+
+/* Deen prayer row heading: pill, "opens" text and "logged late" tag share one centred line */
+#prayers li > div:first-child {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+#prayers li > div:first-child .opens-tag,
+#prayers li > div:first-child .late-tag { margin: 0; }
