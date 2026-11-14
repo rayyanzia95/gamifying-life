@@ -32,13 +32,38 @@ function countUp(el) {
   requestAnimationFrame(frame);
 }
 
+// Page-open classes start cards at opacity 0, so add them only after first paint and never on a hidden page.
+// Removed on the last card's animationend, the ANIM_OPEN_MS timeout, or the page being hidden, whichever is first.
+function pageOpenClass(name) {
+  if (document.hidden) return;
+  const cards = document.querySelectorAll(".card");
+  const last = cards[cards.length - 1];
+  const body = document.body;
+  let timer = 0;
+  const finish = () => {
+    clearTimeout(timer);
+    body.classList.remove(name);
+    body.removeEventListener("animationend", onEnd);
+    document.removeEventListener("visibilitychange", onVisibility);
+  };
+  const onEnd = event => { if (event.target === last) finish(); };
+  const onVisibility = () => { if (document.hidden) finish(); };
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    if (document.hidden) return;
+    body.classList.add(name);
+    body.addEventListener("animationend", onEnd);
+    document.addEventListener("visibilitychange", onVisibility);
+    timer = setTimeout(finish, ANIM_OPEN_MS);
+  }));
+}
+
 // Page open: cards rise in, the scan wipe, numbers counting up, the streak flame.
 function animPageOpen() {
   if (animOn("animCascade")) {
     document.querySelectorAll(".card").forEach((card, i) => card.style.setProperty("--cascade", Math.min(i, ANIM_CASCADE_MAX)));
-    pulseClass(document.body, "anim-cascade", ANIM_OPEN_MS); // fx.js
+    pageOpenClass("anim-cascade");
   }
-  if (animOn("animWipe")) pulseClass(document.body, "anim-wipe", ANIM_OPEN_MS);
+  if (animOn("animWipe")) pageOpenClass("anim-wipe");
   if (animOn("animCount")) {
     document.querySelectorAll(".badge-xp").forEach(countUp);
     pulseClass(document.body, "anim-count", ANIM_COUNT_MS);
