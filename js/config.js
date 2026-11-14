@@ -248,3 +248,6 @@ const PRAYERS = [
     { id: "witr", type: "wajib", rakah: 3 },
   ]},
 ];
+
+// How far back the Deen prayers, Health diet and Personal journal can log (days before today).
+const BACKFILL = { maxDaysBack: 1 };

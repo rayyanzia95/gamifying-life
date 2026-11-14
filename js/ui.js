@@ -107,3 +107,55 @@ function barPartsHtml(parts) {
     </div>`;
   }).join("");
 }
+
+// ---- Log yesterday: ‹ › day arrows shared by Deen prayers, Health diet, Personal journal ----
+
+// One step back or forward from date, kept between yesterday and today.
+function stepBackfillDate(date, step) {
+  const today = todayString();
+  const next = shiftDate(date, step);
+  return next > today || daysBetween(next, today) > BACKFILL.maxDaysBack ? date : next;
+}
+
+// "Fri, Nov 14" for today, "Yesterday · Nov 13" for the day before.
+function backfillLabel(date) {
+  if (date === todayString()) return dayLabel(date);
+  return "Yesterday · " + dayLabel(date, { month: "short", day: "numeric" });
+}
+
+// Extra event fields for an entry made on this date: backfilled when it isn't today.
+function backfillFields(date) {
+  return date < todayString() ? { backfilled: true } : {};
+}
+
+// Small muted tag for a backfilled entry, or "" when the event wasn't logged late.
+function lateTag(event) {
+  if (!event?.backfilled) return "";
+  const tag = document.createElement("span");
+  tag.className = "late-tag";
+  tag.textContent = "logged late";
+  return tag;
+}
+
+// The day-nav row (same markup as Money's Log card). title is the heading text,
+// onChange(newDate) runs when an arrow moves the day.
+function makeDayNav(title, date, onChange, tag = "h2") {
+  const today = todayString();
+  const prev = Object.assign(document.createElement("button"),
+    { type: "button", className: "arrow", textContent: "‹" });
+  const next = Object.assign(document.createElement("button"),
+    { type: "button", className: "arrow", textContent: "›" });
+  prev.setAttribute("aria-label", "Previous day");
+  next.setAttribute("aria-label", "Next day");
+  prev.disabled = daysBetween(date, today) >= BACKFILL.maxDaysBack;
+  next.disabled = date >= today;
+  prev.addEventListener("click", () => onChange(stepBackfillDate(date, -1)));
+  next.addEventListener("click", () => onChange(stepBackfillDate(date, 1)));
+  const heading = document.createElement(tag);
+  const when = Object.assign(document.createElement("span"), { className: "muted", textContent: backfillLabel(date) });
+  heading.append(title + " ", when);
+  const nav = document.createElement("div");
+  nav.className = "day-nav";
+  nav.append(prev, heading, next);
+  return nav;
+}

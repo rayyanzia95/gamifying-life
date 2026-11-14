@@ -251,7 +251,7 @@ Work in four rounds so the app is usable after each one.
 
 Settle these before the round they belong to:
 
-- [ ] B3: do backfilled prayers earn the on-time bonus?
+- [x] B3: do backfilled prayers earn the on-time bonus? Yes: "on time" stays a manual tick, since he sometimes forgets to log in the moment (2026-11-14).
 - [ ] B6: Jumu'ah XP and sunnah count.
 - [ ] H4: which 4 to 6 items make a core day?
 - [ ] T1: which two layouts stay supported?

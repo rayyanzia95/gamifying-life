@@ -1,24 +1,33 @@
 const goal = branchGoal("deen");
 
-function findEvent(events, prayerId, setId) {
+// The day the prayer list shows: today or yesterday. A reload goes back to today.
+let prayerDate = todayString();
+
+function showPrayerDay(date) {
+  prayerDate = date;
+  render();
+}
+
+// Tile and dial pass no date and always mean today; the list passes prayerDate.
+function findEvent(events, prayerId, setId, date = todayString()) {
   return events.find(e =>
-    e.date === todayString() && e.prayer === prayerId && e.set === setId
+    e.date === date && e.prayer === prayerId && e.set === setId
   );
 }
 
-function toggleDone(prayerId, setId) {
+function toggleDone(prayerId, setId, date = prayerDate) {
   let events = loadEvents();
   const prayer = PRAYERS.find(p => p.id === prayerId);
   const isMain = setId === mainSet(prayer).id;
 
-  if (findEvent(events, prayerId, setId)) {
+  if (findEvent(events, prayerId, setId, date)) {
     events = events.filter(e => {
-      const sameDay = e.date === todayString() && e.prayer === prayerId;
+      const sameDay = e.date === date && e.prayer === prayerId;
       if (!sameDay) return true;
       return !(isMain || e.set === setId);
     });
   } else {
-    events.push({ date: todayString(), prayer: prayerId, set: setId });
+    events.push({ date, prayer: prayerId, set: setId, ...backfillFields(date) });
   }
   saveEvents(clampAfterPrayerDua(events));
   render();
@@ -37,7 +46,7 @@ function saveTodayAmount(activity, amount) {
 // Replace today's event for this prayer set with change(event), leaving the rest alone.
 function updateEvent(prayerId, setId, change) {
   const events = loadEvents();
-  const target = findEvent(events, prayerId, setId);
+  const target = findEvent(events, prayerId, setId, prayerDate);
   if (!target) return;
   saveEvents(events.map(e => (e === target ? change(e) : e)));
   render();
@@ -65,12 +74,12 @@ function toggleDua(prayerId, setId) {
 
 function stepRakah(prayerId, set, delta) {
   let events = loadEvents();
-  const event = findEvent(events, prayerId, set.id);
+  const event = findEvent(events, prayerId, set.id, prayerDate);
   const next = (event ? (event.rakah ?? set.rakah) : 0) + delta;
   if (next < 0 || next > set.rakah) return;
 
   if (!event) {
-    events.push({ date: todayString(), prayer: prayerId, set: set.id, rakah: next });
+    events.push({ date: prayerDate, prayer: prayerId, set: set.id, rakah: next, ...backfillFields(prayerDate) });
   } else if (next === 0) {
     events = events.filter(e => e !== event);
   } else {
@@ -96,15 +105,17 @@ function render() {
   const events = loadEvents();
   const list = document.getElementById("prayers");
   list.innerHTML = "";
+  document.getElementById("prayer-day").replaceChildren(makeDayNav("Prayers", prayerDate, showPrayerDay));
 
   for (const prayer of PRAYERS) {
     const main = mainSet(prayer);
-    const mainEvent = findEvent(events, prayer.id, main.id);
+    const mainEvent = findEvent(events, prayer.id, main.id, prayerDate);
 
     const item = document.createElement("li");
     const heading = document.createElement("div");
     const name = prayer.name + (prayer.bonus ? " (bonus)" : "");
     heading.append(makeCheckbox(name, Boolean(mainEvent), () => toggleDone(prayer.id, main.id)));
+    heading.append(lateTag(mainEvent));
     item.append(heading);
 
     const addons = document.createElement("div");
@@ -125,7 +136,7 @@ function render() {
 
     for (const set of prayer.sets) {
       if (set !== main && !mainEvent) continue;
-      const event = findEvent(events, prayer.id, set.id);
+      const event = findEvent(events, prayer.id, set.id, prayerDate);
 
       if (set !== main) {
         const row = document.createElement("div");
@@ -209,7 +220,7 @@ function prayerTile(events) {
   const prayer = PRAYERS.find(p => p.id === current.id);
   const main = mainSet(prayer);
   const tick = makeCheckbox(prayer.name + " · now", Boolean(findEvent(events, prayer.id, main.id)),
-    () => toggleDone(prayer.id, main.id));
+    () => toggleDone(prayer.id, main.id, todayString()));
   return makeTile("prayers", "Prayers", summary, [tick]);
 }
 

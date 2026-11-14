@@ -172,14 +172,24 @@ function drawExercise(events) {
 // ---- Diet: one event per day, like sleep ----
 // { date, activity: "diet", breakfast: "healthy", lunch: "okay", water: 6, creatine: true }
 
+// The day the Diet card shows: today or yesterday. A reload goes back to today.
+let dietDate = todayString();
+
+function showDietDay(date) {
+  dietDate = date;
+  render();
+}
+
 function todayDiet(events) {
-  const today = todayString();
-  return events.find(e => isDiet(e) && e.date === today) ?? { date: today, activity: "diet" };
+  return events.find(e => isDiet(e) && e.date === dietDate)
+    ?? { date: dietDate, activity: "diet" };
 }
 
 function saveDiet(changes) {
   const events = loadEvents();
-  const updated = { ...todayDiet(events), ...changes };
+  const day = todayDiet(events);
+  const isNew = !events.includes(day);
+  const updated = { ...day, ...(isNew ? backfillFields(day.date) : {}), ...changes };
   const others = events.filter(e => !(isDiet(e) && e.date === updated.date));
   saveEvents([...others, updated]);
   render();
@@ -242,6 +252,7 @@ function drawDiet(events) {
   const heading = document.createElement("h2");
   heading.textContent = "Diet";
   title.append(heading, streak.days > 0 || streak.rest ? streakBadge(streak) : "");
+  const dayNav = makeDayNav("", dietDate, showDietDay, "h3");
 
   const creatine = makeCheckbox("Creatine", Boolean(day.creatine),
     event => saveDiet({ creatine: event.target.checked || undefined }));
@@ -250,9 +261,11 @@ function drawDiet(events) {
   const summary = document.createElement("p");
   summary.className = "muted";
   summary.textContent = dietSummary(day);
+  summary.append(lateTag(day));
 
   document.getElementById("diet").replaceChildren(
     title,
+    dayNav,
     ...DIET.meals.map(meal => mealRow(meal, day[meal.id])),
     waterStepper(day.water ?? 0),
     creatine,

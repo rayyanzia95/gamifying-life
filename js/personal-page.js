@@ -45,10 +45,17 @@ function currentBook(events) {
 
 // ---- Today: journal and reading ----
 
+// The day the journal tick shows: today or yesterday. A reload goes back to today.
+let journalDate = todayString();
+
+function showJournalDay(date) {
+  journalDate = date;
+  render();
+}
+
 function toggleJournal(checked) {
-  const today = todayString();
-  const events = loadEvents().filter(e => !(e.activity === "journal" && e.date === today));
-  saveEvents(checked ? [...events, { date: today, activity: "journal" }] : events);
+  const events = loadEvents().filter(e => !(e.activity === "journal" && e.date === journalDate));
+  saveEvents(checked ? [...events, { date: journalDate, activity: "journal", ...backfillFields(journalDate) }] : events);
   render();
 }
 
@@ -110,8 +117,11 @@ function readingRow(events, book, today) {
 function drawToday(events) {
   const today = todayString();
   const journalDays = new Set(events.filter(e => e.activity === "journal").map(e => e.date));
-  const journal = makeCheckbox("Journalled today", journalDays.has(today), e => toggleJournal(e.target.checked));
-  journal.append(" ", streakBadge(restStreak("journal", journalDays, events)));
+  const journalLabel = journalDate === today ? "Journalled today" : "Journalled";
+  const journal = makeCheckbox(journalLabel, journalDays.has(journalDate), e => toggleJournal(e.target.checked));
+  journal.append(" ", streakBadge(restStreak("journal", journalDays, events)),
+    lateTag(events.find(e => e.activity === "journal" && e.date === journalDate)));
+  const journalNav = makeDayNav("Journal", journalDate, showJournalDay, "h3");
 
   const byDay = pagesByDay(events);
   const readDays = new Set([...byDay].filter(([, pages]) => pages >= PERSONAL.reading.dayPages).map(([d]) => d));
@@ -127,7 +137,7 @@ function drawToday(events) {
     streakBadge(restStreak("reading", readDays, events)));
 
   document.getElementById("today").replaceChildren(
-    heading("Today"), journal, readingHead,
+    heading("Today"), journalNav, journal, readingHead,
     open.length ? list : mutedLine("No book on the go. Add one under Books."),
   );
 }
