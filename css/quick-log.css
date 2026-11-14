@@ -5,8 +5,7 @@
 
 .ql-hd { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 0 8px; margin-bottom: 10px; }
 .ql-hd h2 { white-space: nowrap; margin: 0; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
-.ql-hd small, .ql-cap { font-size: 0.8125rem; color: var(--muted); }
-.ql-cap { margin: 12px 0 8px !important; }
+.ql-hd small { font-size: 0.8125rem; color: var(--muted); }
 .ql-sub { font-size: 0.8125rem; color: var(--muted); margin-top: 2px; }
 
 :is(.ql-card, .ql-sheet, .ql-toast) button:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
@@ -42,7 +41,7 @@
 .ql-dots i.cur { border-color: var(--now); }
 
 /* chips */
-.ql-chips, .ql-cats { display: flex; flex-wrap: wrap; gap: 8px; }
+.ql-cats { display: flex; flex-wrap: wrap; gap: 8px; }
 .ql-chip {
   display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 14px;
   border: 1px solid var(--border); background: var(--surface); border-radius: 999px; font-size: 0.875rem;

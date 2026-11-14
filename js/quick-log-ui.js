@@ -32,11 +32,8 @@ function qlNowStripHtml(events, today, now, groups) {
     main = `<div class="ql-pr"><div class="ql-grow"><div class="ql-name">${next ? `Next: ${next.name}` : "Prayers done for today"}</div>
       <div class="ql-sub">${next ? `Opens ${clock12(next.start)} · in ${durationLabel(next.start - now)}` : "The next window opens at Fajr"}</div></div></div>`;
   }
-  const due = groups.flatMap(g => g.items).filter(i => i.goal && !i.done).slice(0, 3);
-  const chips = due.map(i => `<button type="button" class="ql-chip" style="--c:var(--${i.branch})" data-ql="${i.act}" data-key="due-${i.act}"><i class="ql-d"></i>${i.label} <span class="ql-m">${qlCount(i)}</span><span class="ql-p" aria-hidden="true">+</span></button>`).join("");
   return `<div class="ql-hd"><h2>Now · ${clock12(now)}</h2><small>${prayed} of ${windows.length} prayers</small></div>${main}
-    <div class="ql-dots" role="img" aria-label="${prayed} of ${windows.length} prayers done today">${dots}</div>
-    ${chips ? `<p class="ql-cap">Due today · tap to add one</p><div class="ql-chips">${chips}</div>` : ""}`;
+    <div class="ql-dots" role="img" aria-label="${prayed} of ${windows.length} prayers done today">${dots}</div>`;
 }
 
 // One chip: act, label, branch colour and a small meta ("1/3") when it counts something.
@@ -46,17 +43,10 @@ function qlChipHtml(act, label, branch, meta, full) {
 
 function qlChipsHtml(groups) {
   const find = act => groups.flatMap(g => g.items).find(i => i.act === act);
-  const dishes = find("chore:dishes");
-  const study = find("study");
-  const water = find("water");
   return `<div class="ql-hd"><h2>Quick log</h2><small>one tap, or a small sheet</small></div>
     <div class="ql-qbar">
       ${qlChipHtml("spend", "Spend", "money")}
-      ${qlChipHtml("study-sheet", "Study", "academics", study ? qlCount(study) : "", study?.done)}
       ${qlChipHtml("workout-add", "Workout", "health", "", find("workout")?.done)}
-      ${qlChipHtml("chore-add:dishes", "Dishes", "chores", dishes ? qlCount(dishes) : "", dishes?.done)}
-      ${qlChipHtml("water-add", "Water", "health", water ? qlCount(water) : "", water?.done)}
-      ${qlChipHtml("journal-add", "Journal", "personal", "", find("journal")?.done)}
     </div>`;
 }
 
@@ -159,7 +149,7 @@ function qlTapItem(act, item) {
   if (kind === "journal") return say(qlSetJournal(!item.done));
   if (kind === "workout") return say(item.done ? qlRemoveSession() : qlAddSession(), item.done ? "Workout removed" : "Workout logged");
   if (kind === "water") return say(item.done ? qlAddWater(-1) : qlAddWater(1), `Water · ${item.done ? "glass removed" : "glass added"}`);
-  if (kind === "study") return say(item.done ? qlRemoveStudy() : qlAddStudy(lastStudyCourse(loadEvents())), item.done ? "Study block removed" : "Study block added");
+  if (kind === "study") return item.done ? say(qlRemoveStudy(), "Study block removed") : qlOpenSheet("study");
   if (kind === "chore") {
     return say(item.done ? qlRemoveChore(arg) : qlAddChore(arg), item.done ? `${item.label} · one removed` : `${item.label} · done`);
   }
@@ -168,7 +158,6 @@ function qlTapItem(act, item) {
 
 function qlHandle(act) {
   if (act === "spend") return qlOpenSheet("spend");
-  if (act === "study-sheet") return qlOpenSheet("study");
   if (act === "close") return document.getElementById("ql-sheet").close();
   if (act === "nospend") { document.getElementById("ql-sheet").close(); return qlDo("No spend today", qlToggleNoSpend()); }
   if (act.startsWith("cat:")) {
@@ -184,14 +173,8 @@ function qlHandle(act) {
     document.getElementById("ql-sheet").close();
     return qlDo("Study block added", qlAddStudy(act.slice(7)));
   }
-  // The one-tap chips always add (extra dishes and glasses are bonus XP on their pages too); Journal toggles.
+  // The Workout chip always adds (extra sessions are bonus XP on the Health page too).
   if (act === "workout-add") return qlDo("Workout logged", qlAddSession());
-  if (act === "chore-add:dishes") return qlDo("Dishes · one more time", qlAddChore("dishes"));
-  if (act === "water-add") return qlDo("Water · glass added", qlAddWater(1));
-  if (act === "journal-add") {
-    const done = todayItems(loadEvents(), todayString(), qlNow()).flatMap(g => g.items).find(i => i.act === "journal").done;
-    return qlDo(done ? "Journal removed" : "Journalled", qlSetJournal(!done));
-  }
   const item = todayItems(loadEvents(), todayString(), qlNow()).flatMap(g => g.items).find(i => i.act === act);
   if (item) qlTapItem(act, item);
 }
