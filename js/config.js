@@ -141,7 +141,7 @@ const ACADEMICS = {
 
 // Money: XP for logging, never for spending less. The week runs Sunday to Saturday.
 // No amounts live here: the weekly budget and savings goal are typed in on the
-// Money page and saved with your events on the device only, because this repo is public.
+// Money page and saved as events, which sync privately (RLS), never in this public repo.
 const MONEY = {
   branch: "money",
   dayXp: 15,             // core: today is logged (a spend, or "No spend today")
@@ -160,8 +160,8 @@ const MONEY = {
 };
 
 // Personal: journal and reading count each day; time alone (no screens) and time
-// with friends count over the week (Sun–Sat). Books are typed in on the page, so
-// the reading list stays on the device. Sessions are quiet: bonus XP, nothing else.
+// with friends count over the week (Sun–Sat). Books are typed in on the page and
+// sync with your events, never in this repo. Sessions are quiet: bonus XP, nothing else.
 const PERSONAL = {
   branch: "personal",
   journalXp: 10,         // core: journalled today
@@ -178,7 +178,7 @@ const PERSONAL = {
 };
 
 // People / Family: a check-in each day plus calls home over the week (Sun–Sat).
-// Names and dates are typed in on the page, so they stay on the device.
+// Names and dates are typed in on the page and sync with your events, never in this repo.
 const PEOPLE = {
   branch: "people",
   checkInXp: 15,         // core: talked to anyone today (call, text or visit)

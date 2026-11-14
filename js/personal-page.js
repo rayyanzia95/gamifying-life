@@ -260,7 +260,7 @@ function drawBooks(events) {
   const finished = all.filter(b => isFinished(events, b)).length;
   document.getElementById("books").replaceChildren(
     heading("Books"),
-    all.length ? list : mutedLine("Your reading list lives on this device only."),
+    all.length ? list : mutedLine("No books yet. Add one below."),
     finished ? mutedLine(`${finished} finished · +${PERSONAL.reading.finishXp} XP each`) : "",
     bookForm(),
   );

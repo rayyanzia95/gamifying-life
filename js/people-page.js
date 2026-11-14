@@ -1,7 +1,7 @@
 // Renders people.html: the People level beside the Lahore clock (people-clock.js),
 // the bar (checked in today + calls home this week), Keep in touch (a row per person
 // with Call / Text / Visit) and Dates (birthdays and the anniversary).
-// Names and dates are typed in here and saved as events on this device only.
+// Names and dates are typed in here and saved as events, which sync like any other.
 // The event shapes are listed in scoring.js under "People".
 
 const MAX_NAME_LENGTH = 40;
