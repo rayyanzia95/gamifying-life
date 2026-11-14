@@ -2,25 +2,25 @@
    keeps its own palette. Colours from .claude/mockups/palettes-more.html; branch shades are its saturation and
    lightness rule (each clears 3:1 on the card), on the app’s own branch hues so Health stays pink etc. */
 
-/* Deep space */
+/* Deep space · Standard · cool · hue 268, accent 210 · branches L 0.740 */
 :is(:root, *)[data-palette="r2-space"] {
   color-scheme: dark;
-  --bg: #0a1020;
-  --surface: #111a2e;
-  --surface-2: #182136;
-  --border: #22304a;
-  --text: #e6eefc;
-  --text-2: #93a3bf;
-  --text-3: #73829d;
-  --accent: #4fd8f0;
-  --on-accent: #0a1020;
-  --c-deen: #6ce5a8;
-  --c-health: #e56c94;
-  --c-academics: #766ce5;
-  --c-money: #6ce5d1;
-  --c-people: #6c9ee5;
-  --c-personal: #c76ce5;
-  --c-chores: #e5b26c;
+  --bg: #0d1220;
+  --surface: #131927;
+  --surface-2: #1a202f;
+  --border: #313848;
+  --text: #e4e8f2;
+  --text-2: #9ea7be;
+  --text-3: #798197;
+  --accent: #3ac9de;
+  --on-accent: #001a1f;
+  --c-deen: #2fc3b6;
+  --c-health: #7fbe75;
+  --c-academics: #7fabf6;
+  --c-money: #d6a04b;
+  --c-people: #e88aa9;
+  --c-personal: #af9bef;
+  --c-chores: #a3abbe;
 }
 
 /* Scriptorium · Calm · warm · hue 82, accent 86 · branches L 0.740 */
@@ -44,109 +44,109 @@
   --c-chores: #b3aa99;
 }
 
-/* Forest & brass */
+/* Forest & brass · Standard · warm · hue 155, accent 84 · branches L 0.740 */
 :is(:root, *)[data-palette="r2-forest"] {
   color-scheme: dark;
-  --bg: #0f1712;
-  --surface: #16211a;
-  --surface-2: #1d2821;
-  --border: #26362b;
-  --text: #e5eee4;
-  --text-2: #9aae9d;
-  --text-3: #7a8d7d;
-  --accent: #c9a24e;
-  --on-accent: #0f1712;
-  --c-deen: #7dd4a8;
-  --c-health: #d47d9a;
-  --c-academics: #847dd4;
-  --c-money: #7dd4c5;
-  --c-people: #7da1d4;
-  --c-personal: #be7dd4;
-  --c-chores: #d4b07d;
+  --bg: #0b150f;
+  --surface: #121c15;
+  --surface-2: #19231c;
+  --border: #2c3d31;
+  --text: #e1ebe4;
+  --text-2: #97af9e;
+  --text-3: #708777;
+  --accent: #d7ae58;
+  --on-accent: #1d1503;
+  --c-deen: #44c3a5;
+  --c-health: #7fbe75;
+  --c-academics: #6bb0f3;
+  --c-money: #caa647;
+  --c-people: #ec8a98;
+  --c-personal: #af9bef;
+  --c-chores: #9db1a3;
 }
 
-/* Dusk drive */
+/* Dusk drive · Standard · playful · hue 300, accent 10 · branches L 0.740 */
 :is(:root, *)[data-palette="r2-dusk"] {
   color-scheme: dark;
-  --bg: #16121f;
-  --surface: #1f1a2c;
-  --surface-2: #262134;
-  --border: #33294a;
-  --text: #efe8f7;
-  --text-2: #a89cbd;
-  --text-3: #887d9c;
-  --accent: #ff8fa3;
-  --on-accent: #16121f;
-  --c-deen: #70e1a8;
-  --c-health: #e17096;
-  --c-academics: #7970e1;
-  --c-money: #70e1ce;
-  --c-people: #709fe1;
-  --c-personal: #c470e1;
-  --c-chores: #e1b270;
+  --bg: #14101d;
+  --surface: #1b1724;
+  --surface-2: #221e2b;
+  --border: #3a3545;
+  --text: #e9e6f0;
+  --text-2: #aba3bb;
+  --text-3: #867f96;
+  --accent: #fa90a1;
+  --on-accent: #250e12;
+  --c-deen: #2fc3b6;
+  --c-health: #7fbe75;
+  --c-academics: #7fabf6;
+  --c-money: #d6a04b;
+  --c-people: #e88aa9;
+  --c-personal: #b699eb;
+  --c-chores: #ada7bb;
 }
 
-/* Flight deck */
+/* Flight deck · Standard · muted · hue 248, accent 72 · branches L 0.740 */
 :is(:root, *)[data-palette="r2-deck"] {
   color-scheme: dark;
-  --bg: #111417;
-  --surface: #1a1e23;
-  --surface-2: #21252a;
-  --border: #2b3138;
-  --text: #e9edf1;
-  --text-2: #98a2ad;
-  --text-3: #79838d;
-  --accent: #f5a524;
-  --on-accent: #111417;
-  --c-deen: #74dca8;
-  --c-health: #dc7497;
-  --c-academics: #7d74dc;
-  --c-money: #74dccb;
-  --c-people: #74a0dc;
-  --c-personal: #c274dc;
-  --c-chores: #dcb174;
+  --bg: #0f1317;
+  --surface: #161a1e;
+  --surface-2: #1d2125;
+  --border: #313941;
+  --text: #e3e9ee;
+  --text-2: #9ea9b4;
+  --text-3: #78838f;
+  --accent: #eba440;
+  --on-accent: #211301;
+  --c-deen: #2fc3b6;
+  --c-health: #7fbe75;
+  --c-academics: #6bb0f3;
+  --c-money: #caa647;
+  --c-people: #e88aa9;
+  --c-personal: #af9bef;
+  --c-chores: #9cadbd;
 }
 
-/* Arcane tide */
+/* Arcane tide · Standard · cool · hue 292, accent 185 · branches L 0.740 */
 :is(:root, *)[data-palette="r2-arcane"] {
   color-scheme: dark;
-  --bg: #120f1e;
-  --surface: #1b172b;
-  --surface-2: #221e33;
-  --border: #2f2847;
-  --text: #ece6fb;
-  --text-2: #a49cc0;
-  --text-3: #847c9e;
-  --accent: #4fd1c5;
-  --on-accent: #120f1e;
-  --c-deen: #73dea8;
-  --c-health: #de7396;
-  --c-academics: #7c73de;
-  --c-money: #73decc;
-  --c-people: #739fde;
-  --c-personal: #c373de;
-  --c-chores: #deb173;
+  --bg: #13101f;
+  --surface: #1a1726;
+  --surface-2: #211e2e;
+  --border: #383546;
+  --text: #e8e6f1;
+  --text-2: #a8a4bc;
+  --text-3: #838097;
+  --accent: #49ccbe;
+  --on-accent: #011b18;
+  --c-deen: #2fc3b6;
+  --c-health: #7fbe75;
+  --c-academics: #7fabf6;
+  --c-money: #d6a04b;
+  --c-people: #e88aa9;
+  --c-personal: #af9bef;
+  --c-chores: #aba8bd;
 }
 
-/* Ember forge */
+/* Ember forge · Standard · warm · hue 42, accent 43 · branches L 0.740 */
 :is(:root, *)[data-palette="r2-ember"] {
   color-scheme: dark;
-  --bg: #141110;
-  --surface: #1e1917;
-  --surface-2: #25201e;
-  --border: #352c28;
-  --text: #f3e9e3;
-  --text-2: #ae9d93;
-  --text-3: #8e7d74;
-  --accent: #ff7a3d;
-  --on-accent: #141110;
-  --c-deen: #79d8a8;
-  --c-health: #d87998;
-  --c-academics: #8179d8;
-  --c-money: #79d8c8;
-  --c-people: #79a0d8;
-  --c-personal: #c079d8;
-  --c-chores: #d8b079;
+  --bg: #19100d;
+  --surface: #201714;
+  --surface-2: #271e1a;
+  --border: #44342e;
+  --text: #f1e5e1;
+  --text-2: #baa298;
+  --text-3: #967d73;
+  --accent: #ff9467;
+  --on-accent: #250f07;
+  --c-deen: #44c3a5;
+  --c-health: #93ba65;
+  --c-academics: #7fabf6;
+  --c-money: #d6a04b;
+  --c-people: #ec8a98;
+  --c-personal: #be96e7;
+  --c-chores: #bca59c;
 }
 
 /* Observatory · Calm · cool · hue 262, accent 84 · branches L 0.740 */
@@ -191,107 +191,107 @@
   --c-chores: #a0b0a3;
 }
 
-/* Ronin */
+/* Ronin · Standard · muted · hue 60, accent 30 · branches L 0.740 */
 :is(:root, *)[data-palette="r2-ronin"] {
   color-scheme: dark;
-  --bg: #121212;
-  --surface: #1b1a19;
-  --surface-2: #222120;
-  --border: #302d2a;
-  --text: #f0ebe2;
-  --text-2: #a8a196;
-  --text-3: #888176;
-  --accent: #e5533d;
-  --on-accent: #121212;
-  --c-deen: #81cfa8;
-  --c-health: #cf819b;
-  --c-academics: #8881cf;
-  --c-money: #81cfc2;
-  --c-people: #81a2cf;
-  --c-personal: #bc81cf;
-  --c-chores: #cfaf81;
+  --bg: #151210;
+  --surface: #1c1917;
+  --surface-2: #23201e;
+  --border: #3d3731;
+  --text: #ebe7e4;
+  --text-2: #aea6a0;
+  --text-3: #88807a;
+  --accent: #ff917f;
+  --on-accent: #250e0b;
+  --c-deen: #44c3a5;
+  --c-health: #93ba65;
+  --c-academics: #7fabf6;
+  --c-money: #d6a04b;
+  --c-people: #ec8a98;
+  --c-personal: #be96e7;
+  --c-chores: #baa798;
 }
 
-/* Lab bench */
+/* Lab bench · Standard · muted · hue 190, accent 166 · branches L 0.740 */
 :is(:root, *)[data-palette="r2-lab"] {
   color-scheme: dark;
-  --bg: #0f1313;
-  --surface: #171c1c;
-  --surface-2: #1e2323;
-  --border: #263130;
-  --text: #e6f0ee;
-  --text-2: #95a6a3;
-  --text-3: #758683;
-  --accent: #5ee6b5;
-  --on-accent: #0f1313;
-  --c-deen: #76dba8;
-  --c-health: #db7698;
-  --c-academics: #7e76db;
-  --c-money: #76dbca;
-  --c-people: #76a0db;
-  --c-personal: #c176db;
-  --c-chores: #dbb176;
+  --bg: #0e1414;
+  --surface: #141b1a;
+  --surface-2: #1b2221;
+  --border: #2d3b3a;
+  --text: #e1eae9;
+  --text-2: #9aacaa;
+  --text-3: #738684;
+  --accent: #5dcca3;
+  --on-accent: #031b12;
+  --c-deen: #2fc3b6;
+  --c-health: #7fbe75;
+  --c-academics: #6bb0f3;
+  --c-money: #caa647;
+  --c-people: #e88aa9;
+  --c-personal: #af9bef;
+  --c-chores: #96b1af;
 }
 
-/* Royal court */
+/* Royal court · Standard · warm · hue 355, accent 86 · branches L 0.740 */
 :is(:root, *)[data-palette="r2-court"] {
   color-scheme: dark;
-  --bg: #170f12;
-  --surface: #22161a;
-  --surface-2: #291d21;
-  --border: #3a272c;
-  --text: #f5e9ea;
-  --text-2: #b49ca1;
-  --text-3: #937c81;
-  --accent: #e3bb5d;
-  --on-accent: #170f12;
-  --c-deen: #7bd5a8;
-  --c-health: #d57b99;
-  --c-academics: #837bd5;
-  --c-money: #7bd5c6;
-  --c-people: #7ba1d5;
-  --c-personal: #bf7bd5;
-  --c-chores: #d5b07b;
+  --bg: #1a0f13;
+  --surface: #21161a;
+  --surface-2: #281d21;
+  --border: #453239;
+  --text: #f0e4e8;
+  --text-2: #bb9fa9;
+  --text-3: #957b84;
+  --accent: #d6ae52;
+  --on-accent: #1d1502;
+  --c-deen: #2fc3b6;
+  --c-health: #93ba65;
+  --c-academics: #7fabf6;
+  --c-money: #d6a04b;
+  --c-people: #e88aa9;
+  --c-personal: #be96e7;
+  --c-chores: #bba3ac;
 }
 
-/* Chart room */
+/* Chart room · Standard · cool · hue 205, accent 80 · branches L 0.740 */
 :is(:root, *)[data-palette="r2-chart"] {
   color-scheme: dark;
-  --bg: #0e1719;
-  --surface: #142225;
-  --surface-2: #1b292c;
-  --border: #23373a;
-  --text: #e7f0ee;
-  --text-2: #97aaa8;
-  --text-3: #778a88;
-  --accent: #f0c987;
-  --on-accent: #0e1719;
-  --c-deen: #7bd5a8;
-  --c-health: #d57b99;
-  --c-academics: #837bd5;
-  --c-money: #7bd5c6;
-  --c-people: #7ba1d5;
-  --c-personal: #bf7bd5;
-  --c-chores: #d5b07b;
+  --bg: #0a1516;
+  --surface: #111c1d;
+  --surface-2: #172324;
+  --border: #283c3e;
+  --text: #deebec;
+  --text-2: #91aeb1;
+  --text-3: #6a888c;
+  --accent: #d4ae6c;
+  --on-accent: #1d1506;
+  --c-deen: #2fc3b6;
+  --c-health: #7fbe75;
+  --c-academics: #6bb0f3;
+  --c-money: #caa647;
+  --c-people: #e88aa9;
+  --c-personal: #af9bef;
+  --c-chores: #96b1b4;
 }
 
-/* Signal */
+/* Signal · Standard · cool · hue 265, accent 258 · branches L 0.740 */
 :is(:root, *)[data-palette="r2-signal"] {
   color-scheme: dark;
-  --bg: #0e0f12;
-  --surface: #16181c;
-  --surface-2: #1d1f23;
-  --border: #272a30;
-  --text: #eceef2;
-  --text-2: #9a9fa9;
-  --text-3: #7a7f88;
-  --accent: #6ea8ff;
-  --on-accent: #0e0f12;
-  --c-deen: #6fe2a8;
-  --c-health: #e26f95;
-  --c-academics: #796fe2;
-  --c-money: #6fe2ce;
-  --c-people: #6f9fe2;
-  --c-personal: #c56fe2;
-  --c-chores: #e2b26f;
+  --bg: #111316;
+  --surface: #18191d;
+  --surface-2: #1f2024;
+  --border: #343840;
+  --text: #e5e8ed;
+  --text-2: #a3a8b2;
+  --text-3: #7c828d;
+  --accent: #84b6ff;
+  --on-accent: #0a1627;
+  --c-deen: #2fc3b6;
+  --c-health: #7fbe75;
+  --c-academics: #7fabf6;
+  --c-money: #d6a04b;
+  --c-people: #e88aa9;
+  --c-personal: #af9bef;
+  --c-chores: #a2abbe;
 }

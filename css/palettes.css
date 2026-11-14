@@ -31,25 +31,25 @@
   --skills: var(--muted);
 }
 
-/* Amber terminal */
+/* Amber terminal · Standard · warm · hue 80, accent 77 · anchor · branches L 0.740 */
 :is(:root, *)[data-palette="amber"] {
   color-scheme: dark;
-  --bg: #0f0a03;
-  --surface: #171005;
-  --surface-2: #1e170b;
-  --border: #3d2c10;
-  --text: #ffd9a0;
-  --text-2: #a98a5e;
-  --text-3: #8a6c41;
-  --accent: #ffb000;
-  --on-accent: #0f0a03;
-  --c-deen: #ffb000;
-  --c-health: #ffd24d;
-  --c-academics: #e6a35c;
-  --c-money: #f7c97a;
-  --c-people: #ffe0a1;
-  --c-personal: #ff9d4a;
-  --c-chores: #ff8a1f;
+  --bg: #17130d;
+  --surface: #1f1a12;
+  --surface-2: #282216;
+  --border: #453b28;
+  --text: #f0eade;
+  --text-2: #b5a98f;
+  --text-3: #8d826a;
+  --accent: #e0a84f;
+  --on-accent: #201808;
+  --c-deen: #5cc1ab;
+  --c-health: #8abb6d;
+  --c-academics: #7ca8e2;
+  --c-money: #d8ad55;
+  --c-people: #df93a3;
+  --c-personal: #b59be2;
+  --c-chores: #9fa8b4;
 }
 
 /* Ice on graphite · Calm · cool · hue 255, accent 245 · branches L 0.740 */
@@ -73,46 +73,46 @@
   --c-chores: #a1acbb;
 }
 
-/* Cyan / teal */
+/* Cyan / teal · Standard · cool · hue 200, accent 182 · branches L 0.740 */
 :is(:root, *)[data-palette="teal"] {
   color-scheme: dark;
-  --bg: #061112;
-  --surface: #0a1a1b;
-  --surface-2: #112122;
-  --border: #184442;
-  --text: #bff4ee;
-  --text-2: #62a09b;
-  --text-3: #44827d;
-  --accent: #2de2c8;
-  --on-accent: #061112;
-  --c-deen: #2de2c8;
-  --c-health: #8af5de;
-  --c-academics: #35b0b8;
-  --c-money: #a6ecf5;
-  --c-people: #6fd8f2;
-  --c-personal: #50d6a8;
-  --c-chores: #4dc9e8;
+  --bg: #061617;
+  --surface: #0c1d1d;
+  --surface-2: #132425;
+  --border: #253d3e;
+  --text: #deebeb;
+  --text-2: #8fafb0;
+  --text-3: #69888a;
+  --accent: #2ccfba;
+  --on-accent: #001b17;
+  --c-deen: #2fc3b6;
+  --c-health: #7fbe75;
+  --c-academics: #6bb0f3;
+  --c-money: #caa647;
+  --c-people: #e88aa9;
+  --c-personal: #af9bef;
+  --c-chores: #96b1b2;
 }
 
-/* Branch colours on dark */
+/* Branch colours on dark · Standard · muted · hue 250, accent 251 · branches L 0.740 */
 :is(:root, *)[data-palette="multi"] {
   color-scheme: dark;
-  --bg: #121314;
-  --surface: #1a1b1d;
-  --surface-2: #212224;
-  --border: #303133;
-  --text: #e6e6e3;
-  --text-2: #8e8e8a;
-  --text-3: #73736f;
-  --accent: #e6e6e3;
-  --on-accent: #121314;
-  --c-deen: #4fae78;
-  --c-health: #e57ea3;
-  --c-academics: #8f8ff0;
-  --c-money: #5cc8b0;
-  --c-people: #6fa0f2;
-  --c-personal: #b98ae6;
-  --c-chores: #e3a24a;
+  --bg: #111315;
+  --surface: #171a1c;
+  --surface-2: #1e2123;
+  --border: #33393e;
+  --text: #e5e8ec;
+  --text-2: #a2a8af;
+  --text-3: #7c8289;
+  --accent: #adb5be;
+  --on-accent: #151618;
+  --c-deen: #2fc3b6;
+  --c-health: #7fbe75;
+  --c-academics: #6db0f4;
+  --c-money: #caa647;
+  --c-people: #e88aa9;
+  --c-personal: #af9bef;
+  --c-chores: #9dadbe;
 }
 
 /* Paper terminal (light) */
@@ -199,25 +199,25 @@
   --c-chores: #a3541a;
 }
 
-/* Candlelit RPG */
+/* Candlelit RPG · Standard · warm · hue 68, accent 80 · branches L 0.740 */
 :is(:root, *)[data-palette="candle"] {
   color-scheme: dark;
-  --bg: #18110a;
-  --surface: #231a0e;
-  --surface-2: #2a2115;
-  --border: #6b5326;
-  --text: #f0dfb8;
-  --text-2: #b09a70;
-  --text-3: #907b52;
-  --accent: #e0b04a;
-  --on-accent: #18110a;
-  --c-deen: #86bb74;
-  --c-health: #dc788e;
-  --c-academics: #95a0e4;
-  --c-money: #70c8b4;
-  --c-people: #80ace4;
-  --c-personal: #bf8fda;
-  --c-chores: #e39d4b;
+  --bg: #191109;
+  --surface: #20180f;
+  --surface-2: #271f16;
+  --border: #423527;
+  --text: #eee6de;
+  --text-2: #b7a491;
+  --text-3: #92806d;
+  --accent: #dfaa47;
+  --on-accent: #1f1401;
+  --c-deen: #44c3a5;
+  --c-health: #93ba65;
+  --c-academics: #7fabf6;
+  --c-money: #d6a04b;
+  --c-people: #ec8a98;
+  --c-personal: #be96e7;
+  --c-chores: #b8a897;
 }
 
 /* Vaporwave */
@@ -262,25 +262,25 @@
   --c-chores: #e08600;
 }
 
-/* JRPG blue */
+/* JRPG blue · Standard · playful · hue 268, accent 90 · branches L 0.740 */
 :is(:root, *)[data-palette="jrpg"] {
   color-scheme: dark;
-  --bg: #0c1234;
-  --surface: #1a2a70;
-  --surface-2: #213379;
-  --border: #5a6cc8;
-  --text: #ffffff;
-  --text-2: #b4c2f4;
-  --text-3: #8e9bcb;
-  --accent: #ffd23f;
-  --on-accent: #0c1234;
-  --c-deen: #5eea8a;
-  --c-health: #ff7ab0;
-  --c-academics: #a39eff;
-  --c-money: #4eead8;
-  --c-people: #74bcff;
-  --c-personal: #dba0ff;
-  --c-chores: #ffc23f;
+  --bg: #0d1220;
+  --surface: #131927;
+  --surface-2: #1a202f;
+  --border: #313848;
+  --text: #e4e8f2;
+  --text-2: #9ea7be;
+  --text-3: #798197;
+  --accent: #d7af36;
+  --on-accent: #1d1500;
+  --c-deen: #2fc3b6;
+  --c-health: #7fbe75;
+  --c-academics: #7fabf6;
+  --c-money: #d6a04b;
+  --c-people: #e88aa9;
+  --c-personal: #af9bef;
+  --c-chores: #a3abbe;
 }
 
 /* Type. Fonts come from Google Fonts (settings.js fetches only the chosen one).
