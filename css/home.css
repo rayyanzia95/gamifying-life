@@ -83,6 +83,22 @@
 }
 
 .home-head h1 { margin: 0; }
+/* "Planner →" button in the header, beside the date (the right edge belongs to the corner buttons). */
+.planner-link {
+  padding: 4px 12px;
+  font-size: 0.8125rem;
+  color: var(--text);
+  text-decoration: none;
+  border: 1px solid var(--control-border);
+  border-radius: 999px;
+  background: var(--surface);
+}
+.planner-link:hover { border-color: var(--accent); color: var(--accent); }
+/* Phones: the corner buttons sit top-right, so the link takes its own row under the title. */
+@media (max-width: 600px) {
+  .home-head::after { content: ""; flex-basis: 100%; order: 2; height: 0; margin-top: -4px; } /* forces the wrap */
+  .planner-link { order: 3; margin: 0; }
+}
 .home-date { color: var(--muted); font-size: 0.9375rem; font-family: system-ui, sans-serif; }
 
 .home-grid { display: grid; gap: 16px; align-items: start; }
