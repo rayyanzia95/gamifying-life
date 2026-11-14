@@ -380,130 +380,130 @@
   --c-chores: #9cadbd;
 }
 
-/* Cozy pixel (light) */
+/* Cozy pixel · Standard · hue 86, accent 44 · branches L 0.545 */
 :is(:root, *)[data-palette="pixell"] {
   color-scheme: light;
-  --bg: #f9ecd0;
-  --surface: #fff8e8;
-  --surface-2: #efe2c6;
-  --border: #c9b49a;
-  --text: #3a2d2d;
-  --text-2: #7d6a5e;
-  --text-3: #968275;
-  --accent: #d9703f;
-  --on-accent: #f9ecd0;
-  --c-deen: #3f9a50;
-  --c-health: #dc5a79;
-  --c-academics: #6061d0;
-  --c-money: #259a8b;
-  --c-people: #3f80d4;
-  --c-personal: #9a52c4;
-  --c-chores: #d98b25;
+  --bg: #fef4df;
+  --surface: #fffaee;
+  --surface-2: #f6ead1;
+  --border: #ded3bb;
+  --text: #272114;
+  --text-2: #5d5440;
+  --text-3: #796f59;
+  --accent: #ba5829;
+  --on-accent: #fffbf9;
+  --c-deen: #00836b;
+  --c-health: #5a7d28;
+  --c-academics: #2e74b2;
+  --c-money: #8d6a00;
+  --c-people: #aa4f5f;
+  --c-personal: #825ca7;
+  --c-chores: #7b6f56;
 }
 
-/* Notebook (light) */
+/* Notebook · Standard · hue 91, accent 30 · branches L 0.545 */
 :is(:root, *)[data-palette="notel"] {
   color-scheme: light;
-  --bg: #f5f0e2;
-  --surface: #fbf8ef;
-  --surface-2: #ebe6d8;
-  --border: #c9c3ae;
-  --text: #27365a;
-  --text-2: #6b7590;
-  --text-3: #828ca8;
-  --accent: #d4452f;
-  --on-accent: #f5f0e2;
-  --c-deen: #2f8442;
-  --c-health: #d33f75;
-  --c-academics: #4450c2;
-  --c-money: #1b9080;
-  --c-people: #2870c8;
-  --c-personal: #9442c0;
-  --c-chores: #d9811a;
+  --bg: #f9f5ea;
+  --surface: #fdfaf2;
+  --surface-2: #f0ebde;
+  --border: #dbd4bf;
+  --text: #192135;
+  --text-2: #495570;
+  --text-3: #62708e;
+  --accent: #c14f40;
+  --on-accent: #fffbfa;
+  --c-deen: #00836b;
+  --c-health: #5a7d28;
+  --c-academics: #2e74b2;
+  --c-money: #8b6b00;
+  --c-people: #aa4f5f;
+  --c-personal: #825ca7;
+  --c-chores: #797056;
 }
 
-/* JRPG menu (light) */
+/* JRPG menu · Standard · hue 264, accent 28 · branches L 0.550 */
 :is(:root, *)[data-palette="jrpgl"] {
   color-scheme: light;
-  --bg: #d9e6ff;
-  --surface: #ffffff;
-  --surface-2: #cfdcf5;
-  --border: #9fb3e6;
-  --text: #1d2a55;
-  --text-2: #4f5f92;
-  --text-3: #6778ad;
-  --accent: #e8473c;
-  --on-accent: #d9e6ff;
-  --c-deen: #1f9f55;
-  --c-health: #e8366f;
-  --c-academics: #5348dd;
-  --c-money: #009d96;
-  --c-people: #1c72e0;
-  --c-personal: #9c36dc;
-  --c-chores: #ec8200;
+  --bg: #f0f5ff;
+  --surface: #f8faff;
+  --surface-2: #e2ecff;
+  --border: #c9d5ec;
+  --text: #1b222e;
+  --text-2: #4c5568;
+  --text-3: #667085;
+  --accent: #c24e44;
+  --on-accent: #fffbfa;
+  --c-deen: #00837a;
+  --c-health: #46823d;
+  --c-academics: #4870b7;
+  --c-money: #986600;
+  --c-people: #a85070;
+  --c-personal: #7662b0;
+  --c-chores: #66728a;
 }
 
-/* Brutalist (light) */
+/* Brutalist · Loud · hue 94, accent 33 · branches L 0.545 */
 :is(:root, *)[data-palette="brutl"] {
   color-scheme: light;
-  --bg: #f2eee0;
-  --surface: #ffffff;
-  --surface-2: #e8e4d6;
-  --border: #111111;
-  --text: #111111;
-  --text-2: #505050;
-  --text-3: #6d6d6d;
-  --accent: #ff5030;
-  --on-accent: #f2eee0;
-  --c-deen: #17a350;
-  --c-health: #ff3b80;
-  --c-academics: #4a4af2;
-  --c-money: #00a99a;
-  --c-people: #087ae6;
-  --c-personal: #a03bff;
-  --c-chores: #ff9b00;
+  --bg: #f8f5e9;
+  --surface: #fcfaf2;
+  --surface-2: #efebdd;
+  --border: #dbd4be;
+  --text: #252215;
+  --text-2: #5b5542;
+  --text-3: #76705b;
+  --accent: #d33e21;
+  --on-accent: #fffbfa;
+  --c-deen: #00836b;
+  --c-health: #557f00;
+  --c-academics: #0073c3;
+  --c-money: #8b6b00;
+  --c-people: #c52a54;
+  --c-personal: #8c48c5;
+  --c-chores: #7a704e;
 }
 
-/* Arctic (light) */
+/* Arctic · Calm · hue 242, accent 243 · branches L 0.550 */
 :is(:root, *)[data-palette="arctic"] {
   color-scheme: light;
-  --bg: #f2f7fb;
+  --bg: #eef6fd;
   --surface: #ffffff;
-  --surface-2: #e8edf1;
-  --border: #d3e0ec;
-  --text: #0f1c2a;
-  --text-2: #56677a;
-  --text-3: #718296;
-  --accent: #0077b6;
-  --on-accent: #f2f7fb;
-  --c-deen: #15803d;
-  --c-health: #be185d;
-  --c-academics: #4338ca;
-  --c-money: #0f766e;
-  --c-people: #1d4ed8;
-  --c-personal: #7e22ce;
-  --c-chores: #c2410c;
+  --surface-2: #e3edf4;
+  --border: #c7d7e3;
+  --text: #1b2329;
+  --text-2: #495762;
+  --text-3: #63727f;
+  --accent: #2e79ae;
+  --on-accent: #f9fcff;
+  --c-deen: #258179;
+  --c-health: #557e4e;
+  --c-academics: #4875a1;
+  --c-money: #866e32;
+  --c-people: #9a5c70;
+  --c-personal: #74689f;
+  --c-chores: #607485;
 }
 
-/* Sakura (light) */
+/* Sakura · Standard · hue 3, accent 4 · branches L 0.545 */
 :is(:root, *)[data-palette="sakura"] {
   color-scheme: light;
-  --bg: #fbf1f3;
-  --surface: #fffafb;
-  --surface-2: #f1e7e9;
-  --border: #ecd3da;
-  --text: #2b1d22;
-  --text-2: #7a6168;
-  --text-3: #957b82;
-  --accent: #c2416b;
-  --on-accent: #fbf1f3;
-  --c-deen: #3f7d4f;
-  --c-health: #c2416b;
-  --c-academics: #5a55c9;
-  --c-money: #11867a;
-  --c-people: #2f66c4;
-  --c-personal: #8f45b8;
-  --c-chores: #b8650f;
+  --bg: #fef1f4;
+  --surface: #fff8f9;
+  --surface-2: #f6e7ea;
+  --border: #e5cdd2;
+  --text: #2a1e21;
+  --text-2: #634f54;
+  --text-3: #80696e;
+  --accent: #bf4d70;
+  --on-accent: #fffafb;
+  --c-deen: #00836b;
+  --c-health: #5a7d28;
+  --c-academics: #476fb5;
+  --c-money: #966500;
+  --c-people: #a84f69;
+  --c-personal: #825ca7;
+  --c-chores: #85676e;
 }
 
 /* ================= Black level, accent hue, glow (Appearance → Colours) =================

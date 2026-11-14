@@ -115,25 +115,25 @@
   --c-chores: #9dadbe;
 }
 
-/* Paper terminal (light) */
+/* Paper terminal · Standard · hue 95, accent 63 · branches L 0.545 */
 :is(:root, *)[data-palette="paper"] {
   color-scheme: light;
-  --bg: #efebdd;
-  --surface: #f6f2e6;
-  --surface-2: #e5e1d3;
-  --border: #c4bea9;
-  --text: #2a2a26;
-  --text-2: #6a675b;
-  --text-3: #838073;
-  --accent: #a35f0a;
-  --on-accent: #efebdd;
-  --c-deen: #2e7d4f;
-  --c-health: #c9507a;
-  --c-academics: #5b5bd6;
-  --c-money: #0f8a7a;
-  --c-people: #2563c9;
-  --c-personal: #8a4cc2;
-  --c-chores: #b8730f;
+  --bg: #f9f5e8;
+  --surface: #fdfaf1;
+  --surface-2: #efebdb;
+  --border: #dbd4bc;
+  --text: #252214;
+  --text-2: #5b5541;
+  --text-3: #767059;
+  --accent: #aa6200;
+  --on-accent: #fffbf7;
+  --c-deen: #00836b;
+  --c-health: #5a7d28;
+  --c-academics: #2e74b2;
+  --c-money: #8b6b00;
+  --c-people: #aa4f5f;
+  --c-personal: #825ca7;
+  --c-chores: #777056;
 }
 
 /* Neon arcade · Loud · playful · hue 294, accent 348 · anchor · branches L 0.760 */
@@ -178,25 +178,25 @@
   --c-chores: #97b7c5;
 }
 
-/* Parchment (light) */
+/* Parchment · Calm · hue 88, accent 78 · anchor · branches L 0.545 */
 :is(:root, *)[data-palette="parch"] {
   color-scheme: light;
-  --bg: #e9dcb9;
-  --surface: #f5ead0;
-  --surface-2: #dfd2af;
-  --border: #a98532;
-  --text: #35260f;
-  --text-2: #6f5a36;
-  --text-3: #88724d;
-  --accent: #9a6c10;
-  --on-accent: #e9dcb9;
-  --c-deen: #3b6a37;
-  --c-health: #9c3248;
-  --c-academics: #434f8e;
-  --c-money: #2d7767;
-  --c-people: #2d609c;
-  --c-personal: #76398a;
-  --c-chores: #a3541a;
+  --bg: #f6f0e2;
+  --surface: #fbf7ec;
+  --surface-2: #f2ebda;
+  --border: #ddd2b8;
+  --text: #3c3526;
+  --text-2: #6f6650;
+  --text-3: #766c56;
+  --accent: #946c25;
+  --on-accent: #fffbf6;
+  --c-deen: #2e806c;
+  --c-health: #617a43;
+  --c-academics: #4774a0;
+  --c-money: #856d30;
+  --c-people: #9b5b64;
+  --c-personal: #7c6397;
+  --c-chores: #796f59;
 }
 
 /* Candlelit RPG · Standard · warm · hue 68, accent 80 · branches L 0.740 */
@@ -241,25 +241,25 @@
   --c-chores: #b5acc7;
 }
 
-/* Glass (light) */
+/* Glass · Standard · hue 265, accent 257 · branches L 0.550 */
 :is(:root, *)[data-palette="glass"] {
   color-scheme: light;
-  --bg: #eef1f8;
+  --bg: #f2f5fc;
   --surface: #ffffff;
-  --surface-2: #e4e7ee;
-  --border: #d9dde8;
-  --text: #1c1c1e;
-  --text-2: #62626b;
-  --text-3: #7c7c86;
-  --accent: #007aff;
-  --on-accent: #eef1f8;
-  --c-deen: #2aa84a;
-  --c-health: #e0264f;
-  --c-academics: #5856d6;
-  --c-money: #00a090;
-  --c-people: #0a74e8;
-  --c-personal: #a043d0;
-  --c-chores: #e08600;
+  --surface-2: #e7ebf4;
+  --border: #cdd4e3;
+  --text: #1e2229;
+  --text-2: #4f5562;
+  --text-3: #69707f;
+  --accent: #2d73d0;
+  --on-accent: #fafcff;
+  --c-deen: #00837a;
+  --c-health: #46823d;
+  --c-academics: #4870b7;
+  --c-money: #986600;
+  --c-people: #a85070;
+  --c-personal: #7662b0;
+  --c-chores: #66728a;
 }
 
 /* JRPG blue · Standard · playful · hue 268, accent 90 · branches L 0.740 */
