@@ -31,10 +31,10 @@ Fix these first: four of them can lose or misstate your data.
 | # | Problem | Where | Fix |
 | --- | --- | --- | --- |
 | B1 | ~~People, important dates, the reading list, the weekly budget and the savings goal are saved on one device only.~~ Checked 2026-11-14: they are already events and sync like all others; only the "device only" wording was stale. | `people-page.js`, `personal-page.js`, `config.js` line 144 | Wording fixed. Still to confirm on two real devices. |
-| B2 | A prayer can be logged before its time enters. Dhuhr was ticked at 1:19 pm while the page said "opens 1:23 pm". | `deen.js`, `quick-log.js`, `today-items.js` | Disable the chip until the window opens, with the open time shown. Tahajjud keeps its own rule. |
+| B2 | A prayer can be logged before its time enters. Dhuhr was ticked at 1:19 pm while the page said "opens 1:23 pm". | `deen.js` only | Deen page only: disable the prayer until the window opens, with the open time shown. Tahajjud keeps its own rule. Home's Today list already blocks unopened prayers; leave it as is. |
 | B3 | Only Money has previous-day arrows. A prayer, meal or journal entry missed last night cannot be logged the next morning. | Deen, Health, Personal pages | Add the same day arrows, limited to yesterday and today. Mark backfilled entries. DECIDE: do backfilled prayers earn the on-time bonus? Suggested: no. |
-| B4 | Cards start at opacity 0 and rely on an animation to appear (`anim-rise`, `anim-wipe`). On a slow or backgrounded page they stay faint or blank. Seen on Health, Money, Chores and Academics. | `css/anims.css` lines 6-30, `js/anims.js` | Cards are fully visible by default. Add the cascade class only after first paint, and remove it on `animationend` or after 1.2 s, whichever comes first. |
-| B5 | Muted text on the hero panels is close to unreadable: "no budget set", "10 left, last day", boss names, sleep-graph labels. | hero panels on every branch page | Run `tools/contrast-check.js` over the hero panels in every palette. Minimum 4.5:1 for text, 3:1 for graph lines. |
+| B4 | **Withdrawn 2026-11-14:** cards do not stay invisible; `fx.js` `pulseClass` removes the class after 1.2 s. Do not change `css/anims.css` or `js/anims.js` for this. ~~Cards start at opacity 0 and rely on an animation to appear (`anim-rise`, `anim-wipe`). On a slow or backgrounded page they stay faint or blank. Seen on Health, Money, Chores and Academics. | `css/anims.css` lines 6-30, `js/anims.js` | Cards are fully visible by default. Add the cascade class only after first paint, and remove it on `animationend` or after 1.2 s, whichever comes first.~~ |
+| B5 | **Withdrawn 2026-11-14:** `tools/contrast-check.js` passes all 34 palettes; no contrast changes. ~~Muted text on the hero panels is close to unreadable: "no budget set", "10 left, last day", boss names, sleep-graph labels. | hero panels on every branch page | Run `tools/contrast-check.js` over the hero panels in every palette. Minimum 4.5:1 for text, 3:1 for graph lines.~~ |
 | B6 | Friday Dhuhr is treated as a normal Dhuhr, though the planner already knows about Jumu'ah. | `deen.js`, `config.js` | On Fridays show Jumu'ah in place of Dhuhr: 2 fard, masjid and jama'ah assumed, its own sunnah count. DECIDE the XP. |
 | B7 | Level-up celebrations are tracked per device, so each device replays old level-ups. | `level-up.js`, `city-build.js` | Store "last celebrated level" as a synced event. |
 | B8 | The install splash is purple (`background_color: #4b3b75`) and then flashes to near-black. | `manifest.webmanifest` | Match it to the dark background `#1a1a18`. |
@@ -44,7 +44,7 @@ Fix these first: four of them can lose or misstate your data.
 Home shows the same action in three places and the same levels in three places; the goal is one place for each.
 
 - **H1. One checklist.** Dishes, Water and Study blocks appear in "Due today", in Quick log and in the Today list. Keep the Today list as the only place to tick. Remove the "Due today" chips. Quick log keeps only what the list cannot do: Spend, and a free "+ Workout".
-- **H2. Now strip.** Keep "Next: Dhuhr, opens 1:23 pm" and make it the top of the page. Add one tap to log the current prayer from it. After Isha, show tomorrow's Fajr time.
+- **H2. Now strip.** Keep "Next: Dhuhr, opens 1:23 pm" and make it the top of the page. It already has a one-tap "I prayed" button (2026-11-14); only this part is new: after Isha, show tomorrow's Fajr time.
 - **H3. Time-aware list.** Sort the Today list by time of day and dim what is not yet relevant (evening adhkar in the morning). Collapse finished groups to a single line.
 - **H4. Core day.** DECIDE: pick 4 to 6 core items (for example five prayers, one study block, money logged). "Day complete" means the core is done; the other items are bonus. Show "Core 3 of 5" in place of "0 of 16 done".
 - **H5. Levels shown once.** The radar, the level-bar list and the sidebar numbers repeat each other. On Home keep the level-bar list, made tappable to open each branch. Move the radar to the weekly review (F1).
@@ -60,7 +60,7 @@ The phone is where logging happens, and it is currently the weakest view: one lo
 - **L3. Shorter sidebar.** Twelve entries today. Fold Study guides into Academics, fold Appearance into Settings (it is already a Settings tab), and put Rewards under the overall level. That leaves Home, seven branches, Planner and Settings.
 - **L4. Planner in the sidebar.** The best page in the app has no sidebar entry; it is reached only from the "Planner" pill or through Academics.
 - **L5. Shorter branch heroes.** Each branch page opens with a hero about 400 px tall, so the controls start below the fold. Cap heroes near 180 px on desktop and 140 px on phone, or put the controls beside the hero on wide screens.
-- **L6. Use the width.** On desktop, Health, Money and Chores place one narrow card on the left and leave the right half empty. Use a two-column grid: log on the left, history on the right.
+- **L6. Use the width (optional).** Branch pages already use two columns at normal desktop width. On desktop, Health, Money and Chores place one narrow card on the left and leave the right half empty. Use a two-column grid: log on the left, history on the right.
 - **L7. Bigger tap targets.** The minus and plus steppers and the prayer modifier pills are about 24 to 30 px. Raise them to at least 44 px on touch screens.
 - **L8. Deen prayer grid.** Six chips in two columns with large gaps. Use one row per prayer: name, time, and the on time, jama'ah, masjid and sunnah controls inline, in day order.
 - **L9. Home-screen shortcuts.** Add `shortcuts` to the manifest (Log spend, Deen, Planner) so a long press on the icon jumps straight in.
@@ -77,7 +77,7 @@ Appearance holds 6 layouts, about 24 dark palettes, 10 light palettes, 11 level-
 - **T6. City as the reward.** The Cliffside City is the most distinctive idea in the app, and today it lives in a layout option. DECIDE: make the city a page of its own ("City") where each branch's building grows with its level, reachable from any layout. That makes levels visible without changing how you log.
 - **T7. Branch colour discipline.** Use each branch colour for its dot, its bar and its page accent only. Keep red and orange for overdue and due-soon so they always mean urgency.
 - **T8. Type scale.** The small-caps serif titles and the system sans body work well together. Fix a scale of four sizes (12, 14, 17, 24) and remove one-off sizes.
-- **T9. Light mode pass.** Light mode was not reviewed in this round. Check every branch hero in light mode once the contrast fix (B5) is in.
+- **T9. Light mode pass.** Light mode was not reviewed in this round. Check every branch hero in light mode (B5 was withdrawn: the token check passes).
 
 ## Branch by branch
 
@@ -244,7 +244,7 @@ Depends on: Rounds 1 to 3 finished. A generic building for user-made branches de
 
 Work in four rounds so the app is usable after each one.
 
-1. **Round 1, trust the data:** B1, B2, B3, B4, B5, B8, F4.
+1. **Round 1, trust the data:** B1 (wording only), B2, B3, B8, F4. (B4, B5 withdrawn 2026-11-14.)
 2. **Round 2, simplify Home and phone:** H1, H2, H3, H5, X1 to X3, L1, L2, L3, L4, L7.
 3. **Round 3, look back:** F1, F2, D1, D2, F9, H6.
 4. **Round 4, trim and grow:** T1 to T5, X4, X5, X8, then C1, Pe1, M1, M2, F5, and the remaining branch items as you want them.
