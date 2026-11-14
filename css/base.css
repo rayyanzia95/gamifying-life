@@ -583,6 +583,16 @@ h1 {
   margin-right: 0;
 }
 
+/* Group header in the dark palette picker (Warm, Cool…): spans the whole grid row. */
+.choice-head {
+  grid-column: 1 / -1;
+  margin: 10px 0 2px;
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+
 .choice label:has(input:disabled) {
   color: var(--muted);
 }
@@ -591,7 +601,7 @@ h1 {
   font-size: 0.8125rem;
 }
 
-/* Three dots in a palette's own colours: background, accent, a branch colour. */
+/* A pill in the palette's own --bg with three dots: accent, a warm branch, a cool branch. */
 .swatch {
   display: inline-flex;
   gap: 3px;
@@ -609,8 +619,8 @@ h1 {
   background: var(--accent);
 }
 
-.swatch i:nth-child(2) { background: var(--health); }
-.swatch i:nth-child(3) { background: var(--money); }
+.swatch i:nth-child(2) { background: var(--c-money); }     /* a warm branch */
+.swatch i:nth-child(3) { background: var(--c-academics); } /* a cool branch */
 
 /* Deen top card: level badge beside the prayer dial, Quran bar underneath. */
 .summary-row {

@@ -43,7 +43,12 @@ function choiceGroup(key, { label, options, range }, current) {
   group.dataset.key = key; // lets CSS lay out long groups (the palettes) differently
   const legend = document.createElement("legend");
   legend.textContent = label;
-  const rows = range ? [rangeRow(key, range, current)] : options.map(option => choiceRow(key, option, current));
+  const rows = range ? [rangeRow(key, range, current)] : options.flatMap((option, i) => {
+    // A small header wherever the palette group changes (only the dark palettes have groups).
+    const startsGroup = option.group && option.group !== options[i - 1]?.group;
+    const head = startsGroup ? [Object.assign(document.createElement("p"), { className: "choice-head", textContent: PALETTE_GROUPS[option.group] })] : [];
+    return [...head, choiceRow(key, option, current)];
+  });
   group.append(legend, ...rows);
   return group;
 }
