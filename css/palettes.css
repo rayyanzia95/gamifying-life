@@ -3,7 +3,8 @@
    settings.js puts the choices on <html> as data-palette, data-type, data-bars,
    data-ticks and data-motion; everything below is keyed off those.
 
-   Palettes: each one sets a few base colours and the seven branch colours.
+   Palettes: each one sets the same schema (bg, surface, surface-2, border, text, text-2, text-3,
+   accent, on-accent, --c-deen … --c-chores); base.css maps the older short names onto it.
    :is(:root, *) lets a small swatch on the Settings page carry a palette too, and
    makes these rules strong enough to beat the light/dark blocks at the top.
    "classic" has no rules, so it is the original light/dark look. */
@@ -35,17 +36,20 @@
   color-scheme: dark;
   --bg: #0f0a03;
   --surface: #171005;
-  --text: #ffd9a0;
-  --muted: #a98a5e;
+  --surface-2: #1e170b;
   --border: #3d2c10;
+  --text: #ffd9a0;
+  --text-2: #a98a5e;
+  --text-3: #8a6c41;
   --accent: #ffb000;
-  --deen: #ffb000;
-  --chores: #ff8a1f;
-  --health: #ffd24d;
-  --academics: #e6a35c;
-  --money: #f7c97a;
-  --personal: #ff9d4a;
-  --people: #ffe0a1;
+  --on-accent: #0f0a03;
+  --c-deen: #ffb000;
+  --c-health: #ffd24d;
+  --c-academics: #e6a35c;
+  --c-money: #f7c97a;
+  --c-people: #ffe0a1;
+  --c-personal: #ff9d4a;
+  --c-chores: #ff8a1f;
 }
 
 /* Ice on graphite */
@@ -53,17 +57,20 @@
   color-scheme: dark;
   --bg: #14161a;
   --surface: #1b1e23;
-  --text: #e8edf2;
-  --muted: #8f99a5;
+  --surface-2: #22252a;
   --border: #313840;
+  --text: #e8edf2;
+  --text-2: #8f99a5;
+  --text-3: #737c88;
   --accent: #cfe3ff;
-  --deen: #e4ebf3;
-  --chores: #b8c9de;
-  --health: #9fb8d6;
-  --academics: #f4f4f0;
-  --money: #7fa6d6;
-  --personal: #c6d2e6;
-  --people: #d9e4f4;
+  --on-accent: #14161a;
+  --c-deen: #e4ebf3;
+  --c-health: #9fb8d6;
+  --c-academics: #f4f4f0;
+  --c-money: #7fa6d6;
+  --c-people: #d9e4f4;
+  --c-personal: #c6d2e6;
+  --c-chores: #b8c9de;
 }
 
 /* Cyan / teal */
@@ -71,17 +78,20 @@
   color-scheme: dark;
   --bg: #061112;
   --surface: #0a1a1b;
-  --text: #bff4ee;
-  --muted: #62a09b;
+  --surface-2: #112122;
   --border: #184442;
+  --text: #bff4ee;
+  --text-2: #62a09b;
+  --text-3: #44827d;
   --accent: #2de2c8;
-  --deen: #2de2c8;
-  --chores: #4dc9e8;
-  --health: #8af5de;
-  --academics: #35b0b8;
-  --money: #a6ecf5;
-  --personal: #50d6a8;
-  --people: #6fd8f2;
+  --on-accent: #061112;
+  --c-deen: #2de2c8;
+  --c-health: #8af5de;
+  --c-academics: #35b0b8;
+  --c-money: #a6ecf5;
+  --c-people: #6fd8f2;
+  --c-personal: #50d6a8;
+  --c-chores: #4dc9e8;
 }
 
 /* Branch colours on dark */
@@ -89,17 +99,20 @@
   color-scheme: dark;
   --bg: #121314;
   --surface: #1a1b1d;
-  --text: #e6e6e3;
-  --muted: #8e8e8a;
+  --surface-2: #212224;
   --border: #303133;
+  --text: #e6e6e3;
+  --text-2: #8e8e8a;
+  --text-3: #73736f;
   --accent: #e6e6e3;
-  --deen: #4fae78;
-  --chores: #e3a24a;
-  --health: #e57ea3;
-  --academics: #8f8ff0;
-  --money: #5cc8b0;
-  --personal: #b98ae6;
-  --people: #6fa0f2;
+  --on-accent: #121314;
+  --c-deen: #4fae78;
+  --c-health: #e57ea3;
+  --c-academics: #8f8ff0;
+  --c-money: #5cc8b0;
+  --c-people: #6fa0f2;
+  --c-personal: #b98ae6;
+  --c-chores: #e3a24a;
 }
 
 /* Paper terminal (light) */
@@ -107,17 +120,20 @@
   color-scheme: light;
   --bg: #efebdd;
   --surface: #f6f2e6;
-  --text: #2a2a26;
-  --muted: #6a675b;
+  --surface-2: #e5e1d3;
   --border: #c4bea9;
+  --text: #2a2a26;
+  --text-2: #6a675b;
+  --text-3: #838073;
   --accent: #a35f0a;
-  --deen: #2e7d4f;
-  --chores: #b8730f;
-  --health: #c9507a;
-  --academics: #5b5bd6;
-  --money: #0f8a7a;
-  --personal: #8a4cc2;
-  --people: #2563c9;
+  --on-accent: #efebdd;
+  --c-deen: #2e7d4f;
+  --c-health: #c9507a;
+  --c-academics: #5b5bd6;
+  --c-money: #0f8a7a;
+  --c-people: #2563c9;
+  --c-personal: #8a4cc2;
+  --c-chores: #b8730f;
 }
 
 /* Neon arcade */
@@ -125,17 +141,20 @@
   color-scheme: dark;
   --bg: #0b0716;
   --surface: #140d26;
-  --text: #f1ecff;
-  --muted: #a79bd0;
+  --surface-2: #1b142e;
   --border: #33265e;
+  --text: #f1ecff;
+  --text-2: #a79bd0;
+  --text-3: #8478ab;
   --accent: #ff2bd6;
-  --deen: #39ff88;
-  --chores: #ffb020;
-  --health: #ff3d9a;
-  --academics: #8a8bff;
-  --money: #19f0d0;
-  --personal: #c45bff;
-  --people: #3db0ff;
+  --on-accent: #0b0716;
+  --c-deen: #39ff88;
+  --c-health: #ff3d9a;
+  --c-academics: #8a8bff;
+  --c-money: #19f0d0;
+  --c-people: #3db0ff;
+  --c-personal: #c45bff;
+  --c-chores: #ffb020;
 }
 
 /* Sci-fi HUD */
@@ -143,17 +162,20 @@
   color-scheme: dark;
   --bg: #050b10;
   --surface: #08141c;
-  --text: #d6f4ff;
-  --muted: #76a9bd;
+  --surface-2: #0f1b23;
   --border: #12414f;
+  --text: #d6f4ff;
+  --text-2: #76a9bd;
+  --text-3: #54879a;
   --accent: #29d3ff;
-  --deen: #3dffa0;
-  --chores: #ffc83d;
-  --health: #ff5c8a;
-  --academics: #8794ff;
-  --money: #2de2c8;
-  --personal: #c885ff;
-  --people: #4dc3ff;
+  --on-accent: #050b10;
+  --c-deen: #3dffa0;
+  --c-health: #ff5c8a;
+  --c-academics: #8794ff;
+  --c-money: #2de2c8;
+  --c-people: #4dc3ff;
+  --c-personal: #c885ff;
+  --c-chores: #ffc83d;
 }
 
 /* Parchment (light) */
@@ -161,17 +183,20 @@
   color-scheme: light;
   --bg: #e9dcb9;
   --surface: #f5ead0;
-  --text: #35260f;
-  --muted: #6f5a36;
+  --surface-2: #dfd2af;
   --border: #a98532;
+  --text: #35260f;
+  --text-2: #6f5a36;
+  --text-3: #88724d;
   --accent: #9a6c10;
-  --deen: #3b6a37;
-  --chores: #a3541a;
-  --health: #9c3248;
-  --academics: #434f8e;
-  --money: #2d7767;
-  --personal: #76398a;
-  --people: #2d609c;
+  --on-accent: #e9dcb9;
+  --c-deen: #3b6a37;
+  --c-health: #9c3248;
+  --c-academics: #434f8e;
+  --c-money: #2d7767;
+  --c-people: #2d609c;
+  --c-personal: #76398a;
+  --c-chores: #a3541a;
 }
 
 /* Candlelit RPG */
@@ -179,17 +204,20 @@
   color-scheme: dark;
   --bg: #18110a;
   --surface: #231a0e;
-  --text: #f0dfb8;
-  --muted: #b09a70;
+  --surface-2: #2a2115;
   --border: #6b5326;
+  --text: #f0dfb8;
+  --text-2: #b09a70;
+  --text-3: #907b52;
   --accent: #e0b04a;
-  --deen: #86bb74;
-  --chores: #e39d4b;
-  --health: #dc788e;
-  --academics: #95a0e4;
-  --money: #70c8b4;
-  --personal: #bf8fda;
-  --people: #80ace4;
+  --on-accent: #18110a;
+  --c-deen: #86bb74;
+  --c-health: #dc788e;
+  --c-academics: #95a0e4;
+  --c-money: #70c8b4;
+  --c-people: #80ace4;
+  --c-personal: #bf8fda;
+  --c-chores: #e39d4b;
 }
 
 /* Vaporwave */
@@ -197,17 +225,20 @@
   color-scheme: dark;
   --bg: #1a0b33;
   --surface: #241046;
-  --text: #fdeaff;
-  --muted: #c3a6e8;
+  --surface-2: #2b184f;
   --border: #58308f;
+  --text: #fdeaff;
+  --text-2: #c3a6e8;
+  --text-3: #9f83c2;
   --accent: #ff71ce;
-  --deen: #05ffa1;
-  --chores: #ffd166;
-  --health: #ff71ce;
-  --academics: #9a98ff;
-  --money: #01cdfe;
-  --personal: #b967ff;
-  --people: #62adff;
+  --on-accent: #1a0b33;
+  --c-deen: #05ffa1;
+  --c-health: #ff71ce;
+  --c-academics: #9a98ff;
+  --c-money: #01cdfe;
+  --c-people: #62adff;
+  --c-personal: #b967ff;
+  --c-chores: #ffd166;
 }
 
 /* Glass (light) */
@@ -215,17 +246,20 @@
   color-scheme: light;
   --bg: #eef1f8;
   --surface: #ffffff;
-  --text: #1c1c1e;
-  --muted: #62626b;
+  --surface-2: #e4e7ee;
   --border: #d9dde8;
+  --text: #1c1c1e;
+  --text-2: #62626b;
+  --text-3: #7c7c86;
   --accent: #007aff;
-  --deen: #2aa84a;
-  --chores: #e08600;
-  --health: #e0264f;
-  --academics: #5856d6;
-  --money: #00a090;
-  --personal: #a043d0;
-  --people: #0a74e8;
+  --on-accent: #eef1f8;
+  --c-deen: #2aa84a;
+  --c-health: #e0264f;
+  --c-academics: #5856d6;
+  --c-money: #00a090;
+  --c-people: #0a74e8;
+  --c-personal: #a043d0;
+  --c-chores: #e08600;
 }
 
 /* JRPG blue */
@@ -233,17 +267,20 @@
   color-scheme: dark;
   --bg: #0c1234;
   --surface: #1a2a70;
-  --text: #ffffff;
-  --muted: #b4c2f4;
+  --surface-2: #213379;
   --border: #5a6cc8;
+  --text: #ffffff;
+  --text-2: #b4c2f4;
+  --text-3: #8e9bcb;
   --accent: #ffd23f;
-  --deen: #5eea8a;
-  --chores: #ffc23f;
-  --health: #ff7ab0;
-  --academics: #a39eff;
-  --money: #4eead8;
-  --personal: #dba0ff;
-  --people: #74bcff;
+  --on-accent: #0c1234;
+  --c-deen: #5eea8a;
+  --c-health: #ff7ab0;
+  --c-academics: #a39eff;
+  --c-money: #4eead8;
+  --c-people: #74bcff;
+  --c-personal: #dba0ff;
+  --c-chores: #ffc23f;
 }
 
 /* Type. Fonts come from Google Fonts (settings.js fetches only the chosen one).
@@ -381,7 +418,7 @@ h2,
 
 [data-ticks="pill"] .tick:has(input:checked) {
   background: var(--accent);
-  color: var(--bg);
+  color: var(--on-accent);
   font-weight: 600;
 }
 

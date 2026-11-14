@@ -103,7 +103,7 @@
 .hud-past { fill: color-mix(in srgb, var(--accent) 8%, transparent); }
 .hud-now { stroke: var(--accent); stroke-width: 2; }
 .hud-now-box { fill: var(--accent); }
-.hud-now-text { font: 700 12px var(--hud-mono); fill: var(--bg); text-anchor: middle; dominant-baseline: central; }
+.hud-now-text { font: 700 12px var(--hud-mono); fill: var(--on-accent); text-anchor: middle; dominant-baseline: central; }
 
 .hud-mid {
   display: grid;

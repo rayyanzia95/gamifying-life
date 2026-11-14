@@ -20,7 +20,7 @@
   content: ""; position: absolute; width: 28px; height: 28px; border-radius: 50%;
   border: 1.5px solid var(--control-border);
 }
-.ql-tick svg { width: 14px; height: 14px; opacity: 0; position: relative; color: #fff; }
+.ql-tick svg { width: 14px; height: 14px; opacity: 0; position: relative; color: var(--on-accent); }
 .ql-tick.on::before { background: var(--c, var(--accent)); border-color: var(--c, var(--accent)); }
 .ql-tick.on svg { opacity: 1; }
 
@@ -28,7 +28,7 @@
   min-height: 44px; padding: 0 18px; border-radius: 999px; font-weight: 600; font-size: 0.875rem;
   border: 1px solid var(--control-border); background: var(--surface);
 }
-.ql-btn.primary { background: var(--c, var(--accent)); border-color: var(--c, var(--accent)); color: #fff; }
+.ql-btn.primary { background: var(--c, var(--accent)); border-color: var(--c, var(--accent)); color: var(--on-accent); }
 .ql-btn.done { background: none; color: var(--muted); font-weight: 500; }
 
 .ql-pr { display: flex; align-items: center; gap: 6px; }
@@ -68,7 +68,7 @@
 }
 .ql-ring {
   flex: none; width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center;
-  border: 1.5px solid var(--control-border); color: #fff; margin: 0 2px;
+  border: 1.5px solid var(--control-border); color: var(--on-accent); margin: 0 2px;
 }
 .ql-ring svg { width: 14px; height: 14px; opacity: 0; }
 .ql-item.isdone .ql-ring { background: var(--c); border-color: var(--c); }

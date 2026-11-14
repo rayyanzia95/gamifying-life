@@ -2,17 +2,27 @@
 /* Colours live here as variables, so dark mode only has to swap the values. */
 :root {
   color-scheme: light;
-  --round: 1; /* corner setting: 0 square, 1 slight, 1.75 round */
   --bg: #ffffff;
   --surface: #ffffff;
-  --text: #1f1f1d;
-  --muted: #5f5e5a;
+  --surface-2: #f5f5f5;
   --border: #e2e2dc;
+  --text: #1f1f1d;
+  --text-2: #5f5e5a;
+  --text-3: #7d7c78;
+  --accent: #2e7d4f;
+  --on-accent: #ffffff;
+  --c-deen: #2e7d4f;
+  --c-health: #c9507a;
+  --c-academics: #5b5bd6;
+  --c-money: #0f8a7a;
+  --c-people: #2563c9;
+  --c-personal: #8a4cc2;
+  --c-chores: #b8730f;
+  --round: 1; /* corner setting: 0 square, 1 slight, 1.75 round */
   --line: #ecece6;
   --control-border: #d9d9d2;
   --disabled-text: #c4c4bd;
   --disabled-bg: #f4f4f0;
-  --accent: #2e7d4f;
   --accent-soft: #8cc5a1;
   --dial-open: #cfe5d6;
   --bonus: #7f77dd;
@@ -27,13 +37,6 @@
   --econ: #b86a0b;
   --astro: #7a4cc2;
   --skills: #5f6b7a;
-  --deen: #2e7d4f;
-  --chores: #b8730f;
-  --health: #c9507a;
-  --academics: #5b5bd6;
-  --money: #0f8a7a;
-  --personal: #8a4cc2;
-  --people: #2563c9;
 }
 
 /* Dark values. Used when the device is in dark mode (unless you picked light),
@@ -43,14 +46,24 @@
     color-scheme: dark;
     --bg: #1a1a18;
     --surface: #262624;
-    --text: #ecebe6;
-    --muted: #a3a29b;
+    --surface-2: #2d2d2b;
     --border: #383835;
+    --text: #ecebe6;
+    --text-2: #a3a29b;
+    --text-3: #85847d;
+    --accent: #4fae78;
+    --on-accent: #1a1a18;
+    --c-deen: #4fae78;
+    --c-health: #e57ea3;
+    --c-academics: #8f8ff0;
+    --c-money: #5cc8b0;
+    --c-people: #6fa0f2;
+    --c-personal: #b98ae6;
+    --c-chores: #e3a24a;
     --line: #2e2e2b;
     --control-border: #4a4a45;
     --disabled-text: #5f5e5a;
     --disabled-bg: #222220;
-    --accent: #4fae78;
     --accent-soft: #2f6146;
     --dial-open: #23402f;
     --bonus: #9d96ec;
@@ -65,13 +78,6 @@
   --econ: #e3a24a;
   --astro: #a989e6;
   --skills: #9aa5b4;
-    --deen: #4fae78;
-    --chores: #e3a24a;
-    --health: #e57ea3;
-    --academics: #8f8ff0;
-    --money: #5cc8b0;
-    --personal: #b98ae6;
-    --people: #6fa0f2;
     }
 }
 
@@ -79,14 +85,24 @@
   color-scheme: dark;
   --bg: #1a1a18;
   --surface: #262624;
-  --text: #ecebe6;
-  --muted: #a3a29b;
+  --surface-2: #2d2d2b;
   --border: #383835;
+  --text: #ecebe6;
+  --text-2: #a3a29b;
+  --text-3: #85847d;
+  --accent: #4fae78;
+  --on-accent: #1a1a18;
+  --c-deen: #4fae78;
+  --c-health: #e57ea3;
+  --c-academics: #8f8ff0;
+  --c-money: #5cc8b0;
+  --c-people: #6fa0f2;
+  --c-personal: #b98ae6;
+  --c-chores: #e3a24a;
   --line: #2e2e2b;
   --control-border: #4a4a45;
   --disabled-text: #5f5e5a;
   --disabled-bg: #222220;
-  --accent: #4fae78;
   --accent-soft: #2f6146;
   --dial-open: #23402f;
   --bonus: #9d96ec;
@@ -101,13 +117,22 @@
   --econ: #e3a24a;
   --astro: #a989e6;
   --skills: #9aa5b4;
-  --deen: #4fae78;
-  --chores: #e3a24a;
-  --health: #e57ea3;
-  --academics: #8f8ff0;
-  --money: #5cc8b0;
-  --personal: #b98ae6;
-  --people: #6fa0f2;
+}
+
+/* The palette schema is the block above (bg, surface, surface-2, border, text, text-2, text-3, accent,
+   on-accent and the seven --c-* branch colours). The older short names below point at it, so every
+   existing var(--muted) or var(--deen) keeps working. [data-palette] repeats them on a palette swatch,
+   which carries a palette of its own. */
+:root,
+[data-palette] {
+  --muted: var(--text-2);
+  --deen: var(--c-deen);
+  --health: var(--c-health);
+  --academics: var(--c-academics);
+  --money: var(--c-money);
+  --people: var(--c-people);
+  --personal: var(--c-personal);
+  --chores: var(--c-chores);
 }
 
 /* hidden always hides, even on elements whose class sets display: flex or grid. */
@@ -244,7 +269,7 @@ h1 {
   font-weight: 700;
   line-height: 18px;
   border-radius: calc(6px * var(--round));
-  color: var(--bg);
+  color: var(--on-accent);
   font-variant-numeric: tabular-nums;
 }
 
@@ -645,7 +670,7 @@ h1 {
 .rating button[aria-pressed="true"] {
   background: var(--accent);
   border-color: var(--accent);
-  color: var(--bg);
+  color: var(--on-accent);
 }
 
 .checks {

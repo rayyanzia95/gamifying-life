@@ -90,7 +90,7 @@
 .city-stage.is-still .city-tag { font-size: 0.75rem; padding: 0 6px; }
 .city-stage.is-still .city-tag .lv { display: none; }
 
-.city-tag:is(:hover, :focus-visible) { background: var(--c); color: var(--bg); }
+.city-tag:is(:hover, :focus-visible) { background: var(--c); color: var(--on-accent); }
 
 .city-side { display: grid; gap: 14px; min-width: 0; }
 
