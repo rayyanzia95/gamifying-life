@@ -148,8 +148,8 @@
 /* Level climb columns */
 .hud-cols {
   display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 6px;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 3px;
   height: 150px;
 }
 
@@ -161,6 +161,7 @@
   display: grid;
   grid-template-rows: 1fr auto auto;
   gap: 3px;
+  min-width: 0;
   text-align: center;
 }
 
@@ -178,8 +179,8 @@
 
 @keyframes hud-rise { from { height: 0; } }
 
-.hud-col b { font-size: 1rem; color: var(--c); }
-.hud-col span:last-child { font-size: 0.75rem; color: var(--muted); }
+.hud-col b { font-size: 0.875rem; color: var(--c); }
+.hud-col span:last-child { font-size: 0.6875rem; letter-spacing: 0; color: var(--muted); }
 
 /* Targets: the next exams, the soonest locked on */
 .hud-targets {
