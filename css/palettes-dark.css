@@ -65,48 +65,6 @@
   --c-chores: #9db1a3;
 }
 
-/* Dusk drive · Standard · playful · hue 300, accent 10 · branches L 0.740 */
-:is(:root, *)[data-palette="r2-dusk"] {
-  color-scheme: dark;
-  --bg: #14101d;
-  --surface: #1b1724;
-  --surface-2: #221e2b;
-  --border: #3a3545;
-  --text: #e9e6f0;
-  --text-2: #aba3bb;
-  --text-3: #867f96;
-  --accent: #fa90a1;
-  --on-accent: #250e12;
-  --c-deen: #2fc3b6;
-  --c-health: #7fbe75;
-  --c-academics: #7fabf6;
-  --c-money: #d6a04b;
-  --c-people: #e88aa9;
-  --c-personal: #b699eb;
-  --c-chores: #ada7bb;
-}
-
-/* Flight deck · Standard · muted · hue 248, accent 72 · branches L 0.740 */
-:is(:root, *)[data-palette="r2-deck"] {
-  color-scheme: dark;
-  --bg: #0f1317;
-  --surface: #161a1e;
-  --surface-2: #1d2125;
-  --border: #313941;
-  --text: #e3e9ee;
-  --text-2: #9ea9b4;
-  --text-3: #78838f;
-  --accent: #eba440;
-  --on-accent: #211301;
-  --c-deen: #2fc3b6;
-  --c-health: #7fbe75;
-  --c-academics: #6bb0f3;
-  --c-money: #caa647;
-  --c-people: #e88aa9;
-  --c-personal: #af9bef;
-  --c-chores: #9cadbd;
-}
-
 /* Arcane tide · Standard · cool · hue 292, accent 185 · branches L 0.740 */
 :is(:root, *)[data-palette="r2-arcane"] {
   color-scheme: dark;
@@ -212,27 +170,6 @@
   --c-chores: #baa798;
 }
 
-/* Lab bench · Standard · muted · hue 190, accent 166 · branches L 0.740 */
-:is(:root, *)[data-palette="r2-lab"] {
-  color-scheme: dark;
-  --bg: #0e1414;
-  --surface: #141b1a;
-  --surface-2: #1b2221;
-  --border: #2d3b3a;
-  --text: #e1eae9;
-  --text-2: #9aacaa;
-  --text-3: #738684;
-  --accent: #5dcca3;
-  --on-accent: #031b12;
-  --c-deen: #2fc3b6;
-  --c-health: #7fbe75;
-  --c-academics: #6bb0f3;
-  --c-money: #caa647;
-  --c-people: #e88aa9;
-  --c-personal: #af9bef;
-  --c-chores: #96b1af;
-}
-
 /* Royal court · Standard · warm · hue 355, accent 86 · branches L 0.740 */
 :is(:root, *)[data-palette="r2-court"] {
   color-scheme: dark;
@@ -273,25 +210,4 @@
   --c-people: #e88aa9;
   --c-personal: #af9bef;
   --c-chores: #96b1b4;
-}
-
-/* Signal · Standard · cool · hue 265, accent 258 · branches L 0.740 */
-:is(:root, *)[data-palette="r2-signal"] {
-  color-scheme: dark;
-  --bg: #111316;
-  --surface: #18191d;
-  --surface-2: #1f2024;
-  --border: #343840;
-  --text: #e5e8ed;
-  --text-2: #a3a8b2;
-  --text-3: #7c828d;
-  --accent: #84b6ff;
-  --on-accent: #0a1627;
-  --c-deen: #2fc3b6;
-  --c-health: #7fbe75;
-  --c-academics: #7fabf6;
-  --c-money: #d6a04b;
-  --c-people: #e88aa9;
-  --c-personal: #af9bef;
-  --c-chores: #a2abbe;
 }

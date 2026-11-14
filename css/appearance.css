@@ -233,27 +233,6 @@
   --c-chores: #afa6ba;
 }
 
-/* Glass (dark) · Standard · cool · hue 262, accent 252 · branches L 0.740 */
-:is(:root, *)[data-palette="glassd"] {
-  color-scheme: dark;
-  --bg: #101318;
-  --surface: #161a1f;
-  --surface-2: #1d2126;
-  --border: #323843;
-  --text: #e3e8f0;
-  --text-2: #a0a8b7;
-  --text-3: #798292;
-  --accent: #79b9ff;
-  --on-accent: #071728;
-  --c-deen: #2fc3b6;
-  --c-health: #7fbe75;
-  --c-academics: #7fabf6;
-  --c-money: #d6a04b;
-  --c-people: #e88aa9;
-  --c-personal: #af9bef;
-  --c-chores: #a1abbe;
-}
-
 /* Chalkboard · Calm · muted · hue 190, accent 92 · branches L 0.740 */
 :is(:root, *)[data-palette="noted"] {
   color-scheme: dark;
@@ -317,27 +296,6 @@
   --c-chores: #a0b9a4;
 }
 
-/* Void violet · Standard · cool · hue 297, accent 295 · branches L 0.740 */
-:is(:root, *)[data-palette="void"] {
-  color-scheme: dark;
-  --bg: #14101d;
-  --surface: #1b1724;
-  --surface-2: #221e2b;
-  --border: #393546;
-  --text: #e9e6f0;
-  --text-2: #aaa4bc;
-  --text-3: #847e95;
-  --accent: #baa3ff;
-  --on-accent: #171226;
-  --c-deen: #2fc3b6;
-  --c-health: #7fbe75;
-  --c-academics: #7fabf6;
-  --c-money: #d6a04b;
-  --c-people: #e88aa9;
-  --c-personal: #b39aed;
-  --c-chores: #aca7bc;
-}
-
 /* Solar flare · Loud · warm · hue 38, accent 42 · branches L 0.760 */
 :is(:root, *)[data-palette="solar"] {
   color-scheme: dark;
@@ -357,27 +315,6 @@
   --c-people: #ff869a;
   --c-personal: #ca95ff;
   --c-chores: #c9a99f;
-}
-
-/* Abyss · Standard · cool · hue 248, accent 222 · branches L 0.740 */
-:is(:root, *)[data-palette="abyss"] {
-  color-scheme: dark;
-  --bg: #08141f;
-  --surface: #0f1b26;
-  --surface-2: #16222d;
-  --border: #2c3947;
-  --text: #e1e9f1;
-  --text-2: #97aabd;
-  --text-3: #728496;
-  --accent: #49c5eb;
-  --on-accent: #011922;
-  --c-deen: #2fc3b6;
-  --c-health: #7fbe75;
-  --c-academics: #6bb0f3;
-  --c-money: #caa647;
-  --c-people: #e88aa9;
-  --c-personal: #af9bef;
-  --c-chores: #9cadbd;
 }
 
 /* Cozy pixel · Standard · hue 86, accent 44 · branches L 0.545 */

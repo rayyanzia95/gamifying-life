@@ -199,27 +199,6 @@
   --c-chores: #796f59;
 }
 
-/* Candlelit RPG · Standard · warm · hue 68, accent 80 · branches L 0.740 */
-:is(:root, *)[data-palette="candle"] {
-  color-scheme: dark;
-  --bg: #191109;
-  --surface: #20180f;
-  --surface-2: #271f16;
-  --border: #423527;
-  --text: #eee6de;
-  --text-2: #b7a491;
-  --text-3: #92806d;
-  --accent: #dfaa47;
-  --on-accent: #1f1401;
-  --c-deen: #44c3a5;
-  --c-health: #93ba65;
-  --c-academics: #7fabf6;
-  --c-money: #d6a04b;
-  --c-people: #ec8a98;
-  --c-personal: #be96e7;
-  --c-chores: #b8a897;
-}
-
 /* Vaporwave · Loud · playful · hue 302, accent 345 · branches L 0.760 */
 :is(:root, *)[data-palette="vapor"] {
   color-scheme: dark;

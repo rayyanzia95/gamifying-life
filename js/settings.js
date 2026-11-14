@@ -29,7 +29,6 @@ const GENERAL_CHOICES = {
 const PALETTES = [
   { value: "classic", label: "Classic", mode: "both" },
   { value: "amber", label: "Amber terminal", mode: "dark", group: "warm" },
-  { value: "candle", label: "Candlelit RPG", mode: "dark", group: "warm" },
   { value: "r2-ember", label: "Ember forge", mode: "dark", group: "warm" },
   { value: "solar", label: "Solar flare", mode: "dark", group: "warm" },
   { value: "r2-forest", label: "Forest & brass", mode: "dark", group: "warm" },
@@ -37,28 +36,21 @@ const PALETTES = [
   { value: "r2-script", label: "Scriptorium", mode: "dark", group: "warm" },
   { value: "ice", label: "Ice on graphite", mode: "dark", group: "cool" },
   { value: "r2-space", label: "Deep space", mode: "dark", group: "cool" },
-  { value: "abyss", label: "Abyss", mode: "dark", group: "cool" },
   { value: "r2-obs", label: "Observatory", mode: "dark", group: "cool" },
   { value: "r2-arcane", label: "Arcane tide", mode: "dark", group: "cool" },
   { value: "teal", label: "Cyan / teal", mode: "dark", group: "cool" },
   { value: "hud", label: "Sci-fi HUD", mode: "dark", group: "cool" },
-  { value: "void", label: "Void violet", mode: "dark", group: "cool" },
-  { value: "glassd", label: "Glass (dark)", mode: "dark", group: "cool" },
-  { value: "r2-signal", label: "Signal", mode: "dark", group: "cool" },
   { value: "r2-chart", label: "Chart room", mode: "dark", group: "cool" },
   { value: "neon", label: "Neon arcade", mode: "dark", group: "loud" },
   { value: "vapor", label: "Vaporwave", mode: "dark", group: "loud" },
   { value: "matrix", label: "Matrix", mode: "dark", group: "loud" },
   { value: "pixeld", label: "Cozy pixel", mode: "dark", group: "loud" },
   { value: "jrpg", label: "JRPG blue", mode: "dark", group: "loud" },
-  { value: "r2-dusk", label: "Dusk drive", mode: "dark", group: "loud" },
   { value: "r2-moss", label: "Moss & stone", mode: "dark", group: "muted" },
   { value: "noted", label: "Chalkboard", mode: "dark", group: "muted" },
   { value: "r2-ronin", label: "Ronin", mode: "dark", group: "muted" },
-  { value: "r2-lab", label: "Lab bench", mode: "dark", group: "muted" },
   { value: "multi", label: "Branch colours on dark", mode: "dark", group: "muted" },
   { value: "brutd", label: "Console", mode: "dark", group: "muted" },
-  { value: "r2-deck", label: "Flight deck", mode: "dark", group: "muted" },
   { value: "paper", label: "Paper terminal", mode: "light" },
   { value: "parch", label: "Parchment", mode: "light" },
   { value: "glass", label: "Glass", mode: "light" },
@@ -72,6 +64,13 @@ const PALETTES = [
 
 // Small headers in the dark palette picker; group = the palette's temperature or energy.
 const PALETTE_GROUPS = { warm: "Warm", cool: "Cool", loud: "Playful / loud", muted: "Muted" };
+
+// Palettes merged away as near-duplicates (2026-11-13). A saved or synced old choice reads as the one kept,
+// so nobody lands on a palette that no longer has colours.
+const RETIRED_PALETTES = {
+  "r2-deck": "brutd", glassd: "ice", "r2-signal": "ice", void: "r2-arcane",
+  "r2-dusk": "r2-arcane", candle: "amber", abyss: "r2-space", "r2-lab": "r2-moss",
+};
 
 const palettesFor = mode => PALETTES.filter(p => p.mode === mode || p.mode === "both");
 
@@ -308,8 +307,10 @@ function isAllowed(choice, value) {
 function loadSettings() {
   const stored = storedSettings();
   return Object.fromEntries(
-    Object.entries(SETTING_CHOICES).map(([key, choice]) =>
-      [key, isAllowed(choice, stored[key]) ? stored[key] : defaultChoice(choice)])
+    Object.entries(SETTING_CHOICES).map(([key, choice]) => {
+      const value = key.startsWith("palette") ? RETIRED_PALETTES[stored[key]] ?? stored[key] : stored[key];
+      return [key, isAllowed(choice, value) ? value : defaultChoice(choice)];
+    })
   );
 }
 
