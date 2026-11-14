@@ -118,3 +118,20 @@ function durationLabel(minutes) {
   const rest = Math.round(minutes % 60);
   return hours > 0 ? `${hours} h ${rest} min` : `${rest} min`;
 }
+
+// Save change(events) and return an undo. change must not mutate its argument. Undo works by event id:
+// whatever the change added is removed, whatever it removed or changed is put back, and everything else
+// (say, events sync pulled in meanwhile) is left alone.
+function commitWithUndo(change) {
+  const before = loadEvents();
+  const after = withIds(change(before));
+  saveEvents(after);
+  const was = new Map(before.map(e => [e.id, e]));
+  const now = new Set(after.map(e => e.id));
+  const added = after.filter(e => !was.has(e.id));
+  const changed = after.filter(e => was.has(e.id) && was.get(e.id) !== e);
+  const removed = before.filter(e => !now.has(e.id));
+  const restore = [...removed, ...changed.map(e => was.get(e.id))];
+  const gone = new Set([...added, ...changed].map(e => e.id));
+  return () => saveEvents([...loadEvents().filter(e => !gone.has(e.id)), ...restore]);
+}

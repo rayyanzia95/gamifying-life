@@ -2,11 +2,8 @@
 // Spend / Study sheet and the Undo toast. Data from today-items.js, writers from quick-log.js.
 // drawQuickLog(events) is called by home.js render(); a tap saves, then Home redraws through render().
 
-const QL_TOAST_MS = 6000;
 const QL_CHECK = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8.5l3.2 3L13 4.5"/></svg>';
 
-let qlUndo = null;
-let qlToastTimer = 0;
 
 function qlNow() {
   const d = new Date();
@@ -96,19 +93,7 @@ function drawQuickLog(events) {
 // ---- Toast ----
 
 function qlShowToast(message, undo) {
-  const toast = document.getElementById("ql-toast");
-  qlUndo = undo;
-  clearTimeout(qlToastTimer);
-  toast.replaceChildren(message);
-  if (undo) {
-    const button = document.createElement("button");
-    button.type = "button";
-    button.dataset.ql = "undo";
-    button.textContent = "Undo";
-    toast.append(button);
-  }
-  toast.hidden = false;
-  qlToastTimer = setTimeout(() => { toast.hidden = true; qlUndo = null; }, QL_TOAST_MS);
+  showUndo(message, undo, qlRedraw);
 }
 
 function qlRedraw() {
@@ -182,7 +167,6 @@ function qlTapItem(act, item) {
 }
 
 function qlHandle(act) {
-  if (act === "undo") { qlUndo?.(); qlUndo = null; document.getElementById("ql-toast").hidden = true; return qlRedraw(); }
   if (act === "spend") return qlOpenSheet("spend");
   if (act === "study-sheet") return qlOpenSheet("study");
   if (act === "close") return document.getElementById("ql-sheet").close();

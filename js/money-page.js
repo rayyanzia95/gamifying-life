@@ -29,12 +29,12 @@ function showError(element, message) {
 // Removes one event equal to `event` (the copy the page was drawn from).
 // JSON.stringify turns both into text, so two separate copies can be compared.
 function removeEvent(event) {
-  const events = loadEvents();
   const key = JSON.stringify(event);
-  const index = events.findIndex(e => JSON.stringify(e) === key);
+  const index = loadEvents().findIndex(e => JSON.stringify(e) === key);
   if (index === -1) return;
-  saveEvents(events.filter((_, i) => i !== index));
+  const undo = commitWithUndo(events => events.filter((_, i) => i !== index));
   render();
+  showUndo("Removed", undo, render);
 }
 
 // A list row: text on the left, a small × that removes the event on the right.
@@ -142,17 +142,19 @@ function addSpend(category) {
   }
   const spend = { date: logDate, activity: "spend", cents, category };
   const key = JSON.stringify(editing);
-  const events = loadEvents();
-  const editIndex = editing ? events.findIndex(e => JSON.stringify(e) === key) : -1;
-  // A spend means the day isn't a no-spend day any more.
-  const kept = events.filter(e => !isNoSpendOn(logDate)(e));
-  saveEvents(editIndex === -1
-    ? [...kept, spend]
-    : kept.map(e => (JSON.stringify(e) === key ? spend : e)));
+  const undo = commitWithUndo(events => {
+    const editIndex = editing ? events.findIndex(e => JSON.stringify(e) === key) : -1;
+    // A spend means the day isn't a no-spend day any more.
+    const kept = events.filter(e => !isNoSpendOn(logDate)(e));
+    return editIndex === -1
+      ? [...kept, spend]
+      : kept.map(e => (JSON.stringify(e) === key ? spend : e));
+  });
   input.value = "";
   editing = null;
   showError(error, "");
   render();
+  showUndo(`${dollars(cents)} ${categoryName(category)} added`, undo, render);
 }
 
 function toggleNoSpend() {

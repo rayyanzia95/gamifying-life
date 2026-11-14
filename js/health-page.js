@@ -11,11 +11,12 @@ function todaySleep(events) {
 // Merge changes into today's sleep event and swap it in for the old one.
 // Spread (...) copies the object, so nothing saved earlier is changed in place.
 function saveSleep(changes) {
-  const events = loadEvents();
-  const updated = { ...todaySleep(events), ...changes };
-  const others = events.filter(e => !(isSleep(e) && e.date === updated.date));
-  saveEvents([...others, updated]);
+  const undo = commitWithUndo(events => {
+    const updated = { ...todaySleep(events), ...changes };
+    return [...events.filter(e => !(isSleep(e) && e.date === updated.date)), updated];
+  });
   render();
+  showUndo("Sleep saved", undo, render);
 }
 
 // Bed and wake streak: a night counts once both times are logged.
@@ -186,13 +187,14 @@ function todayDiet(events) {
 }
 
 function saveDiet(changes) {
-  const events = loadEvents();
-  const day = todayDiet(events);
-  const isNew = !events.includes(day);
-  const updated = { ...day, ...(isNew ? backfillFields(day.date) : {}), ...changes };
-  const others = events.filter(e => !(isDiet(e) && e.date === updated.date));
-  saveEvents([...others, updated]);
+  const undo = commitWithUndo(events => {
+    const day = todayDiet(events);
+    const isNew = !events.includes(day);
+    const updated = { ...day, ...(isNew ? backfillFields(day.date) : {}), ...changes };
+    return [...events.filter(e => !(isDiet(e) && e.date === updated.date)), updated];
+  });
   render();
+  showUndo("Meal saved", undo, render);
 }
 
 // A day counts once it reaches DIET.streakXp. Forgiving like sleep.

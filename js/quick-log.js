@@ -11,20 +11,8 @@ function qlId() {
   return crypto.randomUUID();
 }
 
-// Save change(events) and return the undo. change must not mutate its argument.
-function qlCommit(change) {
-  const before = loadEvents();
-  const after = change(before);
-  saveEvents(after);
-  const was = new Map(before.map(e => [e.id, e]));
-  const now = new Set(after.map(e => e.id));
-  const added = after.filter(e => !was.has(e.id));
-  const changed = after.filter(e => was.has(e.id) && was.get(e.id) !== e);
-  const removed = before.filter(e => !now.has(e.id));
-  const restore = [...removed, ...changed.map(e => was.get(e.id))];
-  const gone = new Set([...added, ...changed].map(e => e.id));
-  return () => saveEvents([...loadEvents().filter(e => !gone.has(e.id)), ...restore]);
-}
+// commitWithUndo (storage.js) saves change(events) and returns the undo.
+const qlCommit = commitWithUndo;
 
 // This week's latest match, like the "undo the latest tick" buttons on the branch pages.
 const qlLastThisWeek = (events, matches) =>

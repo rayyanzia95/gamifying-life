@@ -16,23 +16,24 @@ function findEvent(events, prayerId, setId, date = todayString()) {
 }
 
 function toggleDone(prayerId, setId, date = prayerDate) {
-  let events = loadEvents();
+  const events = loadEvents();
   const prayer = PRAYERS.find(p => p.id === prayerId);
   const isMain = setId === mainSet(prayer).id;
   // Not before its window opens (a stale page); unticking is always fine.
   if (!findEvent(events, prayerId, setId, date) && !prayerOpen(prayerId, date)) return render();
 
-  if (findEvent(events, prayerId, setId, date)) {
-    events = events.filter(e => {
-      const sameDay = e.date === date && e.prayer === prayerId;
-      if (!sameDay) return true;
-      return !(isMain || e.set === setId);
-    });
-  } else {
-    events.push({ date, prayer: prayerId, set: setId, ...backfillFields(date) });
-  }
-  saveEvents(clampAfterPrayerDua(events));
+  const ticked = !findEvent(events, prayerId, setId, date);
+  const undo = commitWithUndo(all => {
+    if (!ticked) {
+      return clampAfterPrayerDua(all.filter(e => {
+        const sameDay = e.date === date && e.prayer === prayerId;
+        return !sameDay || !(isMain || e.set === setId);
+      }));
+    }
+    return clampAfterPrayerDua([...all, { date, prayer: prayerId, set: setId, ...backfillFields(date) }]);
+  });
   render();
+  showUndo(`${prayer.name} ${ticked ? "ticked" : "unticked"}`, undo, render);
 }
 
 // Save today's count for an activity as one event (none when it's 0),

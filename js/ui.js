@@ -159,3 +159,37 @@ function makeDayNav(title, date, onChange, tag = "h2") {
   nav.append(prev, heading, next);
   return nav;
 }
+
+// ---- Undo toast (shared by every page; Home's #ql-toast is the same element) ----
+
+const UNDO_TOAST_MS = 6000;
+let undoToastTimer = 0;
+
+// Show "message · Undo" for 6 s, replacing any earlier toast. Undo runs undo(), hides the toast, then onUndo().
+function showUndo(message, undo, onUndo) {
+  let toast = document.getElementById("ql-toast");
+  if (!toast) {
+    toast = document.createElement("div");
+    toast.id = "ql-toast";
+    toast.className = "ql-toast";
+    toast.setAttribute("role", "status");
+    toast.setAttribute("aria-live", "polite");
+    document.body.append(toast);
+  }
+  clearTimeout(undoToastTimer);
+  toast.replaceChildren(message);
+  if (undo) {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.textContent = "Undo";
+    button.addEventListener("click", () => {
+      clearTimeout(undoToastTimer);
+      toast.hidden = true;
+      undo();
+      onUndo?.();
+    });
+    toast.append(button);
+  }
+  toast.hidden = false;
+  undoToastTimer = setTimeout(() => { toast.hidden = true; }, UNDO_TOAST_MS);
+}
