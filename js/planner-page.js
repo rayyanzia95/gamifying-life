@@ -1,14 +1,18 @@
-// Renders planner.html: one day of the academic plan (schedule.js) with its deadline
-// sidebar, the week grid, the month calendar or the Deadlines tab (planner-deadlines.js).
-// Ticking a planned study block logs it as 30-min study blocks for its course,
+// Renders planner.html: one day of the plan (schedule.js) as flat rows with its deadline
+// column, the week grid, the month calendar or the Deadlines tab (planner-deadlines.js).
+// Rows come from planner-rows.js.
+// Ticking a planned STUDY block logs it as 30-min study blocks for its course,
 // one event each, all tagged with the block's id so unticking removes exactly those:
 // { date, activity: "study", course: "phys", block: "b.2026-11-12.phys-midterm-2-prep" }
 // They count like any study block: XP, today's 4, and damage to that course's boss.
+// Ticking a CHORE or MSA row only remembers it, and scoring never sees it:
+// { date, activity: "planned", block: "b.2026-11-12.dishes" }
 
 let shownDate = todayString();
 
+// Ids of every ticked block, study or not.
 function plannedTicks(events) {
-  return new Set(events.filter(e => isStudy(e) && e.block).map(e => e.block));
+  return new Set(events.filter(e => (isStudy(e) || e.activity === "planned") && e.block).map(e => e.block));
 }
 
 function toggleBlock(date, block) {
@@ -16,8 +20,10 @@ function toggleBlock(date, block) {
   if (plannedTicks(events).has(block.id)) {
     saveEvents(events.filter(e => e.block !== block.id));
   } else {
-    const logged = Array.from({ length: blockCount(block) },
-      () => ({ date, activity: "study", course: block.course, block: block.id }));
+    const logged = block.kind === "study"
+      ? Array.from({ length: blockCount(block) },
+        () => ({ date, activity: "study", course: block.course, block: block.id }))
+      : [{ date, activity: "planned", block: block.id }];
     saveEvents([...events, ...logged]);
   }
   render();
@@ -29,98 +35,54 @@ function clockLabel(hhmm) {
   return `${hours % 12 || 12}:${String(minutes).padStart(2, "0")}`;
 }
 
-// A study block gets a tick (not on future days); classes and exams are shown only.
-function blockRow(date, block, ticked) {
-  const row = document.createElement("li");
-  row.className = `plan-row plan-${block.kind}`;
-
-  const time = document.createElement("span");
-  time.className = "plan-time";
-  time.textContent = `${clockLabel(block.from)}–${clockLabel(block.to)}`;
-
-  const body = document.createElement("div");
-  const title = block.kind === "study"
-    ? makeCheckbox(block.title, ticked.has(block.id), () => toggleBlock(date, block))
-    : document.createElement("span");
-  if (block.kind === "study") {
-    title.querySelector("input").disabled = date > todayString();
-    if (ticked.has(block.id)) title.classList.add("done");
-  } else {
-    title.textContent = block.title;
-  }
-  title.classList.add("plan-title");
-  body.append(title);
-
-  const count = blockCount(block);
-  const blocksText = block.kind === "study" ? `${count} block${count === 1 ? "" : "s"}` : "";
-  const details = [block.note, blocksText].filter(Boolean);
-  if (details.length > 0) {
-    const note = document.createElement("div");
-    note.className = "muted plan-note";
-    note.textContent = details.join(" · ");
-    body.append(note);
-  }
-
-  row.append(time, body);
-  return row;
-}
-
+// The schedule card: the day's focus line, then every block as a flat row.
 function drawDay(events) {
   const blocks = scheduleFor(shownDate);
   const ticked = plannedTicks(events);
-  const studyBlocks = blocks.filter(b => b.kind === "study");
-  const done = studyBlocks.filter(b => ticked.has(b.id));
+  const tickable = blocks.filter(isTickable);
+  const done = tickable.filter(b => ticked.has(b.id)).length;
+  const percent = tickable.length > 0 ? (done / tickable.length) * 100 : 0;
 
-  const heading = document.createElement("h2");
-  heading.textContent = dayLabel(shownDate, { weekday: "long", month: "long", day: "numeric" });
-  const sub = document.createElement("span");
-  sub.className = "muted";
-  sub.textContent = studyBlocks.length > 0 ? `${done.length} of ${studyBlocks.length} done` : "";
-  heading.append(sub);
+  const source = shownDate in PLANNED_DAYS ? "Detailed plan" : shownDate >= SCHEDULE.templateStart
+    && shownDate <= SCHEDULE.templateEnd ? "Weekly template" : "";
+  const rows = blocks.map(block => planBlockRow(shownDate, block, ticked, b => toggleBlock(shownDate, b)));
+  const card = planCard("Schedule", null, rows, "Nothing scheduled");
+  card.querySelector(".pl-card-head").append(el("span", "", source));
 
-  const list = document.createElement("ul");
-  list.className = "plain-list";
-  list.append(...blocks.map(block => blockRow(shownDate, block, ticked)));
-
-  const empty = document.createElement("p");
-  empty.className = "muted";
-  empty.textContent = "Nothing planned";
-
-  document.getElementById("day").replaceChildren(heading, blocks.length > 0 ? list : empty);
+  document.getElementById("day").replaceChildren(card);
+  document.getElementById("nav-label").textContent = dayLabel(shownDate, { weekday: "long", month: "long", day: "numeric" });
+  document.getElementById("nav-done").textContent = tickable.length > 0 ? `${done} of ${tickable.length} done` : "";
+  document.getElementById("nav-bar").style.width = `${percent}%`;
 }
 
-// The sidebar beside the Day view, like the Planner's: what's due that day,
-// anything still open from before today (only when looking at today), and the
-// 7 days after. Rows tick like the Academics page (deadline-list.js).
+// The column beside the schedule, like the old Planner's: what's due that day, anything
+// still open from before today (only when looking at today), and the 7 days after.
 function drawDaySide(events) {
   const today = todayString();
   const ticked = tickedDeadlines(events);
   const dueToday = deadlinesBetween(shownDate, shiftDate(shownDate, 1));
   const next = deadlinesBetween(shiftDate(shownDate, 1), shiftDate(shownDate, 8));
   const open = deadlinesBetween("", today).filter(d => !ticked.has(deadlineId(d))); // "" comes before every date
+  const rows = (list, withDate) => list.map(d => planDeadlineRow(d, ticked, { withDate }));
 
-  const sections = [
-    ...deadlineSection("Due this day", dueToday, ticked),
+  document.getElementById("day-side").replaceChildren(
+    planCard("Due this day", dueToday.length, rows(dueToday, false)),
     ...(shownDate === today && open.length > 0
-      ? deadlineSection("Still open from earlier", open, ticked, { withDate: true }) : []),
-    ...deadlineSection("Next 7 days", next, ticked, { withDate: true }),
-  ];
-  document.getElementById("day-side").replaceChildren(...sections);
+      ? [planCard("Still open from earlier", open.length, rows(open, true))] : []),
+    planCard("Next 7 days", next.length, rows(next, true)),
+  );
 }
 
 const EXAM_STRIP_SIZE = 3;
 
-// Across the top, like the Planner's header: the next few exams not ticked yet,
-// with a countdown. Each is a button (data-day) that opens that day.
+// In the header: the next few exams not ticked yet, with a countdown.
+// Each is a button (data-day) that opens that day.
 function drawExamStrip(events, today) {
   const chips = nextExams(events, today, EXAM_STRIP_SIZE).map(exam => {
-    const chip = document.createElement("button");
+    const chip = el("button", `pl-exam course-${exam.course}`);
     chip.type = "button";
-    chip.className = `exam-chip course-${exam.course}`;
     chip.dataset.day = exam.date;
-    const countdown = document.createElement("b");
-    countdown.textContent = countdownLabel(today, exam.date);
-    chip.append(countdown, ` ${courseShort(exam.course)} ${exam.title}`);
+    chip.append(el("b", "", countdownLabel(today, exam.date)), ` ${courseShort(exam.course)} ${exam.title}`);
     return chip;
   });
   document.getElementById("exam-strip").replaceChildren(...chips);
@@ -160,13 +122,13 @@ function render() {
   const containers = { day: "day-view", week: "week", month: "month", deadlines: "deadlines" };
   for (const [name, id] of Object.entries(containers)) document.getElementById(id).hidden = view !== name;
   document.getElementById("day-nav").hidden = view === "deadlines"; // the whole term, no arrows
+  document.getElementById("nav-progress").hidden = view !== "day";
 
   if (view === "deadlines") return drawDeadlines(events);
   if (view === "week") return drawWeek(events, today);
   if (view === "month") return drawMonth(events, today);
   drawDay(events);
   drawDaySide(events);
-  document.getElementById("nav-label").textContent = "";
   document.getElementById("go-today").disabled = shownDate === today;
 }
 
@@ -181,7 +143,7 @@ function showView(name) {
 }
 
 // In the week grid, month calendar or exam strip: a day (data-day) opens that day,
-// a study block ticks.
+// a block ticks, a deadline chip (data-deadline) ticks that deadline.
 function onGridClick(event) {
   const target = event.target.closest("button");
   if (!target) return;
@@ -190,6 +152,7 @@ function onGridClick(event) {
     showView("day");
     return;
   }
+  if (target.dataset.deadline) return toggleDeadline(target.dataset.deadline);
   const block = scheduleFor(target.dataset.date).find(b => b.id === target.dataset.block);
   if (block) toggleBlock(target.dataset.date, block);
 }

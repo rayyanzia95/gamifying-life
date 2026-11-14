@@ -32,23 +32,30 @@
     <button class="icon-button" id="theme-toggle" type="button"></button>
   </div>
   <a class="back" href="academics.html">← Academics</a>
-  <h1>Planner</h1>
-  <div class="exam-strip" id="exam-strip" aria-label="Next exams"></div>
-  <div class="view-tabs" role="tablist" aria-label="Planner views">
-    <button type="button" role="tab" data-view="day">Day</button>
-    <button type="button" role="tab" data-view="week">Week</button>
-    <button type="button" role="tab" data-view="month">Month</button>
-    <button type="button" role="tab" data-view="deadlines">Deadlines</button>
+  <header class="pl-top">
+    <div class="pl-hrow">
+      <h1>Planner</h1>
+      <div class="pl-tabs" role="tablist" aria-label="Planner views">
+        <button type="button" role="tab" data-view="day">Today</button>
+        <button type="button" role="tab" data-view="week">Week</button>
+        <button type="button" role="tab" data-view="month">Month</button>
+        <button type="button" role="tab" data-view="deadlines">Deadlines</button>
+      </div>
+      <div class="pl-exams" id="exam-strip" aria-label="Next exams"></div>
+    </div>
+  </header>
+  <div class="pl-nav" id="day-nav">
+    <span class="pl-ctl">
+      <button type="button" id="prev-day" aria-label="Back">←</button>
+      <button type="button" id="go-today">Today</button>
+      <button type="button" id="next-day" aria-label="Forward">→</button>
+    </span>
+    <h2 id="nav-label"></h2>
+    <span id="nav-progress" class="pl-progress"><span class="pl-sub" id="nav-done"></span><span class="pl-pbar"><i id="nav-bar"></i></span></span>
   </div>
-  <div class="day-nav" id="day-nav">
-    <button type="button" id="prev-day" aria-label="Back">←</button>
-    <button type="button" id="go-today">Today</button>
-    <button type="button" id="next-day" aria-label="Forward">→</button>
-    <span class="muted" id="nav-label"></span>
-  </div>
-  <div class="day-layout" id="day-view">
-    <section class="card" id="day"></section>
-    <section class="card" id="day-side"></section>
+  <div class="pl-tgrid" id="day-view">
+    <div id="day"></div>
+    <div class="pl-side" id="day-side"></div>
   </div>
   <div id="week"></div>
   <div id="month"></div>
@@ -80,6 +87,7 @@
   <script src="js/ui.js"></script>
   <script src="js/deadline-list.js"></script>
   <script src="js/schedule.js"></script>
+  <script src="js/planner-rows.js"></script>
   <script src="js/planner-week.js"></script>
   <script src="js/planner-month.js"></script>
   <script src="js/planner-deadlines.js"></script>

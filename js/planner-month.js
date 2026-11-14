@@ -1,6 +1,6 @@
 // The Month view on planner.html: a Sun–Sat calendar. Each day shows its
 // deadlines as course-coloured chips (exams in orange, ticked ones crossed out),
-// how many planned study blocks are done, and a thin bar. Each day is a button
+// how many of its planned rows (study, chore, MSA) are done, and a thin bar. Each day is a button
 // (data-day) that opens it in the Day view.
 // Only config text goes into this HTML, never anything typed in.
 
@@ -16,26 +16,26 @@ function shiftMonth(date, step) {
 }
 
 function monthChipHtml(deadline, ticked) {
-  const classes = [`month-chip course-${deadline.course}`,
+  const classes = [`pl-mchip course-${deadline.course}`,
     deadline.kind === "exam" ? "exam" : "",
     ticked.has(deadlineId(deadline)) ? "done" : ""].filter(Boolean).join(" ");
   return `<span class="${classes}">${courseShort(deadline.course)} ${deadline.title}</span>`;
 }
 
 function monthDayHtml(date, month, today, planned, ticked) {
-  const studyBlocks = scheduleFor(date).filter(b => b.kind === "study");
-  const done = studyBlocks.filter(b => planned.has(b.id)).length;
+  const tickables = scheduleFor(date).filter(isTickable);
+  const done = tickables.filter(b => planned.has(b.id)).length;
   const due = deadlinesBetween(date, shiftDate(date, 1));
 
-  const classes = ["month-day", date.slice(0, 7) !== month ? "out" : "", date === today ? "today" : ""]
+  const classes = ["pl-mday", date.slice(0, 7) !== month ? "out" : "", date === today ? "today" : ""]
     .filter(Boolean).join(" ");
-  const count = studyBlocks.length > 0 ? `<small>${done}/${studyBlocks.length}</small>` : "";
+  const count = tickables.length > 0 ? `<small>${done}/${tickables.length}</small>` : "";
   const chips = due.slice(0, MONTH_CHIPS).map(d => monthChipHtml(d, ticked)).join("");
-  const more = due.length > MONTH_CHIPS ? `<span class="month-more">+${due.length - MONTH_CHIPS} more</span>` : "";
-  const bar = studyBlocks.length > 0
-    ? `<span class="month-bar"><i style="width: ${(done / studyBlocks.length) * 100}%"></i></span>` : "";
+  const more = due.length > MONTH_CHIPS ? `<span class="pl-more">+${due.length - MONTH_CHIPS} more</span>` : "";
+  const bar = tickables.length > 0
+    ? `<span class="pl-mini"><i style="width: ${(done / tickables.length) * 100}%"></i></span>` : "";
   return `<button type="button" class="${classes}" data-day="${date}">
-    <span class="month-date">${Number(date.slice(8))}${count}</span>${chips}${more}${bar}</button>`;
+    <span class="pl-mdate">${Number(date.slice(8))}${count}</span>${chips}${more}${bar}</button>`;
 }
 
 // Whole weeks (Sun–Sat) covering the month that `date` is in.
@@ -49,7 +49,7 @@ function monthGridHtml(events, date, today) {
   const planned = plannedTicks(events);
   const ticked = tickedDeadlines(events);
   const names = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
-    .map(name => `<span class="month-name">${name}</span>`).join("");
+    .map(name => `<span class="pl-mname">${name}</span>`).join("");
   const cells = days.map(day => monthDayHtml(day, month, today, planned, ticked)).join("");
-  return `<div class="month-grid">${names}${cells}</div>`;
+  return `<div class="pl-mgrid">${names}${cells}</div>${legendHtml()}`;
 }
