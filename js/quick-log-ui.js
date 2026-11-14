@@ -14,12 +14,21 @@ const qlCount = item => (item.goal ? `${item.count}/${item.goal}` : "");
 
 // ---- Drawing ----
 
+// "Opens 5:12 AM · in 7h 3m" for tomorrow's Fajr, under the given title (no tick, no bar).
+function qlFajrTomorrowHtml(today, now, title) {
+  const fajr = prayerOpensAt("fajr", shiftDate(today, 1));
+  return `<div class="ql-pr"><div class="ql-grow"><div class="ql-name">${title}</div>
+      <div class="ql-sub">Opens ${clock12(fajr)} · in ${durationLabel(MINUTES_PER_DAY - now + fajr)}</div></div></div>`;
+}
+
 function qlNowStripHtml(events, today, now, groups) {
   const { windows, current, next } = prayerNow(events, today, now);
   const prayed = windows.filter(w => w.done).length;
   const dots = windows.map(w => `<i class="${w.done ? "on" : ""}${w === current ? " cur" : ""}"></i>`).join("");
   let main;
-  if (current) {
+  if (current && current.id === "isha" && current.done) {
+    main = qlFajrTomorrowHtml(today, now, "Next: Fajr tomorrow");
+  } else if (current) {
     const span = current.end - current.start;
     const left = durationLabel(current.end - now);
     main = `<div class="ql-pr">
@@ -28,9 +37,11 @@ function qlNowStripHtml(events, today, now, groups) {
         <button type="button" class="ql-btn${current.done ? " done" : " primary"}" style="--c:var(--deen)" data-ql="pray:${current.id}" data-key="now-btn">${current.done ? "Prayed" : "I prayed"}</button>
       </div>
       <div class="ql-pbar" role="img" aria-label="${Math.round(100 * (now - current.start) / span)}% of the ${current.name} window passed"><i style="width:${Math.round(100 * (now - current.start) / span)}%"></i></div>`;
+  } else if (next) {
+    main = `<div class="ql-pr"><div class="ql-grow"><div class="ql-name">Next: ${next.name}</div>
+      <div class="ql-sub">Opens ${clock12(next.start)} · in ${durationLabel(next.start - now)}</div></div></div>`;
   } else {
-    main = `<div class="ql-pr"><div class="ql-grow"><div class="ql-name">${next ? `Next: ${next.name}` : "Prayers done for today"}</div>
-      <div class="ql-sub">${next ? `Opens ${clock12(next.start)} · in ${durationLabel(next.start - now)}` : "The next window opens at Fajr"}</div></div></div>`;
+    main = qlFajrTomorrowHtml(today, now, "Prayers done for today");
   }
   return `<div class="ql-hd"><h2>Now · ${clock12(now)}</h2><small>${prayed} of ${windows.length} prayers</small></div>${main}
     <div class="ql-dots" role="img" aria-label="${prayed} of ${windows.length} prayers done today">${dots}</div>`;

@@ -18,3 +18,4 @@ Plan: `docs/round-2-brief.md`. One line per item: code, date, what changed, what
 | Item | Date | What changed | Open |
 | --- | --- | --- | --- |
 | H1 | 2026-11-14 | Home: "Due today" chips gone; Quick log keeps only + Spend and + Workout; Today list is the one place to tick. Study row opens the course picker (done row still takes one back). | Extra dishes/water past the goal now only on Chores/Health pages. |
+| H2 | 2026-11-14 | Home Now strip: once Isha is ticked it switches to "Next: Fajr tomorrow · Opens 6:57 am · in 7 h 7 min" (from tomorrow's prayer times); the rarely-seen "Prayers done for today" line shows the same. Untick Isha via Undo or the Today list. | Isha still shows the tick button until it's prayed. |
