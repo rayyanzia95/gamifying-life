@@ -119,6 +119,7 @@ function showDay(date) {
   logDate = date;
   editing = null;
   document.getElementById("amount").value = "";
+  document.getElementById("note").value = "";
   showError(document.getElementById("log-error"), "");
   render();
 }
@@ -140,7 +141,8 @@ function addSpend(category) {
     input.focus();
     return;
   }
-  const spend = { date: logDate, activity: "spend", cents, category };
+  const noteInput = document.getElementById("note");
+  const spend = buildSpend(editing, { date: logDate, cents, category, note: noteInput.value });
   const key = JSON.stringify(editing);
   const undo = commitWithUndo(events => {
     const editIndex = editing ? events.findIndex(e => JSON.stringify(e) === key) : -1;
@@ -151,10 +153,11 @@ function addSpend(category) {
       : kept.map(e => (JSON.stringify(e) === key ? spend : e));
   });
   input.value = "";
+  noteInput.value = "";
   editing = null;
   showError(error, "");
   render();
-  showUndo(`${dollars(cents)} ${categoryName(category)} added`, undo, render);
+  showUndo(`${dollars(cents)} ${categoryName(category)} ${key === "null" ? "added" : "updated"}`, undo, render);
 }
 
 function toggleNoSpend() {
@@ -170,6 +173,7 @@ function toggleNoSpend() {
 function editSpend(spend) {
   editing = editing && JSON.stringify(editing) === JSON.stringify(spend) ? null : spend;
   document.getElementById("amount").value = editing ? (spend.cents / 100).toFixed(2) : "";
+  document.getElementById("note").value = editing?.note ?? "";
   render();
 }
 
@@ -192,7 +196,7 @@ function spendRow(spend) {
   const row = removableRow("", spend);
   const open = Object.assign(document.createElement("button"), {
     type: "button", className: "row-tap",
-    textContent: `${dollars(spend.cents)} · ${categoryName(spend.category)}`,
+    textContent: `${dollars(spend.cents)} · ${categoryName(spend.category)}${spend.note ? " · " + spend.note : ""}`,
   });
   open.setAttribute("aria-label", "Edit " + open.textContent);
   open.addEventListener("click", () => editSpend(spend));

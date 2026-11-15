@@ -1,7 +1,7 @@
 // Money scoring: logs, deposits, weekly budget, savings goals.
 
 // ---- Money ----
-// A spend: { date, activity: "spend", cents: 850, category: "food" }, one per purchase.
+// A spend: { date, activity: "spend", cents: 850, category: "food", note?: "lunch" }, one per purchase.
 // No spend today: { date, activity: "no-spend" }. A savings deposit: { date, activity: "deposit", cents }.
 // The budget and savings goal are events too, so changing them later doesn't rescore
 // past weeks: { date, activity: "budget", cents } and { date, activity: "savings-goal", name, cents }.
@@ -18,6 +18,21 @@ function isMoneyLog(event) {
 // The first-run "Set a weekly budget" card shows only until any budget event exists.
 function budgetCardOpen(events) {
   return !events.some(e => e.activity === "budget");
+}
+
+const MAX_NOTE = 60;
+
+// A spend's optional note: trimmed, at most MAX_NOTE characters, "" if none.
+function cleanNote(text) {
+  return (text || "").trim().slice(0, MAX_NOTE);
+}
+
+// A new spend, or the edited copy of `old`: same id and date, new amount, category and note.
+// No note means no `note` key. Scoring only reads cents and category, so notes never change XP.
+function buildSpend(old, { date, cents, category, note }) {
+  const { note: _dropped, ...base } = old || { date, activity: "spend" };
+  const text = cleanNote(note);
+  return { ...base, cents, category, ...(text ? { note: text } : {}) };
 }
 
 function isDeposit(event) {

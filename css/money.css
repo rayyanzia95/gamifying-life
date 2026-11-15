@@ -95,6 +95,14 @@
   text-align: left;
   text-decoration: underline dotted;
   text-underline-offset: 3px;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+#note {
+  width: 100%;
+  box-sizing: border-box;
+  margin-top: 8px;
 }
 
 /* ---- Money: calendar card ---- */
