@@ -55,3 +55,13 @@ Plan: `docs/round-2-brief.md`. One line per item: code, date, what changed, what
 | Item | Date | What changed | Open |
 | --- | --- | --- | --- |
 | Perk starters | 2026-11-14 | `PERK_STARTERS` (five examples) in `config.js`; Rewards shows "Some ideas to start" above Perks only when there is no `perk` and no `perk-starters-done` event (`perkStartersOpen`). Edit text and level, drop rows with ×, then "Keep these" (saves normal perk events + `{ activity: "perk-starters-done" }`, one Undo) or "Start empty" (done event only). No XP, sync needs nothing special. `node tests/rewards.test.js`. | Not looked at in a browser yet. |
+
+## Round 4 trim (Phase C)
+
+| Item | Date | What changed | Open |
+| --- | --- | --- | --- |
+| Layouts | 2026-11-14 | Classic, Cockpit HUD, City supported; Orrery, Command wheel, Grimoire and Orrery 3D tilt under "Experimental" (`EXPERIMENTAL_LAYOUTS`), still selectable, saved values kept (65e5af8). | |
+| Level-up effects | 2026-11-14 | Kept none, ring (default), burst, banner, hud, rpg; removed glow, toast, ringburst, lockon, unfurl; old saved values read as ring (`RETIRED_LEVEL_UPS`, `tests/settings.test.js`) (6cdae4e). | |
+| Home loads one layout | 2026-11-14 | `js/home-layout.js` writes only the active layout's CSS/JS (`HOME_LAYOUT_FILES`); a synced layout change reloads Home; a failed file falls back to Classic. Classic, SW off, uncompressed: 62 → 47 requests, 681 → 558 KB (d759d1d). sw v6. | Check offline after v6 installs. |
+| Palette cards | 2026-11-14 | `FEATURED_PALETTES` as swatch cards, rest under "More palettes" (opens itself when a hidden palette is active) (36d0f22). | |
+| Effects Advanced fold | 2026-11-14 | Single switches under "Advanced"; glitch and boot scan default off, so only "All on" turns on glitch, boot, cursor, scanlines (5c57caf). | |
