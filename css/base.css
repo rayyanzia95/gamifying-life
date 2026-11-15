@@ -1321,12 +1321,56 @@ body.nav-open #nav-backdrop {
   display: block;
 }
 
+/* Phones: a bottom tab bar (js/nav.js NAV_TABS). More opens the drawer above it, so ☰ is not needed here. */
+#tab-bar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 30;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  padding-bottom: env(safe-area-inset-bottom);
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+}
+
+#tab-bar :is(a, button) {
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: 3px;
+  min-height: 56px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--muted);
+  font: 0.6875rem system-ui, sans-serif;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+#tab-bar .ic { display: block; width: 22px; height: 22px; }
+#tab-bar .on { color: var(--text); font-weight: 600; }
+#tab-bar a.on .ic { color: var(--tab); }
+#tab-bar :is(a, button):focus-visible { outline: 2px solid var(--gold); outline-offset: -3px; }
+
+@media (max-width: 899px) {
+  body.has-nav { padding-bottom: calc(76px + env(safe-area-inset-bottom)); }
+  .nav-toggle { display: none !important; }
+  #side-nav { bottom: calc(56px + env(safe-area-inset-bottom)); padding-top: 16px; }
+  #nav-backdrop { bottom: calc(56px + env(safe-area-inset-bottom)); }
+  .ql-toast { bottom: calc(68px + env(safe-area-inset-bottom)); }
+}
+
 @media (min-width: 900px) {
   #side-nav {
     transform: none;
     padding-top: 24px;
   }
 
+  #tab-bar,
+  .nav-extra,
   .nav-toggle,
   #nav-backdrop {
     display: none !important;
