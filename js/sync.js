@@ -210,6 +210,7 @@ function canonicalList(events) {
 // If the page just opened, wait for its entrance animations to end first: rebuilding mid-animation makes
 // everything jump to its end state, which looks like the page loading a second time.
 async function redrawPage() {
+  if (typeof homeLayoutStale === "function" && homeLayoutStale()) return location.reload(); // Home loads only its layout's files
   const opening = document.getAnimations().filter(a => a.effect.getComputedTiming().endTime !== Infinity);
   await Promise.allSettled(opening.map(a => a.finished)); // settled: a cancelled animation must not block the redraw
   const running = new Set(document.getAnimations());
