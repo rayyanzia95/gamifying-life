@@ -115,7 +115,7 @@ function keepStarters(rows) {
   const kept = rows.map(r => ({ ...r, text: r.text.trim(), level: Math.min(Math.max(Math.round(r.level), 2), MAX_PERK_LEVEL) }))
     .filter(r => r.text && Number.isFinite(r.level)).map(newPerk);
   const undo = commitWithUndo(all => [...all, ...kept, { date: todayString(), activity: "perk-starters-done" }]);
-  showUndo("Ideas kept", undo, render);
+  showUndo(kept.length ? "Ideas kept" : "Started empty", undo, render);
   render();
 }
 
@@ -129,11 +129,13 @@ function starterRow(starter) {
   const level = Object.assign(document.createElement("input"),
     { className: "money-input perk-level-input", type: "number", min: 2, max: MAX_PERK_LEVEL, value: starter.level });
   level.setAttribute("aria-label", "Level");
+  const lv = Object.assign(document.createElement("span"), { className: "perk-level", textContent: "Lv" });
+  lv.setAttribute("aria-hidden", "true");
   const remove = Object.assign(document.createElement("button"),
     { type: "button", className: "money-remove", textContent: "×" });
   remove.setAttribute("aria-label", "Remove " + starter.text);
   remove.addEventListener("click", () => row.remove()); // local only; the row just leaves the card
-  row.append(name, text, level, remove);
+  row.append(name, text, lv, level, remove);
   row.read = () => ({ branch: starter.branch, text: text.value, level: Number(level.value) });
   return row;
 }
