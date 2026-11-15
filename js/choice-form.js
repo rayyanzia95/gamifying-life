@@ -37,18 +37,41 @@ function rangeRow(key, { min, max }, current) {
   return row;
 }
 
-function choiceGroup(key, { label, options, range }, current) {
-  const group = document.createElement("fieldset");
-  group.className = "choice";
-  group.dataset.key = key; // lets CSS lay out long groups (the palettes) differently
-  const legend = document.createElement("legend");
-  legend.textContent = label;
-  const rows = range ? [rangeRow(key, range, current)] : options.flatMap((option, i) => {
+// Featured palettes become preview cards (radio + swatch + name); the rest go in a native <details> fold,
+// open by default when the saved palette is one of them so the selection is never hidden.
+function paletteCard(key, option, current) {
+  const row = choiceRow(key, option, current);
+  row.classList.add("palette-card");
+  return row;
+}
+
+function optionRows(key, options, current) {
+  return options.flatMap((option, i) => {
     // A small header wherever the palette group changes (only the dark palettes have groups).
     const startsGroup = option.group && option.group !== options[i - 1]?.group;
     const head = startsGroup ? [Object.assign(document.createElement("p"), { className: "choice-head", textContent: PALETTE_GROUPS[option.group] })] : [];
     return [...head, choiceRow(key, option, current)];
   });
+}
+
+function paletteRows(key, options, featured, current) {
+  const shown = options.filter(o => featured.includes(o.value));
+  const rest = options.filter(o => !featured.includes(o.value));
+  const more = document.createElement("details");
+  more.className = "palette-more";
+  more.open = rest.some(o => o.value === current);
+  more.append(Object.assign(document.createElement("summary"), { textContent: "More palettes" }), ...optionRows(key, rest, current));
+  return [...shown.map(o => paletteCard(key, o, current)), ...(rest.length ? [more] : [])];
+}
+
+function choiceGroup(key, { label, options, range, featured }, current) {
+  const group = document.createElement("fieldset");
+  group.className = "choice";
+  group.dataset.key = key; // lets CSS lay out long groups (the palettes) differently
+  const legend = document.createElement("legend");
+  legend.textContent = label;
+  const rows = range ? [rangeRow(key, range, current)]
+    : featured ? paletteRows(key, options, featured, current) : optionRows(key, options, current);
   group.append(legend, ...rows);
   return group;
 }

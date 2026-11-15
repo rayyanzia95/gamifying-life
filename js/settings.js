@@ -79,6 +79,13 @@ const RETIRED_PALETTES = {
 // Level-up effects dropped (2026-11-14). A saved or synced old choice reads as the default, Popup: ring fills.
 const RETIRED_LEVEL_UPS = { glow: "ring", toast: "ring", ringburst: "ring", lockon: "ring", unfurl: "ring" };
 
+// Palettes shown as preview cards (values from PALETTES); the rest sit in the "More palettes" fold.
+// Dark: Classic, then the first of warm/cool/loud/muted, a second warm, and Branch colours (the default).
+const FEATURED_PALETTES = {
+  dark: ["classic", "amber", "r2-ember", "ice", "neon", "r2-moss", "multi"],
+  light: ["classic", "paper", "parch"],
+};
+
 const palettesFor = mode => PALETTES.filter(p => p.mode === mode || p.mode === "both");
 
 // Sci-fi effects (Appearance → Sci-fi FX). Each is its own setting; three of them also have a quieter
@@ -121,8 +128,8 @@ const FX_PRESETS = {
 };
 
 const APPEARANCE_CHOICES = {
-  paletteDark: { label: "Colours in dark mode", options: palettesFor("dark"), default: "multi" },
-  paletteLight: { label: "Colours in light mode", options: palettesFor("light") },
+  paletteDark: { label: "Colours in dark mode", options: palettesFor("dark"), default: "multi", featured: FEATURED_PALETTES.dark },
+  paletteLight: { label: "Colours in light mode", options: palettesFor("light"), featured: FEATURED_PALETTES.light },
   black: {
     label: "Black level (dark mode)",
     options: [

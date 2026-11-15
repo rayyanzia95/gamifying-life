@@ -574,13 +574,50 @@ h1 {
 
 .appearance-form .choice[data-key^="palette"] {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
-  column-gap: 10px;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); /* 2 cards across at 375px */
+  gap: 8px 10px;
 }
 
 .appearance-form .choice[data-key^="palette"] label {
   display: block;
   margin-right: 0;
+}
+
+/* Featured palette: a small card, radio + swatch + name; the picked one gets an accent outline. */
+.appearance-form .choice label.palette-card {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-radius: calc(10px * var(--round));
+}
+
+.appearance-form .choice label.palette-card:has(input:checked) {
+  border-color: var(--accent);
+  outline: 1px solid var(--accent);
+}
+
+/* "More palettes": the grouped list, spanning the whole card grid. */
+.palette-more {
+  grid-column: 1 / -1;
+}
+
+.palette-more summary {
+  cursor: pointer;
+  padding: 6px 0;
+  color: var(--text-3);
+}
+
+.palette-more[open] {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  column-gap: 10px;
+}
+
+.palette-more[open] > summary {
+  grid-column: 1 / -1;
 }
 
 /* Group header in the dark palette picker (Warm, Cool…): spans the whole grid row. */
