@@ -39,6 +39,16 @@
 .ql-dots i { width: 9px; height: 9px; border-radius: 50%; background: var(--line); border: 1.5px solid var(--control-border); }
 .ql-dots i.on { background: var(--deen); border-color: var(--deen); }
 .ql-dots i.cur { border-color: var(--now); }
+/* Coming up: the next two deadlines under the prayer dots (qlUpcomingHtml). */
+.ql-upcoming { display: grid; grid-template-columns: minmax(0, 1fr); gap: 2px; margin-top: 12px; padding-top: 8px; border-top: 1px solid var(--line); }
+.ql-due { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; min-height: 36px; padding: 6px 0 6px 10px;
+  border-left: 3px solid var(--c); color: var(--text); text-decoration: none; font-size: 0.875rem; }
+.ql-due span { flex: 1 1 0; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ql-due small { flex: none; font-size: 0.8125rem; color: var(--muted); }
+.ql-due.exam { border-left-color: var(--now); }
+.ql-due.exam small { color: var(--now); font-weight: 600; }
+.ql-due:hover span { text-decoration: underline; }
+.ql-due:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
 
 /* chips */
 .ql-cats { display: flex; flex-wrap: wrap; gap: 8px; }

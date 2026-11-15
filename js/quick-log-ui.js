@@ -21,6 +21,20 @@ function qlFajrTomorrowHtml(today, now, title) {
       <div class="ql-sub">Opens ${clock12(fajr)} · in ${durationLabel(MINUTES_PER_DAY - now + fajr)}</div></div></div>`;
 }
 
+// The next two deadlines not yet ticked, within three weeks: "ASTRO Quiz: Modules 7–8 · in 2 days".
+// Each links to the Planner. Exams get the exam colour so they stand out from assignments.
+const QL_UPCOMING = { count: 2, days: 21 };
+
+function qlUpcomingHtml(events, today) {
+  const ticked = tickedDeadlines(events);
+  const due = deadlinesBetween(today, shiftDate(today, QL_UPCOMING.days))
+    .filter(d => !ticked.has(deadlineId(d))).slice(0, QL_UPCOMING.count);
+  if (!due.length) return "";
+  const rows = due.map(d => `<a class="ql-due${d.kind === "exam" ? " exam" : ""}" href="planner.html" style="--c:var(--${ACADEMICS.branch})">
+      <span>${courseShort(d.course)} ${d.title}</span><small>${countdownLabel(today, d.date)}</small></a>`).join("");
+  return `<div class="ql-upcoming" role="group" aria-label="Coming up">${rows}</div>`;
+}
+
 function qlNowStripHtml(events, today, now, groups) {
   const { windows, current, next } = prayerNow(events, today, now);
   const prayed = windows.filter(w => w.done).length;
@@ -44,7 +58,8 @@ function qlNowStripHtml(events, today, now, groups) {
     main = qlFajrTomorrowHtml(today, now, "Prayers done for today");
   }
   return `<div class="ql-hd"><h2>Now · ${clock12(now)}</h2><small>${prayed} of ${windows.length} prayers</small></div>${main}
-    <div class="ql-dots" role="img" aria-label="${prayed} of ${windows.length} prayers done today">${dots}</div>`;
+    <div class="ql-dots" role="img" aria-label="${prayed} of ${windows.length} prayers done today">${dots}</div>
+    ${qlUpcomingHtml(events, today)}`;
 }
 
 // One chip: act, label, branch colour and a small meta ("1/3") when it counts something.
