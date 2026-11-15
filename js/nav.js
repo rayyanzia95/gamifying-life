@@ -12,7 +12,7 @@ const NAV_TABS = [
   { name: "Home", page: "index.html", icon: "home", colour: "gold" },
   { name: "Deen", page: "deen.html", icon: "deen", colour: "deen" },
   { name: "Planner", page: "planner.html", icon: "planner", colour: "academics" },
-  { name: "Money", page: "money.html", icon: "money", colour: "money" },
+  { name: "Health", page: "health.html", icon: "health", colour: "health" },
 ];
 
 const currentFile = () => location.pathname.split("/").pop() || "index.html";
