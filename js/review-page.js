@@ -122,7 +122,7 @@ function reviewFacts(events) {
   const inWeek = events.filter(e => e.date >= week && e.date < end);
   const fard = inWeek.filter(e => e.prayer && PRAYERS.some(p => p.id === e.prayer && !p.bonus && mainSet(p).id === e.set));
   const upTo = days.filter(d => d <= todayString()).length;
-  const quests = CHORES.list.filter(c => choreDueThisWeek(events, c, week) > 0);
+  const quests = choreList(events).filter(c => choreDueThisWeek(events, c, week) > 0);
   const questsDone = quests.filter(c => choreLeftThisWeek(events, c, week) === 0).length;
   const money = moneyWeek(events, week);
   const blocks = inWeek.filter(isStudy).length;

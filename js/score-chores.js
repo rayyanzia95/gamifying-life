@@ -4,6 +4,28 @@
 // A quest's window is the weeks that cover it: this week, plus last week for
 // everyWeeks: 2. Ticks count as core XP until the target is met in the window.
 
+// ---- The chore list you can edit ----
+// The default list in config.js, with a saved edit laid over it (config event "chores":
+// { list: [chores], archived: [ids] }). A saved chore replaces the default with the same id; new ones
+// are added at the end. Ids never change, so old ticks always find their chore.
+function choreListAll(events) {
+  const saved = configValue(events, "chores", { list: [], archived: [] }).list ?? [];
+  const byId = new Map(saved.map(c => [c.id, c]));
+  const merged = CHORES.list.map(c => byId.get(c.id) ?? c);
+  const added = saved.filter(c => !CHORES.list.some(d => d.id === c.id));
+  return [...merged, ...added];
+}
+
+function choreArchivedIds(events) {
+  return configValue(events, "chores", { archived: [] }).archived ?? [];
+}
+
+// The quests shown and counted now: everything except the archived ones.
+function choreList(events) {
+  const archived = choreArchivedIds(events);
+  return choreListAll(events).filter(c => !archived.includes(c.id));
+}
+
 function isChore(event, choreId) {
   return event.activity === "chore" && event.chore === choreId;
 }
@@ -24,7 +46,7 @@ function choreCount(events, choreId, from, to) {
 
 
 function scoreChore(event, events) {
-  const chore = CHORES.list.find(c => c.id === event.chore);
+  const chore = choreListAll(events).find(c => c.id === event.chore);
   if (!chore) return null;
   const from = choreWindowStart(chore, weekStart(event.date));
   const before = earlierMatches(events, event, from, e => isChore(e, chore.id));
@@ -46,7 +68,7 @@ function choreLeftThisWeek(events, chore, week) {
 }
 
 function choreWeekDone(events, week) {
-  return CHORES.list.every(chore => choreLeftThisWeek(events, chore, week) === 0);
+  return choreList(events).every(chore => choreLeftThisWeek(events, chore, week) === 0);
 }
 
 // Full-week bonuses for every week that has chore ticks and every quest covered.
@@ -69,7 +91,7 @@ function choreWeek(events, week) {
     core += score.core;
     extra += score.extra;
   }
-  const goal = CHORES.list.reduce(
+  const goal = choreList(events).reduce(
     (sum, chore) => sum + choreDueThisWeek(events, chore, week) * chore.xp, 0
   );
   const done = choreWeekDone(events, week);

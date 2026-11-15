@@ -29,7 +29,7 @@ function wheelArc(radius, from, to) {
 
 // One entry per slice: { chore, index, state: "covered" | "done" | "todo" }.
 function wheelSlices(events, week) {
-  return CHORES.list.flatMap(chore => {
+  return choreList(events).flatMap(chore => {
     const covered = choreTarget(chore) - choreDueThisWeek(events, chore, week);
     const done = choreCount(events, chore.id, week, shiftDate(week, 7));
     return Array.from({ length: choreTarget(chore) }, (_, index) => {
@@ -106,7 +106,7 @@ function choreWheelHtml(events, today, before) {
     .map((slice, position) => (slice.index === 0 ? wheelHit(slice.chore, position, count) : ""))
     .join("");
 
-  const left = CHORES.list.reduce((sum, chore) => sum + choreLeftThisWeek(events, chore, week), 0);
+  const left = choreList(events).reduce((sum, chore) => sum + choreLeftThisWeek(events, chore, week), 0);
   const daysLeft = 7 - daysBetween(week, today);
 
   return `<svg class="chore-wheel" viewBox="0 0 ${CHORE_WHEEL.size} ${CHORE_WHEEL.size}" role="img"

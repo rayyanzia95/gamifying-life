@@ -75,3 +75,78 @@
   color: var(--muted);
   margin-top: 3px;
 }
+
+/* Edit chores fold (js/chores-editor.js). Rows wrap so nothing scrolls sideways at 375px. */
+.chore-editor summary {
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.chore-edit-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  padding: 10px 0;
+  border-top: 1px solid var(--line);
+}
+
+.chore-edit-row .chore-field:first-child,
+.chore-actions {
+  grid-column: 1 / -1;
+}
+
+.chore-field {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  font-size: 0.8em;
+  color: var(--muted);
+}
+
+.chore-field input,
+.chore-field select,
+.chore-add input {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  padding: 6px 8px;
+  font: inherit;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--control-border);
+  border-radius: calc(6px * var(--round));
+}
+
+.chore-actions,
+.chore-add,
+.chore-archived {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.chore-add {
+  padding-top: 10px;
+  border-top: 1px solid var(--line);
+}
+
+.chore-add input {
+  flex: 1 1 140px;
+}
+
+.chore-archived {
+  justify-content: space-between;
+  padding: 4px 0;
+}
+
+.chore-btn {
+  padding: 6px 12px;
+  font: inherit;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--control-border);
+  border-radius: calc(6px * var(--round));
+  cursor: pointer;
+}

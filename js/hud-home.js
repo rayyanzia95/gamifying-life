@@ -144,7 +144,7 @@ function hudStatusHtml(events, branches, overallXp) {
     const { core, extra } = todayXp(events, b.id);
     return sum + core + extra;
   }, 0);
-  const left = CHORES.list.reduce((sum, chore) => sum + choreLeftThisWeek(events, chore, weekStart(todayString())), 0);
+  const left = choreList(events).reduce((sum, chore) => sum + choreLeftThisWeek(events, chore, weekStart(todayString())), 0);
   const done = branches.filter(b => b.share >= 1).length;
   return `<div class="hud-panel hud-status">
     <span>XP TODAY <b>+${xpToday}</b></span><span>TOTAL XP <b>${overallXp}</b></span>

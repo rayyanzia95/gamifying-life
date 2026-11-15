@@ -50,7 +50,7 @@ function choreControl(events, chore, week, countThisWeek) {
 }
 
 function drawQuests(events, week) {
-  const rows = CHORES.list.map(chore => {
+  const rows = choreList(events).map(chore => {
     const countThisWeek = choreCount(events, chore.id, week, shiftDate(week, 7));
     const note = document.createElement("span");
     note.className = "muted";
@@ -155,7 +155,7 @@ function tapWheel(chore) {
 
 document.getElementById("wheel").addEventListener("click", event => {
   const hit = event.target.closest("[data-chore]");
-  if (hit) tapWheel(CHORES.list.find(chore => chore.id === hit.dataset.chore));
+  if (hit) tapWheel(choreList(loadEvents()).find(chore => chore.id === hit.dataset.chore));
 });
 
 render();

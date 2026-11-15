@@ -55,7 +55,7 @@ function deenItems(events, today, now) {
 function choreItems(events, today) {
   const week = weekStart(today);
   const day = new Date().toLocaleDateString("en-US", { weekday: "short" });
-  return CHORES.list.flatMap(chore => {
+  return choreList(events).flatMap(chore => {
     const left = choreLeftThisWeek(events, chore, week);
     const tickedToday = events.some(e => isChore(e, chore.id) && e.date === today);
     const counted = choreTarget(chore) > 1;
