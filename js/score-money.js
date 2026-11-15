@@ -15,6 +15,11 @@ function isMoneyLog(event) {
   return event.activity === "spend" || event.activity === "no-spend";
 }
 
+// The first-run "Set a weekly budget" card shows only until any budget event exists.
+function budgetCardOpen(events) {
+  return !events.some(e => e.activity === "budget");
+}
+
 function isDeposit(event) {
   return event.activity === "deposit";
 }

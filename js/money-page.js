@@ -241,10 +241,11 @@ function setBudget(cents) {
   const today = todayString();
   const events = loadEvents();
   const thisWeeks = events.find(e => e.activity === "budget" && e.date >= weekStart(today));
-  saveEvents(thisWeeks
-    ? events.map(e => (e === thisWeeks ? { ...e, cents } : e))
-    : [...events, { date: today, activity: "budget", cents }]);
+  const undo = commitWithUndo(all => (thisWeeks
+    ? all.map(e => (e.id === thisWeeks.id ? { ...e, cents } : e))
+    : [...all, { date: today, activity: "budget", cents }]));
   render();
+  showUndo(`Budget ${dollars(cents)} set`, undo, render);
 }
 
 function payoutHint(week) {
@@ -292,7 +293,9 @@ function drawWeek(events, today) {
   const title = heading("This week", `${dayLabel(start, range)}–${dayLabel(shiftDate(start, 6), range)}`);
   const card = document.getElementById("week");
   if (week.budget === null) {
-    card.replaceChildren(title, mutedLine("Set a weekly budget to see what's left and earn the payout."),
+    const first = budgetCardOpen(events) ? "Set a weekly budget" : "This week";
+    card.replaceChildren(heading(first, `${dayLabel(start, range)}–${dayLabel(shiftDate(start, 6), range)}`),
+      mutedLine("See what's left each week and earn the payout."),
       amountForm({ button: "Set budget", onSave: setBudget }));
     return;
   }
