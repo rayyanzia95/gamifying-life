@@ -78,3 +78,25 @@
   min-height: 72px;
   box-sizing: border-box;
 }
+
+/* Add row: textarea on its own line, then group, rhythm and Add together. */
+.people-form .people-names {
+  flex: 1 1 100%;
+  min-height: 72px;
+  resize: vertical;
+}
+
+.people-form select.money-input {
+  flex: 1 1 auto;
+  min-width: 8ch;
+  width: auto;
+}
+
+.people-form .filter-button {
+  flex: 0 0 auto;
+  align-self: center;
+  min-height: 0;
+  height: auto;
+  padding: 6px 14px;
+  border-radius: calc(8px * var(--round));
+}
