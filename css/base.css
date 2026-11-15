@@ -1360,7 +1360,7 @@ body.nav-open #nav-backdrop {
   .nav-toggle { display: none !important; }
   #side-nav { bottom: calc(56px + env(safe-area-inset-bottom)); padding-top: 16px; }
   #nav-backdrop { bottom: calc(56px + env(safe-area-inset-bottom)); }
-  .ql-toast { bottom: calc(68px + env(safe-area-inset-bottom)); }
+  body .ql-toast { bottom: calc(68px + env(safe-area-inset-bottom)); } /* clear of the tab bar */
 }
 
 @media (min-width: 900px) {
@@ -1565,4 +1565,5 @@ body[data-tab="backup"] [data-panel="backup"] { display: block; }
 }
 
 .ql-toast button { font: inherit; cursor: pointer; }
+.ql-toast:not(:has(button)) { padding: 12px 18px; } /* a plain message (the sync status line) */
 .ql-toast button:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
