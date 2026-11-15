@@ -1,8 +1,7 @@
 # City builder kit
 
-Everything needed for the choice-based city (Round 6 of the brief): what can be built, where, the rules, the 3D
-models, the flat drawings, tests, and a preview page to try it all. **Every file here is new. Nothing in the app
-is changed**, so dropping this in can't break what is already there.
+Everything behind the choice-based city (Round 6 of the brief): what can be built, where, the rules, the 3D
+models, the flat drawings, tests, and a preview page to try it all without touching real data.
 
 ## Try it first
 
@@ -18,7 +17,7 @@ Then open `http://localhost:8000/city-preview.html`. (It needs to be online once
 - The sliders set the overall level (one blueprint per level) and the branch buildings' tier.
 - The preview keeps its builds under its own storage key, so it never touches your real events.
 
-Run the tests with `node tests/city-state.test.js` (21 checks).
+Run the tests with `node tests/city-state.test.js` (22 checks).
 
 ## The files
 
@@ -55,54 +54,25 @@ Saved with `saveEvents` like everything else, so it syncs. `at` is `Date.now()` 
 builds and settles who keeps a slot when two devices built in the same place (the earlier one). Moving edits the
 event's `slot`; removing deletes the event.
 
-## Wiring it into the app
+## How it is wired into the app
 
-These are the R6 commits from the brief, with what the kit already covers.
+Done on 2026-11-14 (see `docs/progress.md`, Round 6).
 
-1. **R6-1, R6-2 (done by the kit).** Add the two script tags, `catalogue.js` then `state.js`, after
-   `js/city-svg.js` on Home. Add `tests/city-state.test.js`. Nothing visible changes.
-2. **R6-3. Starters replace the fixed tables.** `js/city/terrain.js` draws bridges and stairs from
-   `CITY_BRIDGES` and `CITY_STAIRS`; `cityMapSvg` does the same. Empty those two arrays (or delete `addBridges`
-   and `addStairs`) and draw them from `cityState()` as below. The town should look the same as before.
-3. **R6-4. The 3D scene reads the state.** In `js/city/scene.js`:
-   - keep `placed = new Map()` beside `s.districts`;
-   - in `mount`, call `CityBuildKit.sync(s.scene, state, placed, { running })` and swap in
-     `CityBuildKit.roads(state)`;
-   - in `frame`, replace `CityUtils.tick(s.scene, t)` with `CityBuildKit.tick(s.scene, t)` (it calls the old one);
-   - run `collect(group)` on each group `sync` returns in `added`, so their windows follow the glow rules, and
-     optionally `startBuild`-style clipping for the rise animation;
-   - add `models.js` and `scene-kit.js` to `CITY_FILES` in `js/city-home.js`, after `props.js`.
-4. **R6-5. Build mode in the flat city.** In `js/city-home.js`, call `cityBuildMapSvg(items, state, label,
-   { build })` where it calls `cityMapSvg` today. A click on `[data-slot]` opens the sheet. `preview.js` has the
-   sheet (`slotSheet`, `optionRow`) to copy; its classes are in `css/city-build.css`.
-5. **R6-6. Build mode in 3D.** Add `CityBuildKit.markers(state)` to the scene while building, and in
-   `watchPointer` try `CityBuildKit.pickSlot` first, then `CityBuildKit.pickProject`, before the existing
-   "open the branch page" behaviour.
-6. **R6-7 (done by the kit).** All the models exist, not only the first six.
-7. **R6-8 (done by the kit).** `cityRoads(state)`, `CityBuildKit.roads` and the flat version.
-8. **R6-9 (done by the kit).** The "earlier build keeps the slot" rule and its test.
-9. **R6-10. Retire the centre building.** Drop `centre` from `CITY_DISTRICTS` and `CITY_PLOT`, and show
-   `citySummary(state)` ("Village · 2 blueprints") where the centre's tag was. Its pad (cells 5-6, rows 2-3)
-   can then become a new 2 x 2 plateau slot in `CITY_SLOTS`.
+- `index.html` loads `catalogue.js`, `state.js` and `svg.js` after `js/city-svg.js`, and `css/city-build.css`.
+- `js/city-home.js` computes `cityState(events, overall.level, { earned })` on every draw, shows the summary line
+  and the Build button, lazy-loads `models.js` and `scene-kit.js` with the 3D files, and owns build mode: the lit
+  slots (`cityLitSlots`), the sheet (`cityOpenSheet`), and saving through `commitWithUndo` (`cityCommit`).
+- `js/city/scene.js` takes the state in `mount(..., city)`: `drawCity` calls `CityBuildKit.sync`, swaps the roads
+  and markers, and a project added after the first draw rises into place (`startRise`). `frame` calls
+  `CityBuildKit.tick`. A tap in build mode goes to `pickSlot`, then `pickProject`.
+- `CITY_BRIDGES` and `CITY_STAIRS` in `js/city-svg.js` are empty: the old bridges and stairs are `CITY_STARTERS`.
+- The centre building is gone; its pad is the `p-heart` slot.
+- On a phone or with motion off, build mode switches the stage to the flat map (`cityFlatBuild`), because the
+  still 3D view can't be turned to reach a hidden slot.
 
-Two values the app has to supply:
-
-- **The overall level:** `levelInfo(overallXp, LEVELS.overallMultiplier).level`, as `home.js` already computes.
-- **Monuments earned:** `{ boss, ramadan }`. For bosses, count the exams whose boss reached 0 HP and were ticked
-  (`bossState` in `js/score-academics.js`; `bossBonusXp` already finds them). Ramadan has no "completed" event
-  yet, so pass 0 until one exists.
-- **Is a streak alive** (for the train): any of the page streaks with `days > 0 && !paused`.
-
-Also: add the new files to `LOCAL_FILES` in `sw.js` and bump `CACHE_VERSION`. Leave `city-preview.html` out of
-the service worker list; it is a development page.
-
-## A prompt for Claude Code
-
-    Read docs/city-kit.md and the files in js/city/build/. Open city-preview.html locally to see the kit working.
-    Then wire it into the app following "Wiring it into the app", one numbered step per commit, starting at
-    step 2 (R6-3). Before each step tell me which existing files you will change and why. Do not edit the files
-    in js/city/build/ unless a test fails; if you think one needs changing, tell me first. After each step, tell
-    me what to click to check it, run `node tests/city-state.test.js`, and give me the git commands.
+Values the app supplies: the overall level (`levelInfo(overallXp, LEVELS.overallMultiplier).level`), monuments
+earned (`cityEarned`: beaten bosses; Ramadan is 0 until an event records one), and whether a streak is alive for
+the train (`cityStreakAlive`: Quran or Dua).
 
 ## Good to know
 
@@ -120,9 +90,9 @@ the service worker list; it is a development page.
 - **Other maps later:** a map is `CITY_TERRAIN` plus `CITY_PLOT` plus `CITY_SLOTS`. `cityCheckCatalogue(terrain,
   plots)` validates any combination.
 
-## Not included
+## Not built yet
 
-- The in-app wiring itself (steps 2 to 5 and 9 above).
 - The terrain-changing behaviour of the canal, dam and tunnel. Their models exist; the land does not change.
 - Boats and trains travelling between places, seasons, and the sky-as-prayer-dial idea.
+- A "Ramadan completed" event, which the lantern arch waits on.
 - A generic building for user-made branches (that belongs with the product plan's "definitions as data" stage).
