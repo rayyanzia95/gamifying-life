@@ -108,14 +108,13 @@
 
 [data-layout]:not([data-layout="classic"]) .home-centre { order: -1; }
 
-/* One column (under 1000px), Classic layout: what you tap first comes first. Now, the Today list, quick log,
-   then the levels card. .home-side dissolves so its two cards can be ordered among the others. */
+/* One column (under 1000px), Classic layout: the centrepiece on top like the other layouts, then what you tap first: Now, the Today list, quick log. .home-side dissolves so its two cards can be ordered among the others. */
 @media (max-width: 999px) {
   :is(:root:not([data-layout]), [data-layout="classic"]) .home-side { display: contents; }
+  :is(:root:not([data-layout]), [data-layout="classic"]) #home-card { order: 0; }
   :is(:root:not([data-layout]), [data-layout="classic"]) #now-strip { order: 1; }
   :is(:root:not([data-layout]), [data-layout="classic"]) #today-list { order: 2; }
   :is(:root:not([data-layout]), [data-layout="classic"]) #quick-log { order: 3; }
-  :is(:root:not([data-layout]), [data-layout="classic"]) #home-card { order: 4; }
 }
 
 @media (min-width: 1000px) {
