@@ -76,6 +76,11 @@
 .ql-t small { display: block; font-size: 0.8125rem; color: var(--muted); }
 .ql-item.isdone .ql-t { color: var(--muted); text-decoration: line-through; text-decoration-color: var(--control-border); }
 .ql-item.later { opacity: 0.55; cursor: default; }
+.ql-item.soon { opacity: 0.6; }
+/* A finished group's header is a button that folds its rows away. */
+.ql-grp .ql-gh.ql-fold { width: 100%; min-height: 36px; margin: -6px 0 0; padding: 0; background: none; border: 0; cursor: pointer;
+  font-family: inherit; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--c); align-items: center; }
+.ql-fold:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; border-radius: 4px; }
 .ql-ctr { font-size: 0.8125rem; color: var(--muted); font-variant-numeric: tabular-nums; }
 
 /* sheet: a bottom sheet on phones, a dialog on desktop */

@@ -63,19 +63,33 @@ function qlChipsHtml(groups) {
 
 function qlItemHtml(item) {
   const attrs = item.later ? ' aria-disabled="true"' : "";
-  return `<button type="button" class="ql-item${item.done ? " isdone" : ""}${item.later ? " later" : ""}" style="--c:var(--${item.branch})" data-ql="${item.later ? "" : item.act}" data-key="item-${item.act}" aria-pressed="${item.done}"${attrs}>
+  return `<button type="button" class="ql-item${item.done ? " isdone" : ""}${item.later ? " later" : ""}${item.soon ? " soon" : ""}" style="--c:var(--${item.branch})" data-ql="${item.later ? "" : item.act}" data-key="item-${item.act}" aria-pressed="${item.done}"${attrs}>
     <span class="ql-ring" aria-hidden="true">${QL_CHECK}</span>
     <span class="ql-t">${item.label}${item.sub ? `<small>${item.sub}</small>` : ""}</span>
     ${item.goal ? `<span class="ql-ctr">${qlCount(item)}</span>` : ""}</button>`;
+}
+
+// Finished groups the user has opened again (ids). A finished group folds to its header so the list gets
+// shorter as the day goes; a tap on the header shows its rows (to untick one), another tap folds it back.
+let qlOpenGroups = new Set();
+
+function qlGroupHtml(g, meter) {
+  const finished = g.total > 0 && g.done === g.total;
+  const open = !finished || qlOpenGroups.has(g.id);
+  const head = finished
+    ? `<button type="button" class="ql-gh ql-fold" data-ql="fold:${g.id}" data-key="fold-${g.id}" aria-expanded="${open}">
+        <span>${g.name}</span><small>all ${g.total} done ${open ? "▾" : "▸"}</small></button>`
+    : `<div class="ql-gh"><span>${g.name}</span><small>${g.done} of ${g.total}</small></div>`;
+  return `<div class="ql-grp" style="--c:var(--${g.id})" role="group" aria-label="${g.name}, ${g.done} of ${g.total} done">
+      ${head}${meter(g.done, g.total, `var(--${g.id})`)}
+      ${open ? g.items.map(qlItemHtml).join("") : ""}</div>`;
 }
 
 function qlListHtml(groups) {
   const done = groups.reduce((n, g) => n + g.done, 0);
   const total = groups.reduce((n, g) => n + g.total, 0);
   const meter = (n, t, colour) => `<div class="ql-meter" role="img" aria-label="${n} of ${t} done"><i style="width:${t ? Math.round(100 * n / t) : 0}%;background:${colour}"></i></div>`;
-  const body = groups.map(g => `<div class="ql-grp" style="--c:var(--${g.id})" role="group" aria-label="${g.name}, ${g.done} of ${g.total} done">
-      <div class="ql-gh"><span>${g.name}</span><small>${g.done} of ${g.total}</small></div>${meter(g.done, g.total, `var(--${g.id})`)}
-      ${g.items.map(qlItemHtml).join("")}</div>`).join("");
+  const body = groups.map(g => qlGroupHtml(g, meter)).join("");
   return `<div class="ql-hd"><h2>Today</h2><small>${done} of ${total} done</small></div>${meter(done, total, "var(--gold)")}${body}`;
 }
 
@@ -170,6 +184,11 @@ function qlTapItem(act, item) {
 function qlHandle(act) {
   if (act === "spend") return qlOpenSheet("spend");
   if (act === "close") return document.getElementById("ql-sheet").close();
+  if (act.startsWith("fold:")) {
+    const id = act.slice(5);
+    qlOpenGroups = new Set(qlOpenGroups.has(id) ? [...qlOpenGroups].filter(g => g !== id) : [...qlOpenGroups, id]);
+    return qlRedraw();
+  }
   if (act === "nospend") { document.getElementById("ql-sheet").close(); return qlDo("No spend today", qlToggleNoSpend()); }
   if (act.startsWith("cat:")) {
     qlCategory = act.slice(4);

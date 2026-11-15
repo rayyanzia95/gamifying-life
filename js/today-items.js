@@ -1,6 +1,6 @@
 // What is due today, as data (no DOM): Home's "Now" strip and Today checklist draw from this.
 // Needs hud-home.js (hudPrayers), sun.js, prayer-calc.js and the scoring files.
-// An item: { act, label, sub, done, count?, goal?, later?, branch }. act is what a tap does (quick-log-ui.js).
+// An item: { act, label, sub, done, count?, goal?, later?, soon?, branch }. act is what a tap does (quick-log-ui.js).
 
 // Each prayer's open window today in minutes: Fajr to sunrise, then each runs to the next prayer; Isha to midnight.
 function todayPrayerWindows(events, today) {
@@ -28,16 +28,26 @@ function lastStudyCourse(events) {
   return events.findLast(isStudy)?.course ?? ACADEMICS.courses[0].id;
 }
 
+// Deen's rows in the order the day runs: each prayer, with morning adhkar after Fajr and evening adhkar after Asr,
+// then Quran. A prayer whose window hasn't opened is `later` (dimmed, can't be ticked). Evening adhkar before Asr
+// is `soon`: dimmed so it doesn't nag all morning, but still tickable.
 function deenItems(events, today, now) {
-  const items = prayerNow(events, today, now).windows.map(w => ({
-    act: `pray:${w.id}`, label: w.name, done: w.done, later: now < w.start,
-    sub: now < w.start ? `opens ${clock12(w.start)}` : w.done ? "" : now < w.end ? `open until ${clock12(w.end)}` : "window closed",
-  }));
+  const windows = prayerNow(events, today, now).windows;
+  const adhkarAfter = { morning: "fajr", evening: "asr" };
+  const adhkar = a => {
+    const opens = windows.find(w => w.id === adhkarAfter[a.id])?.start ?? 0;
+    const done = events.some(e => e.date === today && isAdhkar(e, a.id));
+    const soon = !done && a.id === "evening" && now < opens;
+    return { act: `adhkar:${a.id}`, label: `${a.name} adhkar`, done, soon, sub: soon ? `from ${clock12(opens)}` : "" };
+  };
+  const items = windows.flatMap(w => [
+    { act: `pray:${w.id}`, label: w.name, done: w.done, later: now < w.start,
+      sub: now < w.start ? `opens ${clock12(w.start)}` : w.done ? "" : now < w.end ? `open until ${clock12(w.end)}` : "window closed" },
+    ...DUA.adhkar.filter(a => adhkarAfter[a.id] === w.id).map(adhkar),
+  ]);
+  items.push(...DUA.adhkar.filter(a => !adhkarAfter[a.id]).map(adhkar));
   const juz = todayRevision(events);
   items.push({ act: "quran", label: "Quran revision", done: juz >= QURAN.dailyTarget, sub: juz > 0 && juz < QURAN.dailyTarget ? `${juz} juz so far` : "" });
-  for (const a of DUA.adhkar) {
-    items.push({ act: `adhkar:${a.id}`, label: `${a.name} adhkar`, done: events.some(e => e.date === today && isAdhkar(e, a.id)), sub: "" });
-  }
   return items;
 }
 
