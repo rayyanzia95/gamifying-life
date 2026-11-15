@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>City builder preview · Gamifying Life</title>
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/palettes.css">
+  <link rel="stylesheet" href="css/palettes-dark.css">
+  <link rel="stylesheet" href="css/layout-city.css">
+  <link rel="stylesheet" href="css/city-build.css">
+</head>
+<!-- A standalone playground for the city builder kit (js/city/build/). It never reads or writes the app's own
+     events: builds made here are kept under their own localStorage key. Nothing links to this page; open it directly. -->
+<body class="cbp-page">
+  <main class="cbp" data-layout="city">
+    <header class="cbp-head">
+      <h1>City builder preview</h1>
+      <div class="cbp-tabs" role="group" aria-label="View">
+        <button class="cb-button" data-view="town" aria-pressed="true">Town (3D)</button>
+        <button class="cb-button" data-view="flat" aria-pressed="false">Town (flat)</button>
+        <button class="cb-button" data-view="gallery" aria-pressed="false">Model gallery</button>
+      </div>
+      <label>Overall level <input id="cbp-level" type="range" min="1" max="20" value="5"> <output id="cbp-level-out">5</output></label>
+      <label>Branch tier <input id="cbp-tier" type="range" min="1" max="6" value="2"> <output id="cbp-tier-out">2</output></label>
+      <label><input id="cbp-build" type="checkbox" checked> Build mode</label>
+      <label><input id="cbp-running" type="checkbox" checked> Streak alive (train runs)</label>
+      <label><input id="cbp-later" type="checkbox"> Unlock terrain projects</label>
+      <button class="cb-button" id="cbp-reset">Reset town</button>
+    </header>
+    <section class="cbp-stage" id="cbp-stage" aria-label="The town">
+      <div class="cbp-status" id="cbp-status"></div>
+      <div class="cbp-hint" id="cbp-hint"></div>
+    </section>
+    <aside class="cbp-side" id="cbp-side" aria-live="polite"></aside>
+  </main>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"
+    integrity="sha384-CI3ELBVUz9XQO+97x6nwMDPosPR5XvsxW2ua7N1Xeygeh1IxtgqtCkGfQY9WWdHu" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"
+    integrity="sha384-wagZhIFgY4hD+7awjQjR4e2E294y6J2HSnd8eTNc15ZubTeQeVRZwhQJ+W6hnBsf" crossorigin="anonymous"></script>
+  <script src="js/city-svg.js"></script>
+  <!-- The app draws its two bridges and four stairs from these tables. Here they are starter projects in the
+       state instead, so the tables are emptied before the land is built. -->
+  <script>CITY_BRIDGES.length = 0; CITY_STAIRS.length = 0;</script>
+  <script src="js/city/utils.js"></script>
+  <script src="js/city/props.js"></script>
+  <script src="js/city/buildings/money.js"></script>
+  <script src="js/city/buildings/health.js"></script>
+  <script src="js/city/buildings/deen.js"></script>
+  <script src="js/city/buildings/academics.js"></script>
+  <script src="js/city/buildings/chores.js"></script>
+  <script src="js/city/buildings/personal.js"></script>
+  <script src="js/city/buildings/people.js"></script>
+  <script src="js/city/terrain.js"></script>
+  <script src="js/city/build/catalogue.js"></script>
+  <script src="js/city/build/state.js"></script>
+  <script src="js/city/build/models.js"></script>
+  <script src="js/city/build/scene-kit.js"></script>
+  <script src="js/city/build/svg.js"></script>
+  <script src="js/city/build/preview.js"></script>
+</body>
+</html>
