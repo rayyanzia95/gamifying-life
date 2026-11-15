@@ -1,0 +1,47 @@
+/* Weekly review (review.html, js/review-page.js). */
+.review-total { margin: 10px 0 0; font-size: 1.05rem; }
+.review-total strong { font-size: 1.6rem; font-variant-numeric: tabular-nums; }
+
+/* XP by branch: this week's bar over a pale bar for the week before. */
+.review-rows { display: grid; gap: 2px; margin-top: 8px; }
+.review-row { display: grid; grid-template-columns: 112px minmax(0, 1fr) 84px; align-items: center; gap: 10px; min-height: 40px;
+  color: var(--text); text-decoration: none; font-size: 0.9375rem; }
+.review-row:hover .review-name { text-decoration: underline; }
+.review-row:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; border-radius: 4px; }
+.review-bar { position: relative; height: 12px; border-radius: 6px; background: var(--line); overflow: hidden; }
+.review-bar i { position: absolute; inset: 0 auto 0 0; border-radius: 6px; background: var(--c); }
+.review-bar i.was { background: color-mix(in srgb, var(--c) 30%, transparent); }
+.review-xp { text-align: right; font-variant-numeric: tabular-nums; }
+.review-xp span { display: block; font-size: 0.75rem; color: var(--muted); }
+.review-xp .up { color: var(--accent); }
+.review-stalled { margin: 10px 0 0; font-size: 0.875rem; }
+
+/* Balance web (same shape rules as Home's level web). */
+.review-web { display: block; width: 100%; max-width: 300px; margin: 6px auto 0; overflow: visible; }
+.review-web .web-shape { fill: color-mix(in srgb, var(--gold) 22%, transparent); stroke: var(--gold); stroke-width: 1.5; stroke-linejoin: round; }
+.review-web .web-label { font-size: 11px; fill: var(--text); font-family: system-ui, sans-serif; }
+.review-days { font-size: 10px; fill: var(--muted); font-family: system-ui, sans-serif; }
+
+/* The week in numbers. */
+.review-facts { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; margin-top: 10px; }
+.review-fact { display: grid; gap: 2px; padding: 10px 12px; border-left: 3px solid var(--c); background: var(--surface-2, var(--line)); border-radius: calc(8px * var(--round)); }
+.review-fact-label { font-size: 0.75rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); }
+.review-fact strong { font-size: 1rem; font-variant-numeric: tabular-nums; }
+.review-fact small { font-size: 0.8125rem; }
+.review-streaks { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 16px; margin: 12px 0 0; font-size: 0.875rem; }
+.review-streak { display: inline-flex; align-items: center; gap: 4px; color: var(--text); }
+
+/* Coming up, the note, earlier notes. */
+.review-ahead, .review-past { margin: 8px 0 0; padding: 0; list-style: none; display: grid; gap: 2px; }
+.review-ahead li { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; padding: 6px 0 6px 10px; border-left: 3px solid var(--academics); font-size: 0.9375rem; }
+.review-ahead li.exam { border-left-color: var(--now); }
+.review-ahead small { flex: none; color: var(--muted); font-size: 0.8125rem; }
+.review-note { display: grid; gap: 8px; }
+.review-note textarea { width: 100%; box-sizing: border-box; padding: 10px 12px; font: inherit; color: var(--text); background: var(--bg);
+  border: 1px solid var(--control-border); border-radius: calc(8px * var(--round)); resize: vertical; }
+.review-note textarea:focus-visible { outline: 2px solid var(--gold); outline-offset: 1px; }
+.review-past li { padding: 8px 0; border-top: 1px solid var(--line); }
+.review-past li:first-child { border-top: 0; }
+.review-past p { margin: 2px 0 0; }
+.review-past-week { padding: 0; min-height: 32px; background: none; border: 0; color: var(--muted); font: inherit; font-size: 0.8125rem; cursor: pointer; text-decoration: underline; }
+@media (max-width: 420px) { .review-row { grid-template-columns: 96px minmax(0, 1fr) 64px; } }

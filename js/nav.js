@@ -29,6 +29,7 @@ function navItems() {
     { name: "Home", page: "index.html", colour: "gold", icon: "home", level: levelInfo(overall, LEVELS.overallMultiplier).level },
     { name: "Planner", page: "planner.html", colour: "academics", icon: "planner" },
     ...BRANCHES.map(b => ({ name: b.name, page: b.page, colour: b.id, icon: b.id, level: levels[b.id] })),
+    { name: "Review", page: "review.html", colour: "muted", icon: "review" },
     { name: "Settings", page: "settings.html", colour: "muted", icon: "settings" },
     // Reached from another page on a wide screen, so these three rows show in the phone drawer only.
     { name: "Study guides", page: "study.html", colour: "academics", icon: "academics", extra: true },

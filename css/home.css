@@ -98,6 +98,7 @@
 @media (max-width: 600px) {
   .home-head::after { content: ""; flex-basis: 100%; order: 2; height: 0; margin-top: -4px; } /* forces the wrap */
   .planner-link { order: 3; margin: 0; }
+  .planner-link[href="planner.html"] { display: none; } /* the tab bar has Planner on a phone */
 }
 .home-date { color: var(--muted); font-size: 0.9375rem; font-family: system-ui, sans-serif; }
 

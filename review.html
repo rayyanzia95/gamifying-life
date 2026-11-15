@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="manifest" href="manifest.webmanifest">
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#1a1a18" media="(prefers-color-scheme: dark)">
+  <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon-180.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Life">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <title>Weekly review · Gamifying Life</title>
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/review.css">
+  <link rel="stylesheet" href="css/palettes.css">
+  <link rel="stylesheet" href="css/palettes-dark.css">
+  <link rel="stylesheet" href="css/appearance.css">
+  <link rel="stylesheet" href="css/anims.css">
+  <link rel="stylesheet" href="css/layout-hud.css">
+  <link rel="stylesheet" href="css/layout-orrery.css">
+  <link rel="stylesheet" href="css/layout-city.css">
+  <link rel="stylesheet" href="css/layout-wheel.css">
+  <link rel="stylesheet" href="css/layout-codex.css">
+  <script src="js/theme.js"></script>
+  <script src="js/settings.js"></script>
+</head>
+<body class="grid-page">
+  <div class="corner">
+    <a class="icon-button" href="settings.html" aria-label="Settings">⚙︎</a>
+    <button class="icon-button" id="theme-toggle" type="button"></button>
+  </div>
+  <a class="back" href="index.html">← Home</a>
+  <h1>Weekly review</h1>
+  <section class="card" id="review-week" aria-label="Which week"></section>
+  <section class="card" id="review-branches" aria-label="XP by branch"></section>
+  <section class="card" id="review-balance" aria-label="Balance"></section>
+  <section class="card" id="review-facts" aria-label="The week in numbers"></section>
+  <section class="card" id="review-ahead" aria-label="Coming up"></section>
+  <section class="card" id="review-note" aria-label="Note for next week"></section>
+  <section class="card" id="review-past" aria-label="Earlier notes"></section>
+
+  <script src="js/config.js"></script>
+  <script src="js/config-academics.js"></script>
+  <script src="js/prayer-times.js"></script>
+  <script src="js/scoring.js"></script>
+  <script src="js/score-chores.js"></script>
+  <script src="js/score-health.js"></script>
+  <script src="js/score-academics.js"></script>
+  <script src="js/score-money.js"></script>
+  <script src="js/score-personal.js"></script>
+  <script src="js/score-people.js"></script>
+  <script src="js/score-levels.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/icons.js"></script>
+  <script src="js/level-popup.js"></script>
+  <script src="js/fx.js"></script>
+  <script src="js/anims.js"></script>
+  <script src="js/level-up.js"></script>
+  <script src="js/nav.js"></script>
+  <script src="js/history.js"></script>
+  <script src="js/hud-page.js"></script>
+  <script src="js/orrery.js"></script>
+  <script src="js/city-build.js"></script>
+  <script src="js/city-svg.js"></script>
+  <script src="js/command-wheel.js"></script>
+  <script src="js/codex.js"></script>
+  <script src="js/streak.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/quran.js"></script>
+  <script src="js/dua.js"></script>
+  <script src="js/review-page.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.js"
+    integrity="sha384-TcHRA3zBbn+Lexh5n+Oil4guNPOS3rjNDpGRAN46u/s/mB2IZ50ceC6TYDU2yvgK" crossorigin="anonymous"></script>
+  <script defer src="js/sync-merge.js"></script>
+  <script defer src="js/sync.js"></script>
+  <script defer src="js/pwa.js"></script>
+</body>
+</html>
