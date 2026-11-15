@@ -94,7 +94,9 @@
   line-height: 1.5;
   white-space: nowrap;
   will-change: transform;
+  visibility: hidden; /* until scene.js has positioned it (is-placed) */
 }
+.city-tag.is-placed { visibility: visible; }
 
 /* Held still (phones): names only, at the 12px floor, so the towers stay visible. */
 .city-stage.is-still .city-tag { font-size: 0.75rem; padding: 0 6px; }

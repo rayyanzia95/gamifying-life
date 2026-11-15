@@ -119,7 +119,8 @@
 #prayer-week { margin-top: 16px; }
 .prayer-week { width: 100%; margin-top: 8px; border-collapse: collapse; table-layout: fixed; }
 .prayer-week th { font-weight: 400; font-size: 0.8125rem; color: var(--muted); }
-.prayer-week th[scope="row"] { width: 5.2em; text-align: left; color: var(--text); font-size: 0.875rem; }
+.prayer-week tr > :first-child { width: 4.5rem; }
+.prayer-week th[scope="row"] { padding-right: 8px; white-space: nowrap; text-align: left; color: var(--text); font-size: 0.875rem; }
 .prayer-week th.is-today { color: var(--text); font-weight: 600; }
 .prayer-week td { padding: 5px 0; text-align: center; }
 .pw-dot { display: inline-block; width: 14px; height: 14px; border-radius: 50%; box-sizing: border-box; border: 1.5px solid var(--control-border); vertical-align: middle; }

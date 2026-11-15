@@ -118,11 +118,40 @@ function cityFacing(project, slot) {
   return fits ? slot.face : { n: "e", s: "w", e: "s", w: "n" }[slot.face];
 }
 
+// An invisible tap target for a slot: about 22px in radius on a 343px-wide phone map, whatever the viewBox is.
+const CB_HIT_PX = 22, CB_PHONE_MAP_PX = 343;
+const cityMapBounds = () => ({ x0: cityIso(0, CITY_ROWS)[0] - 10, x1: cityIso(CITY_COLS, 0)[0] + 10 });
+function citySlotUp(slot) {
+  if (slot.zones.includes("crossing")) return Math.max(...slot.ends.map(cityTopH));
+  return cityTopH(slot.zones.includes("cliff") ? slot.low : slot.level);
+}
+// A slot's centre on the map, raised to the height its plate sits at.
+function citySlotCentre(slot, up = citySlotUp(slot)) {
+  const [x, y] = cityIso(slot.x + slot.w / 2, slot.y + slot.h / 2);
+  return [x, y - up];
+}
+// Half the gap to the nearest other slot, so one slot's circle never covers another's centre.
+let cbHalfGaps = null;
+function citySlotHalfGap(slot) {
+  if (!cbHalfGaps) {
+    const centres = CITY_SLOTS.map(s => [s.id, citySlotCentre(s)]);
+    cbHalfGaps = new Map(centres.map(([id, [x, y]]) => [id, Math.min(...centres
+      .filter(([other]) => other !== id).map(([, [ox, oy]]) => Math.hypot(ox - x, oy - y))) / 2]));
+  }
+  return cbHalfGaps.get(slot.id) ?? Infinity;
+}
+function cityHitCircle(slot, up) {
+  const { x0, x1 } = cityMapBounds();
+  const [x, y] = citySlotCentre(slot, up);
+  const r = cityRound(Math.min(CB_HIT_PX * (x1 - x0) / CB_PHONE_MAP_PX, citySlotHalfGap(slot)));
+  return `<circle class="cb-hit" cx="${cityRound(x)}" cy="${cityRound(y)}" r="${r}" fill="transparent" pointer-events="all"/>`;
+}
+
 // One built project as a part for the painter's sort: { key, svg }.
 function cityProjectPart(projectId, slot) {
   const project = cityProject(projectId);
   const [R, A] = CB_SIDE[project.side] ?? CB_SIDE.shared;
-  const g = svg => `<g class="cb-project" data-slot="${slot.id}" data-project="${projectId}">${svg}</g>`;
+  const g = svg => `<g class="cb-project" data-slot="${slot.id}" data-project="${projectId}">${svg}${cityHitCircle(slot, citySlotUp(slot))}</g>`;
 
   if (slot.zones.includes("crossing")) {
     const top = Math.max(...slot.ends.map(cityTopH));
@@ -176,11 +205,10 @@ function cityRoadPart(road) {
 // The plate drawn on an open slot in build mode: a <a> you can tap or focus, with data-slot.
 function citySlotPart(slot, state) {
   const upgrade = state.bySlot.has(slot.id);
-  const crossing = slot.zones.includes("crossing");
-  const up = crossing ? Math.max(...slot.ends.map(cityTopH)) : cityTopH(slot.zones.includes("cliff") ? slot.low : slot.level);
+  const up = citySlotUp(slot);
   const plate = cityBoxSvg(slot.x + 0.08, slot.y + 0.08, slot.w - 0.16, slot.h - 0.16, 0.8, up + (upgrade ? 6 : 0.2));
   return { key: slot.x + slot.w + slot.y + slot.h + 3, svg:
-    `<a class="cb-slot${upgrade ? " is-upgrade" : ""}" href="#" role="button" data-slot="${slot.id}" aria-label="${slot.name}: ${upgrade ? "upgrade" : "build here"}">${plate}</a>` };
+    `<a class="cb-slot${upgrade ? " is-upgrade" : ""}" href="#" role="button" data-slot="${slot.id}" aria-label="${slot.name}: ${upgrade ? "upgrade" : "build here"}">${plate}${cityHitCircle(slot, up + (upgrade ? 6 : 0.2))}</a>` };
 }
 
 // Drop-in for cityMapSvg(items, label): the town with everything in `state` drawn on it.
@@ -202,8 +230,7 @@ function cityBuildMapSvg(items, state, label, options = {}) {
   const plates = options.slots ? options.slots.map(citySlot) : options.build ? cityOpenSlots(state) : [];
   plates.forEach(slot => parts.push(citySlotPart(slot, state)));
   const body = parts.sort((a, b) => a.key - b.key).map(p => p.svg).join("");
-  const x0 = cityIso(0, CITY_ROWS)[0] - 10;
-  const x1 = cityIso(CITY_COLS, 0)[0] + 10;
+  const { x0, x1 } = cityMapBounds();
   const y1 = cityIso(CITY_COLS, CITY_ROWS)[1] + CITY_DEPTH + 6;
   const top = -cityTopH(3) - cityHeight(3) - CITY_TOWER - 16;
   return `<svg class="city-map${options.build || options.slots ? " is-building" : ""}" viewBox="${x0} ${top} ${x1 - x0} ${y1 - top}" role="img" aria-label="${label}">${body}</svg>`;

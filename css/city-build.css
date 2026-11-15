@@ -25,7 +25,7 @@
 }
 
 /* ---- The build sheet: what can go in a slot. Used by the preview; reuse it for the app's sheet. ---- */
-.cb-sheet { display: grid; gap: 10px; }
+.cb-sheet { display: grid; gap: 10px; padding: 18px; }
 .cb-sheet h2 { margin: 0; font-size: 1.05rem; }
 .cb-sheet .cb-where { margin: 0; font-size: 0.8125rem; color: var(--muted, #9aa3ad); }
 .cb-option {

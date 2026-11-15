@@ -291,6 +291,7 @@ const CityScene = (() => {
       const tag = item && s.tags.get(item.id);
       if (!tag) return;
       spot.copy(group.position).setY(group.userData.top + 0.4).project(s.camera);
+      tag.classList.add("is-placed"); // labels stay hidden until they have a position
       tag.style.transform = `translate(${((spot.x + 1) / 2) * w}px, ${((1 - spot.y) / 2) * h}px) translate(-50%, -100%)`;
     });
   }
