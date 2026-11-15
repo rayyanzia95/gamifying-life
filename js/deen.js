@@ -115,25 +115,20 @@ function ramadanButtonOpen(today) {
   return sinceEid >= 0 && sinceEid < RAMADAN_BUTTON_DAYS;
 }
 
-function completeRamadan() {
-  if (ramadanDone(loadEvents())) return render();
-  const undo = commitWithUndo(all => [...all, { date: todayString(), activity: "ramadan-complete", year: ramadanYear() }]);
+function toggleRamadan() {
+  const done = ramadanDone(loadEvents());
+  const undo = commitWithUndo(all => done
+    ? all.filter(e => !(e.activity === "ramadan-complete" && e.year === ramadanYear()))
+    : [...all, { date: todayString(), activity: "ramadan-complete", year: ramadanYear() }]);
   render();
-  showUndo("Ramadan completed", undo, render);
+  showUndo(done ? "Ramadan unticked" : "Ramadan completed", undo, render);
 }
 
 function drawRamadanDone(events) {
   const holder = document.getElementById("ramadan-done");
   holder.replaceChildren();
-  if (ramadanDone(events)) {
-    if (!ramadanButtonOpen(todayString())) return;
-    holder.append(Object.assign(document.createElement("p"), { className: "muted", textContent: "Ramadan completed ✓" }));
-    return;
-  }
   if (!ramadanButtonOpen(todayString())) return;
-  holder.append(Object.assign(document.createElement("button"), {
-    type: "button", textContent: "Ramadan completed", onclick: completeRamadan,
-  }));
+  holder.append(makeCheckbox("Ramadan completed", ramadanDone(events), toggleRamadan));
 }
 
 function render() {
