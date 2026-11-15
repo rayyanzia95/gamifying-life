@@ -104,6 +104,38 @@ function setLabel(set, prayer) {
   return text;
 }
 
+// "Ramadan completed": a quiet one-tap note for the week from Eid (the day after RAMADAN_END) through Eid + 6.
+// One per Ramadan, keyed by `year` (the Gregorian year of RAMADAN_END). No XP, no penalty if never tapped.
+const RAMADAN_BUTTON_DAYS = 7;
+const ramadanYear = () => Number(RAMADAN_END.slice(0, 4));
+const ramadanDone = events => events.some(e => e.activity === "ramadan-complete" && e.year === ramadanYear());
+
+function ramadanButtonOpen(today) {
+  const sinceEid = daysBetween(shiftDate(RAMADAN_END, 1), today);
+  return sinceEid >= 0 && sinceEid < RAMADAN_BUTTON_DAYS;
+}
+
+function completeRamadan() {
+  if (ramadanDone(loadEvents())) return render();
+  const undo = commitWithUndo(all => [...all, { date: todayString(), activity: "ramadan-complete", year: ramadanYear() }]);
+  render();
+  showUndo("Ramadan completed", undo, render);
+}
+
+function drawRamadanDone(events) {
+  const holder = document.getElementById("ramadan-done");
+  holder.replaceChildren();
+  if (ramadanDone(events)) {
+    if (!ramadanButtonOpen(todayString())) return;
+    holder.append(Object.assign(document.createElement("p"), { className: "muted", textContent: "Ramadan completed ✓" }));
+    return;
+  }
+  if (!ramadanButtonOpen(todayString())) return;
+  holder.append(Object.assign(document.createElement("button"), {
+    type: "button", textContent: "Ramadan completed", onclick: completeRamadan,
+  }));
+}
+
 function render() {
   const events = loadEvents();
   const list = document.getElementById("prayers");
@@ -111,6 +143,7 @@ function render() {
   document.getElementById("prayer-day").replaceChildren(makeDayNav("Prayers", prayerDate, showPrayerDay));
 
   drawPrayerWeek(events);
+  drawRamadanDone(events);
 
   for (const prayer of PRAYERS) {
     const main = mainSet(prayer);

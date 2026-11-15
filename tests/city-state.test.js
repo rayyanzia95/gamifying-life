@@ -172,4 +172,18 @@ ok("the summary line reads naturally", () => {
   assert.equal(A.citySummary(A.cityState([ev("docks", "b-quay")], 4)), "Village · 2 blueprints");
   assert.equal(A.citySummary(A.cityState([ev("docks", "b-quay")], 2)), "Hamlet · no blueprints");
 });
+// The Deen button's window (js/deen.js), loaded with the real date helpers from storage.js.
+const storage = load("js/storage.js"), deen = load("js/deen.js");
+const fn = (src, name) => src.slice(src.indexOf(`function ${name}(`), src.indexOf("\n}\n", src.indexOf(`function ${name}(`)) + 3);
+const rctx = {}; vm.createContext(rctx);
+vm.runInContext(`const RAMADAN_END = "2027-03-09";` + ["dateString", "daysBetween", "shiftDate"].map(n => fn(storage, n)).join("") +
+  deen.slice(deen.indexOf("const RAMADAN_BUTTON_DAYS"), deen.indexOf("function completeRamadan")) +
+  "\nthis.api={ramadanButtonOpen,ramadanDone};", rctx);
+ok("Ramadan button shows from Eid through Eid + 6 only", () => {
+  const open = rctx.api.ramadanButtonOpen;
+  assert.deepEqual(["2027-03-09", "2027-03-10", "2027-03-16", "2027-03-17"].map(open), [false, true, true, false]);
+  assert.equal(rctx.api.ramadanDone([{ activity: "ramadan-complete", year: 2027 }]), true);
+  assert.equal(rctx.api.ramadanDone([{ activity: "ramadan-complete", year: 2026 }]), false);
+});
+
 console.log("all city tests passed");
