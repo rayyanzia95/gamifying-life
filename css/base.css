@@ -1621,3 +1621,7 @@ body[data-tab="backup"] [data-panel="backup"] { display: block; }
 .history-facts { flex: 1; min-width: 190px; margin: 0; padding: 0; list-style: none; display: grid; gap: 6px; font-size: 0.875rem; color: var(--text-2, var(--muted)); }
 .history-facts strong { color: var(--text); font-variant-numeric: tabular-nums; }
 @media (max-width: 420px) { .history-grid { --cell: 13px; } }
+
+/* Settings → Backup: branch select next to Export CSV */
+.export-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 8px; }
+.export-row select { font: inherit; font-size: 0.875rem; padding: 6px 8px; border: 1px solid var(--control-border); border-radius: 8px; background: var(--surface); color: var(--text); }

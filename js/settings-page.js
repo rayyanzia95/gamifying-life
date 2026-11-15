@@ -16,6 +16,22 @@ function downloadEvents() {
 
 document.getElementById("backup").addEventListener("click", downloadEvents);
 
+// Export CSV: the same Blob + temporary link, for one branch's events.
+function downloadBranchCsv() {
+  const branch = document.getElementById("export-branch").value;
+  const rows = branchCsvRows(loadEvents(), branch);
+  const file = new Blob([eventsToCsv(rows)], { type: "text/csv" });
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(file);
+  link.download = `gamifying-life-${branch}-${todayString()}.csv`;
+  link.click();
+  setTimeout(() => URL.revokeObjectURL(link.href), 1000);
+  document.getElementById("backup-note").textContent = `Exported ${rows.length} ${branch} events.`;
+}
+
+document.getElementById("export-branch").append(...BRANCHES.map(b => new Option(b.name, b.id)));
+document.getElementById("export-csv").addEventListener("click", downloadBranchCsv);
+
 // sync.js calls render() again when the other device changed a setting.
 function render() {
   applyAppearance(); // sync may have brought a new look from the other device

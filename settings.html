@@ -45,6 +45,10 @@
     <p>Saves every event on this device as a file. Do this on each device before turning on sync.</p>
     <button class="filter-button" id="backup" type="button">Download my events</button>
     <p id="backup-note"></p>
+    <div class="export-row">
+      <select id="export-branch" aria-label="Branch to export"></select>
+      <button class="filter-button" id="export-csv" type="button">Export CSV</button>
+    </div>
   </section>
 
   <script src="js/config.js"></script>
@@ -72,6 +76,7 @@
   <script src="js/command-wheel.js"></script>
   <script src="js/codex.js"></script>
   <script src="js/choice-form.js"></script>
+  <script src="js/export-csv.js"></script>
   <script src="js/settings-page.js"></script>
   <script src="js/settings-tabs.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.js"
