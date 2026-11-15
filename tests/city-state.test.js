@@ -7,7 +7,7 @@ const load = f => fs.readFileSync(path.join(__dirname, "..", f), "utf8");
 const svg = load("js/city-svg.js");
 const cut = (from, to) => svg.slice(svg.indexOf(from), svg.indexOf(to, svg.indexOf(from)) + to.length);
 vm.runInContext(cut("const CITY_TERRAIN", "];") + cut("const CITY_PLOT", "};") + load("js/city/build/catalogue.js") + load("js/city/build/state.js") +
-  "\nthis.api={CITY_TERRAIN,CITY_PLOT,CITY_PROJECTS,CITY_SLOTS,CITY_STARTERS,cityCheckCatalogue,cityFits,cityProject,citySlot,cityStage,cityState,cityCanBuild,cityMenu,cityOpenSlots,cityBuildableSlots,cityBuild,cityMove,cityRemove,cityReplace,cityRoads,citySummary};", ctx);
+  "\nthis.api={CITY_TERRAIN,CITY_PLOT,CITY_PROJECTS,CITY_SLOTS,CITY_STARTERS,cityCheckCatalogue,cityFits,cityProject,citySlot,cityStage,cityState,ramadansCompleted,cityCanBuild,cityMenu,cityOpenSlots,cityBuildableSlots,cityBuild,cityMove,cityRemove,cityReplace,cityRoads,citySummary};", ctx);
 const A = ctx.api;
 const ok = (name, fn) => { fn(); console.log("ok -", name); };
 let clock = 1000;
@@ -104,6 +104,16 @@ ok("monuments are earned, cost nothing, and can't exceed what was earned", () =>
   const s = A.cityState(e, 1, { earned: { boss: 1 } });
   assert.deepEqual(slots(s), ["statue@p-row"]); assert.equal(s.spent, 0); assert.equal(s.unplaced[0].reason, "earned");
   assert.equal(A.cityCanBuild(A.cityState([], 1, { earned: { boss: 1 } }), "statue", "p-row").ok, true);
+});
+
+ok("lantern arch needs a completed Ramadan; the same year counts once", () => {
+  const done = year => ({ id: `r${year}${clock}`, date: "2027-03-10", activity: "ramadan-complete", year, at: clock++ });
+  const e = [ev("lanterns", "p-row")];
+  const earned = events => ({ boss: 0, ramadan: A.ramadansCompleted(events) });
+  assert.equal(A.cityState(e, 1, { earned: earned([]) }).unplaced[0].reason, "earned");
+  assert.deepEqual(slots(A.cityState(e, 1, { earned: earned([done(2027)]) })), ["lanterns@p-row"]);
+  assert.equal(A.ramadansCompleted([done(2027), done(2027)]), 1);
+  assert.equal(A.ramadansCompleted([done(2027), done(2028)]), 2);
 });
 
 ok("moving is free and keeps the blueprint spent", () => {

@@ -13,6 +13,10 @@
 
 const isCityBuild = event => event.activity === "city-build";
 
+// Ramadans finished: distinct `year` values, so two devices tapping before sync still count once.
+const ramadansCompleted = events =>
+  new Set(events.filter(event => event.activity === "ramadan-complete").map(event => event.year)).size;
+
 // One blueprint per overall level gained: none at level 1, the first at level 2, so the first build is earned.
 const cityBlueprintsEarned = level => Math.max(Math.floor(level) - 1, 0);
 

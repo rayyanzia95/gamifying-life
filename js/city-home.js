@@ -79,11 +79,10 @@ let cityBuilding = false; // build mode is on (kept while Home redraws; off agai
 let cityMoving = null;    // the slot of a project being moved, while its new place is picked
 let cityNow = null;       // the builder's state at the last draw: { state, running, lit }
 
-// Monuments are earned, not bought: one victory statue per exam boss beaten. A lantern arch needs a finished
-// Ramadan, which nothing records yet, so that count stays 0 for now.
+// Monuments are earned, not bought: one victory statue per exam boss beaten, one lantern arch per Ramadan completed.
 function cityEarned(events) {
   const ticked = tickedDeadlines(events);
-  return { boss: DEADLINES.filter(d => isBoss(d) && bossState(events, d, ticked).beaten).length, ramadan: 0 };
+  return { boss: DEADLINES.filter(d => isBoss(d) && bossState(events, d, ticked).beaten).length, ramadan: ramadansCompleted(events) };
 }
 
 // The station's train runs while the Quran or the dua streak is alive.
