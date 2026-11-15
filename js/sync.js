@@ -18,11 +18,7 @@ const OWNER_KEY = "gamifying-life-sync-owner"; // { id, email } of the account t
 const PULL_PAGE = 1000;     // Supabase returns at most 1000 rows per request
 const PULL_OVERLAP_MS = 60 * 1000;
 
-const SYNC_STATES = {
-  synced: "Sync: all sent",
-  waiting: "Sync: changes waiting to send",
-  off: "Sync: not signed in",
-};
+const LAST_SYNC_KEY = "gamifying-life-last-sync";
 
 // window.supabase is the library from the CDN; it's missing if the CDN couldn't load (offline).
 function makeSyncClient() {
@@ -253,6 +249,8 @@ async function sendUnsent() {
   }
   lastSyncError = null;
   lastSentAt = new Date();
+  // Kept across page loads so the status line can say "Synced 2 min ago" on a page that has only just opened.
+  localStorage.setItem(LAST_SYNC_KEY, String(lastSentAt.getTime()));
 }
 
 // Only one sync at a time. Anything saved during a sync goes in the next one.
@@ -285,16 +283,43 @@ function syncState(email) {
   return unsentRows().length > 0 ? "waiting" : "synced";
 }
 
+// The dot's meaning in words: "Synced 2 min ago", "Offline · 3 changes waiting", "Not signed in".
+// Shown when the dot is tapped (a phone has no hover to read its title) and used as its label.
+function syncStatusLine(state) {
+  const waiting = unsentRows().length;
+  const changes = `${waiting} change${waiting === 1 ? "" : "s"} waiting`;
+  if (state === "off") return "Not signed in · this device only";
+  if (!navigator.onLine) return waiting ? `Offline · ${changes}` : "Offline · nothing waiting";
+  if (lastSyncError) return `${changes} · last try failed`;
+  if (state === "waiting") return `Sending · ${changes}`;
+  const at = Number(localStorage.getItem(LAST_SYNC_KEY));
+  if (!at) return "Synced";
+  const minutes = Math.round((Date.now() - at) / 60000);
+  if (minutes < 1) return "Synced just now";
+  if (minutes < 60) return `Synced ${minutes} min ago`;
+  return minutes < 60 * 24 ? `Synced ${Math.round(minutes / 60)} h ago` : `Synced ${dayLabel(dateString(new Date(at)))}`;
+}
+
 function drawSyncDot(state) {
   const corner = document.querySelector(".corner");
   if (!corner) return;
-  const dot = corner.querySelector(".sync-dot") ?? Object.assign(document.createElement("a"), {
-    className: "icon-button sync-dot",
-    href: "settings.html#sync",
-  });
+  let dot = corner.querySelector(".sync-dot");
+  if (!dot) {
+    dot = Object.assign(document.createElement("a"), { className: "icon-button sync-dot", href: "settings.html#sync" });
+    // First tap says what the dot means; a second tap while the line is showing opens the Sync settings.
+    dot.addEventListener("click", event => {
+      const toast = document.getElementById("ql-toast");
+      const showing = toast && !toast.hidden && toast.dataset.sync === "1";
+      if (showing || typeof showUndo !== "function") return;
+      event.preventDefault();
+      showUndo(`${syncStatusLine(dot.dataset.state)} · tap again for Sync settings`);
+      document.getElementById("ql-toast").dataset.sync = "1";
+    });
+  }
   dot.dataset.state = state;
-  dot.title = SYNC_STATES[state];
-  dot.setAttribute("aria-label", SYNC_STATES[state]);
+  const line = syncStatusLine(state);
+  dot.title = line;
+  dot.setAttribute("aria-label", `Sync: ${line}`);
   if (!dot.isConnected) corner.prepend(dot);
 }
 

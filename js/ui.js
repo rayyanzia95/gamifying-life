@@ -177,6 +177,7 @@ function showUndo(message, undo, onUndo) {
     document.body.append(toast);
   }
   clearTimeout(undoToastTimer);
+  delete toast.dataset.sync; // set by the sync dot (sync.js) while its status line is the one showing
   toast.replaceChildren(message);
   if (undo) {
     const button = document.createElement("button");
