@@ -13,6 +13,16 @@ const LEVELS = { first: 600, step: 100, overallMultiplier: 3 };
 // (Dua's second miss in a week); false = it only stops two misses in a row.
 const REWARDS = { restMax: 3, restCoversWeeklyPause: true };
 
+// Example perks the Rewards page offers once, to a page with no perks yet (kept, edited or dropped there).
+// branch is a branch id or "overall", like the perk form saves it.
+const PERK_STARTERS = [
+  { branch: "health", level: 5, text: "New climbing shoes" },
+  { branch: "deen", level: 5, text: "A new prayer mat" },
+  { branch: "academics", level: 5, text: "A nice dinner out" },
+  { branch: "money", level: 5, text: "A small treat, guilt-free" },
+  { branch: "overall", level: 10, text: "A weekend trip" },
+];
+
 // Quran revision, logged in juz (30 in the Quran), in order from Juz 1.
 // Up to dailyTarget counts toward the daily goal; anything beyond is bonus XP.
 const QURAN = {
