@@ -53,6 +53,7 @@ function duplicateKey(e) {
   if (e.activity === "perk-claimed") return `perk-claimed|${e.perk}`;
   if (e.activity === "person") return `person|${e.name}`;
   if (e.activity === "setting") return `setting|${e.key}`;                        // latest wins, see mergeGroup
+  if (e.activity === "config") return `config|${e.key}`;                         // latest wins, see mergeGroup
   if (ONE_PER_DAY.includes(e.activity)) return `${e.date}|${e.activity}`;
   return null;
 }
@@ -72,10 +73,10 @@ function mergeTwo(a, b) {
   }));
 }
 
-// A setting is one value, not a pile of fields: the copy chosen last (biggest `at`) wins whole.
+// A setting or config is one value, not a pile of fields: the copy chosen last (biggest `at`) wins whole.
 // Everything else merges field by field.
 function mergeGroup(sorted) {
-  if (sorted[0].activity !== "setting") return sorted.reduce(mergeTwo);
+  if (!["setting", "config"].includes(sorted[0].activity)) return sorted.reduce(mergeTwo);
   return sorted.reduce((latest, e) => ((e.at ?? 0) >= (latest.at ?? 0) ? e : latest));
 }
 

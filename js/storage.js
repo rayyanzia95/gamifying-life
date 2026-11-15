@@ -39,6 +39,21 @@ function saveSettingEvent(key, value) {
   saveEvents(old ? events.map(e => (e === old ? next : e)) : [...events, next]);
 }
 
+// Synced config (an editable list, say) as one event per key, same rules as a setting: the later `at` wins.
+// { date, activity: "config", key, value, at: ms }
+function saveConfigEvent(key, value) {
+  const events = loadEvents();
+  const old = events.find(e => e.activity === "config" && e.key === key);
+  const next = { ...old, date: todayString(), activity: "config", key, value, at: Date.now() };
+  saveEvents(old ? events.map(e => (e === old ? next : e)) : [...events, next]);
+}
+
+// The saved value of a config key, or `fallback` when none was ever saved.
+function configValue(events, key, fallback) {
+  const found = events.find(e => e.activity === "config" && e.key === key);
+  return found ? found.value : fallback;
+}
+
 function dateString(d) {
   const month = String(d.getMonth() + 1).padStart(2, "0");
   const day = String(d.getDate()).padStart(2, "0");
