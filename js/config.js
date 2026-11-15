@@ -39,6 +39,8 @@ const DUA = {
 
 // Expected 1 Ramadan 1448. Update once the masjid announces the moon sighting.
 const RAMADAN_START = "2027-02-08";
+// Expected last fast (29 or 30 days; update on sighting). Eid is the day after.
+const RAMADAN_END = "2027-03-09";
 
 // Edmonton. Alberta stays on UTC-6 all year.
 const LOCATION = { lat: 53.5461, lng: -113.4938, utcOffset: -6 };
