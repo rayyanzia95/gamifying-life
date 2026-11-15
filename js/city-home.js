@@ -215,9 +215,18 @@ function citySheet() {
   return sheet;
 }
 
-function cityOptionRow(slotId, { project, ok, reason }) {
-  const row = Object.assign(document.createElement("div"), { className: `cb-option${ok ? "" : " is-locked"}` });
+function cityOptionRow(slotId, { project, ok, reason }, onPick) {
+  const row = Object.assign(document.createElement("div"), { className: `cb-option${ok ? "" : " is-locked"}`, tabIndex: 0 });
   row.dataset.side = project.side;
+  row.dataset.project = project.id;
+  row.setAttribute("aria-pressed", "false");
+  const pick = () => onPick?.(project.id);
+  row.addEventListener("click", event => { if (!event.target.closest("button")) pick(); });
+  row.addEventListener("keydown", event => {
+    if (event.target !== row || (event.key !== "Enter" && event.key !== " ")) return;
+    event.preventDefault();
+    pick();
+  });
   const cost = project.cost === 0 ? "earned" : project.cost === 1 ? "1 blueprint" : `${project.cost} blueprints`;
   const build = Object.assign(document.createElement("button"), { type: "button", className: "cb-button primary", textContent: "Build", disabled: !ok });
   build.addEventListener("click", () => {
@@ -256,7 +265,12 @@ function cityOpenSheet(slotId) {
     }
   }
   const menu = cityMenu(state, slotId);
-  if (menu.length) body.append(el("p", { className: "cb-where" }, there ? "Upgrade" : "Build here"), ...menu.map(option => cityOptionRow(slotId, option)));
+  if (menu.length) {
+    const preview = cityPreviewPane(sheet);
+    body.append(el("p", { className: "cb-where" }, there ? "Upgrade" : "Build here"), preview.pane,
+      ...menu.map(option => cityOptionRow(slotId, option, preview.select)));
+    preview.start((menu.find(o => o.ok) ?? menu[0]).project.id);
+  }
   const waiting = state.unplaced.filter(u => !state.bySlot.has(slotId) && cityProject(u.event.project) && cityFits(cityProject(u.event.project), slot));
   if (waiting.length) {
     body.append(el("p", { className: "cb-where" }, "Waiting to be placed"));
@@ -277,6 +291,30 @@ function cityOpenSheet(slotId) {
   body.append(close);
   sheet.replaceChildren(body);
   if (!sheet.open) sheet.showModal();
+}
+
+// The 3D preview above the option cards: an empty box at first (no layout jump), then the model once three.js
+// is in. No WebGL or a failed load leaves it as a quiet empty box. select() marks the card and swaps the model.
+function cityPreviewPane(sheet) {
+  const pane = Object.assign(document.createElement("div"), { className: "cb-preview" });
+  let showcase = null, wanted = null;
+  const mark = id => pane.parentElement?.querySelectorAll(".cb-option").forEach(card => {
+    const on = card.dataset.project === id;
+    card.classList.toggle("is-selected", on);
+    card.setAttribute("aria-pressed", String(on));
+  });
+  const select = id => { wanted = id; mark(id); showcase?.show(id); };
+  const start = id => {
+    select(id);
+    if (!cityHasWebgl()) return pane.classList.add("is-empty");
+    cityLoad3d().then(() => {
+      if (!sheet.open || showcase) return;
+      showcase = CityBuildKit.showcase();
+      pane.append(showcase.canvas);
+      showcase.show(wanted);
+    }).catch(() => pane.classList.add("is-empty"));
+  };
+  return { pane, select, start };
 }
 
 function cityMoveTargetsFor(state, slotId) {

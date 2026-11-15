@@ -40,6 +40,12 @@
 .cb-option p { grid-column: 1; margin: 0; font-size: 0.8125rem; color: var(--muted, #9aa3ad); }
 .cb-option .cb-why { grid-column: 1 / -1; font-size: 0.75rem; color: var(--muted, #9aa3ad); font-style: italic; }
 .cb-option.is-locked { opacity: 0.6; }
+.cb-option { cursor: pointer; }
+.cb-option.is-selected { outline: 2px solid var(--accent, #ffd684); outline-offset: -1px; }
+.cb-option:focus-visible { outline: 2px solid var(--gold, #ffd684); outline-offset: 2px; }
+.cb-preview { height: 170px; border-radius: 10px; overflow: hidden; background: var(--surface-2, var(--surface, #1b1e22)); border: 1px solid var(--border, #2a2f36); }
+.cb-preview.is-empty { visibility: hidden; height: 0; border: 0; }
+.cb-preview canvas { display: block; width: 100%; height: 100%; }
 .cb-button {
   min-height: 44px; min-width: 44px; padding: 0 14px; border-radius: 999px; border: 1px solid var(--border, #2a2f36);
   background: var(--surface, #1b1e22); color: inherit; font: inherit; font-weight: 600; cursor: pointer;

@@ -180,5 +180,95 @@ const CityBuildKit = (() => {
     });
   }
 
-  return { CELL, RISE, topOf, world, slotSpot, facing, paletteFor, make, sync, roads, markers, pickSlot, pickProject, tick };
+  // ---- Showcase: one project on a grass tile, for the build sheet's preview pane ----
+  // The WebGL renderer is made once and kept (iOS allows few contexts); each showcase() just borrows its canvas.
+  let showRenderer = null;
+  const SHOW_SIZE = { w: 339, h: 170 };
+
+  function showRig() {
+    const scene = new THREE.Scene();
+    scene.add(new THREE.HemisphereLight(0xffffff, 0x444455, 0.75));
+    const sun = new THREE.DirectionalLight(0xfff3d6, 0.9);
+    sun.position.set(6, 10, 5);
+    scene.add(sun);
+    const tile = new THREE.Mesh(new THREE.BoxGeometry(3.6, 0.3, 3.6), new THREE.MeshStandardMaterial({ color: 0x5d8f3e, flatShading: true }));
+    tile.position.y = -0.15;
+    scene.add(tile);
+    return { scene, camera: new THREE.OrthographicCamera(-1, 1, 1, -1, 1, 300) };
+  }
+
+  function disposeTree(root) {
+    root.traverse(o => {
+      o.geometry?.dispose();
+      [o.material].flat().forEach(m => m?.dispose());
+    });
+  }
+
+  // Fit the model as the camera sees it over a whole turn (wide models fill the width, tall ones the height).
+  function frameModel(camera, model) {
+    const spin = model.rotation.y, boxes = [];
+    for (let i = 0; i < 8; i++) {
+      model.rotation.y = (i / 8) * Math.PI;
+      model.updateMatrixWorld(true);
+      boxes.push(new THREE.Box3().setFromObject(model));
+    }
+    model.rotation.y = spin;
+    const midY = (Math.min(...boxes.map(b => b.min.y)) + Math.max(...boxes.map(b => b.max.y))) / 2;
+    const target = new THREE.Vector3(model.position.x, midY, model.position.z);
+    camera.position.copy(target).add(new THREE.Vector3(14, 12, 14));
+    camera.lookAt(target);
+    camera.updateMatrixWorld();
+    let halfW = 0, halfH = 0;
+    boxes.forEach(box => [box.min, box.max].forEach(a => [box.min, box.max].forEach(b => [box.min, box.max].forEach(c => {
+      const p = new THREE.Vector3(a.x, b.y, c.z).applyMatrix4(camera.matrixWorldInverse);
+      halfW = Math.max(halfW, Math.abs(p.x));
+      halfH = Math.max(halfH, Math.abs(p.y));
+    }))));
+    const aspect = SHOW_SIZE.w / SHOW_SIZE.h, half = Math.max(halfH, halfW / aspect, 0.8) * 1.08;
+    Object.assign(camera, { left: -half * aspect, right: half * aspect, top: half, bottom: -half });
+    camera.updateProjectionMatrix();
+  }
+
+  // Returns { canvas, show(projectId), stop() }. Needs three.js and the model files loaded.
+  function showcase() {
+    const canvas = document.createElement("canvas");
+    const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches || document.documentElement.dataset.motion === "none";
+    const { scene, camera } = showRig();
+    let model = null, frame = 0;
+    if (!showRenderer) {
+      showRenderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+      showRenderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2));
+      showRenderer.setSize(SHOW_SIZE.w, SHOW_SIZE.h, false);
+    }
+    const stop = () => { cancelAnimationFrame(frame); frame = 0; };
+    const draw = ms => {
+      if (!model) return;
+      if (!reduced) model.rotation.y = (ms / 1000) * 0.5;
+      tick(scene, ms / 1000);
+      showRenderer.render(scene, camera);
+      const ctx = canvas.getContext("2d");
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(showRenderer.domElement, 0, 0, canvas.width, canvas.height);
+    };
+    const loop = ms => {
+      // Stop once the preview is gone (sheet redrawn) or hidden (its dialog closed).
+      if (!canvas.isConnected || canvas.closest("dialog:not([open])")) return stop();
+      draw(ms);
+      frame = requestAnimationFrame(loop);
+    };
+    const show = projectId => {
+      cancelAnimationFrame(frame);
+      if (model) { scene.remove(model); disposeTree(model); }
+      model = CityProjects3D[projectId](paletteFor(projectId), { drop: 0.05, running: true });
+      model.rotation.y = 0.6;
+      scene.add(model);
+      frameModel(camera, model);
+      if (reduced) draw(0);
+      else frame = requestAnimationFrame(loop);
+    };
+    Object.assign(canvas, { width: SHOW_SIZE.w * 2, height: SHOW_SIZE.h * 2 });
+    return { canvas, show, stop };
+  }
+
+  return { CELL, RISE, topOf, world, slotSpot, facing, paletteFor, make, sync, roads, markers, pickSlot, pickProject, tick, showcase };
 })();
