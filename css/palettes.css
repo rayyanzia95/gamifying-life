@@ -558,14 +558,7 @@ h2,
 
 /* Level-up (level-up.js): plays once when a level is first seen. Motion None and reduced motion
    turn it off with every other animation (the rules above). */
-[data-level-up="glow"] .level-up { animation: level-glow 1.4s ease-out; }
 [data-level-up="burst"] .level-up { animation: level-burst 0.9s cubic-bezier(0.16, 1, 0.3, 1); }
-
-@keyframes level-glow {
-  0% { filter: drop-shadow(0 0 0 var(--gold)); }
-  30% { filter: drop-shadow(0 0 10px var(--gold)); }
-  100% { filter: drop-shadow(0 0 0 transparent); }
-}
 
 @keyframes level-burst {
   0% { transform: scale(1); filter: drop-shadow(0 0 0 var(--gold)); }

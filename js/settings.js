@@ -76,6 +76,9 @@ const RETIRED_PALETTES = {
   "r2-dusk": "r2-arcane", candle: "amber", abyss: "r2-space", "r2-lab": "r2-moss",
 };
 
+// Level-up effects dropped (2026-11-14). A saved or synced old choice reads as the default, Popup: ring fills.
+const RETIRED_LEVEL_UPS = { glow: "ring", toast: "ring", ringburst: "ring", lockon: "ring", unfurl: "ring" };
+
 const palettesFor = mode => PALETTES.filter(p => p.mode === mode || p.mode === "both");
 
 // Sci-fi effects (Appearance → Sci-fi FX). Each is its own setting; three of them also have a quieter
@@ -219,16 +222,11 @@ const APPEARANCE_CHOICES = {
     default: "ring",
     options: [
       { value: "none", label: "Just the gold ring" },
-      { value: "glow", label: "Glow" },
       { value: "burst", label: "Burst" },
       { value: "banner", label: "Banner" },
       { value: "ring", label: "Popup: ring fills" },
       { value: "hud", label: "Popup: sci-fi HUD" },
       { value: "rpg", label: "Popup: RPG card" },
-      { value: "toast", label: "Popup: toast" },
-      { value: "ringburst", label: "Ring burst" },
-      { value: "lockon", label: "HUD lock-on" },
-      { value: "unfurl", label: "Banner unfurl" },
     ],
   },
   texture: {
@@ -307,12 +305,19 @@ function isAllowed(choice, value) {
   return choice.options.some(o => o.value === value && !o.soon);
 }
 
+// A stored value after the retire maps (palettes merged away, level-up effects dropped).
+function migratedValue(key, value) {
+  if (key.startsWith("palette")) return RETIRED_PALETTES[value] ?? value;
+  if (key === "levelUp") return RETIRED_LEVEL_UPS[value] ?? value;
+  return value;
+}
+
 // Every setting, with anything missing or no longer allowed replaced by its default.
 function loadSettings() {
   const stored = storedSettings();
   return Object.fromEntries(
     Object.entries(SETTING_CHOICES).map(([key, choice]) => {
-      const value = key.startsWith("palette") ? RETIRED_PALETTES[stored[key]] ?? stored[key] : stored[key];
+      const value = migratedValue(key, stored[key]);
       return [key, isAllowed(choice, value) ? value : defaultChoice(choice)];
     })
   );

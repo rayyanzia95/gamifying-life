@@ -1,10 +1,10 @@
-// Level-up popups (Appearance → Level-up effect: Sci-fi HUD, RPG card, Toast, Ring fills).
-// A card in the middle of the screen (the toast: at the top) that closes on a tap, on Esc, or by itself.
+// Level-up popups (Appearance → Level-up effect: Sci-fi HUD, RPG card, Ring fills).
+// A card in the middle of the screen that closes on a tap, on Esc, or by itself.
 // Several new levels at once play one after another. Screen readers hear each once through a live region.
 // With Motion None or reduced motion it's the same card, drawn still (the motion-off CSS rules stop it moving).
 // On every page, before level-up.js, which decides when a level is new and calls showLevelPopup.
 
-const POPUP_STYLES = ["hud", "rpg", "toast", "ring"];
+const POPUP_STYLES = ["hud", "rpg", "ring"];
 const POPUP_MS = 3000;
 const POPUP_BIG_MS = 4500; // the overall level stays a little longer
 const POPUP_FADE_MS = 300; // matches .level-popup.closing in css/appearance.css
@@ -28,8 +28,6 @@ const POPUP_HTML = {
     <div class="lp-sweep"></div></div>`,
   rpg: `<div class="lp-card lp-rpg"><div class="lp-rays"></div><div class="lp-disc" data-part="number"></div>
     <div class="lp-level" data-part="title"></div><div class="lp-name"></div><div class="lp-perk"></div></div>`,
-  toast: `<div class="lp-card lp-toast"><span class="level-chip lp-chip" data-part="number"></span>
-    <div><div class="lp-level" data-part="sentence"></div><div class="lp-perk"></div></div><i class="lp-time"></i></div>`,
   ring: `<div class="lp-card lp-ring"><svg viewBox="0 0 120 120" aria-hidden="true"><circle class="lp-track" cx="60" cy="60" r="50"/>
     <circle class="lp-arc" cx="60" cy="60" r="50"/><circle class="lp-flash" cx="60" cy="60" r="50"/></svg>
     <div class="lp-roll"><span data-part="before"></span><span data-part="number"></span></div><div class="lp-level" data-part="line"></div>
@@ -60,7 +58,7 @@ function decodeText(el, text) {
 function fillPopup(card, { name, level, perks }) {
   const words = {
     caps: `LEVEL ${level}`, number: String(level), before: String(level - 1), title: `Level ${level}`,
-    sentence: `${name} reached level ${level}`, line: `${name} · level ${level}`,
+    line: `${name} · level ${level}`,
   };
   card.querySelectorAll("[data-part]").forEach(el => { el.textContent = words[el.dataset.part]; });
   card.querySelectorAll(".lp-name").forEach(el => { el.textContent = name; });
@@ -91,7 +89,7 @@ function showNextPopup() {
   el.dataset.style = next.style;
   el.style.setProperty("--lp-colour", big ? "var(--gold)" : `var(--${next.key})`);
   el.setAttribute("aria-hidden", "true"); // the live region says it once, in words
-  el.innerHTML = (next.style === "toast" ? "" : '<div class="lp-shade"></div>') + POPUP_HTML[next.style];
+  el.innerHTML = '<div class="lp-shade"></div>' + POPUP_HTML[next.style];
   fillPopup(el, next);
   el.addEventListener("click", closePopup);
   document.body.append(el);
