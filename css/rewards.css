@@ -41,3 +41,33 @@
   margin-left: 8px;
   vertical-align: middle;
 }
+
+/* "Some ideas to start": branch label, then the text full width, then level and the remove button. */
+.starter-row {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: center;
+  gap: 6px 8px;
+  padding: 8px 0;
+}
+
+.starter-row .perk-level {
+  grid-column: 1 / -1;
+  text-align: left;
+}
+
+.starter-row .perk-text-input {
+  grid-column: 1 / -1;
+  min-width: 0;
+}
+
+.starter-row .perk-level-input {
+  grid-column: 2;
+  width: 64px;
+}
+
+.starter-buttons {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}

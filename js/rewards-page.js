@@ -2,6 +2,7 @@
 // tied to an overall or a branch level) and your rest days. Perks are events:
 //   { date, activity: "perk", id, text, branch: "overall" | "<branch id>", level }
 //   { date, activity: "perk-claimed", perk: <perk id> }   (ticked once you've had it)
+//   { date, activity: "perk-starters-done" }              (the example perks were kept or skipped; no XP)
 // Rest-day logic is in streak.js (restDaysHeld); levels in scoring.js (branchLevel).
 
 const MAX_PERK_LENGTH = 60;
@@ -28,6 +29,9 @@ function perkOrder(a, b) {
   const rank = s => (s.claimed ? 2 : s.togo === 0 ? 0 : 1);
   return rank(a) - rank(b) || a.togo - b.togo || a.perk.date.localeCompare(b.perk.date);
 }
+
+// The "Some ideas to start" card shows only to a page that has no perk and hasn't dealt with the ideas yet.
+const perkStartersOpen = events => !events.some(e => e.activity === "perk" || e.activity === "perk-starters-done");
 
 function saveAdded(event) {
   saveEvents([...loadEvents(), { date: todayString(), ...event }]);
@@ -102,6 +106,55 @@ function perkForm() {
   return form;
 }
 
+// A perk event in the exact shape the add form saves.
+const newPerk = ({ text, branch, level }) =>
+  ({ date: todayString(), activity: "perk", id: crypto.randomUUID(), text, branch, level });
+
+// Save the kept rows (if any) and the done marker as one step, so one Undo takes them all back.
+function keepStarters(rows) {
+  const kept = rows.map(r => ({ ...r, text: r.text.trim(), level: Math.min(Math.max(Math.round(r.level), 2), MAX_PERK_LEVEL) }))
+    .filter(r => r.text && Number.isFinite(r.level)).map(newPerk);
+  const undo = commitWithUndo(all => [...all, ...kept, { date: todayString(), activity: "perk-starters-done" }]);
+  showUndo("Ideas kept", undo, render);
+  render();
+}
+
+function starterRow(starter) {
+  const row = document.createElement("div");
+  row.className = "starter-row";
+  const name = Object.assign(document.createElement("span"), { className: "perk-level", textContent: perkBranchName(starter.branch) });
+  const text = Object.assign(document.createElement("input"),
+    { className: "money-input perk-text-input", maxLength: MAX_PERK_LENGTH, value: starter.text });
+  text.setAttribute("aria-label", "Reward for " + name.textContent);
+  const level = Object.assign(document.createElement("input"),
+    { className: "money-input perk-level-input", type: "number", min: 2, max: MAX_PERK_LEVEL, value: starter.level });
+  level.setAttribute("aria-label", "Level");
+  const remove = Object.assign(document.createElement("button"),
+    { type: "button", className: "money-remove", textContent: "×" });
+  remove.setAttribute("aria-label", "Remove " + starter.text);
+  remove.addEventListener("click", () => row.remove()); // local only; the row just leaves the card
+  row.append(name, text, level, remove);
+  row.read = () => ({ branch: starter.branch, text: text.value, level: Number(level.value) });
+  return row;
+}
+
+function drawStarters(events) {
+  const section = document.getElementById("starters");
+  section.hidden = !perkStartersOpen(events);
+  if (section.hidden) return section.replaceChildren();
+  const title = Object.assign(document.createElement("div"), { className: "card-title", textContent: "Some ideas to start" });
+  const note = Object.assign(document.createElement("p"), { className: "muted",
+    textContent: "Change them, remove any, or start empty. They're only ideas until you keep them." });
+  const rows = PERK_STARTERS.map(starterRow);
+  const keep = Object.assign(document.createElement("button"), { type: "button", className: "filter-button", textContent: "Keep these" });
+  const skip = Object.assign(document.createElement("button"), { type: "button", className: "filter-button", textContent: "Start empty" });
+  keep.addEventListener("click", () => keepStarters(rows.filter(r => r.isConnected).map(r => r.read())));
+  skip.addEventListener("click", () => keepStarters([]));
+  const buttons = Object.assign(document.createElement("div"), { className: "starter-buttons" });
+  buttons.append(keep, skip);
+  section.replaceChildren(title, note, ...rows, buttons);
+}
+
 function drawOverall(events) {
   const info = branchLevel(events, null);
   document.getElementById("overall").innerHTML = `
@@ -136,6 +189,7 @@ function drawRest(events) {
 function render() {
   const events = loadEvents();
   drawOverall(events);
+  drawStarters(events);
   drawPerks(events);
   drawRest(events);
 }

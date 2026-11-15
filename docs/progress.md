@@ -49,3 +49,9 @@ Plan: `docs/round-2-brief.md`. One line per item: code, date, what changed, what
 | Item | Date | What changed | Open |
 | --- | --- | --- | --- |
 | A | 2026-11-14 | `RAMADAN_END` (expected 2027-03-09) in `config.js`; Deen shows a quiet "Ramadan completed" button from Eid through Eid + 6 (`ramadanButtonOpen` in `deen.js`), once per Ramadan (`{ date, activity: "ramadan-complete", year }`, Undo toast, no XP). `ramadansCompleted(events)` in `state.js` counts distinct years and feeds `cityEarned`, so the lantern arch is earnable. Tests in `tests/city-state.test.js`. | Update `RAMADAN_START`/`RAMADAN_END` on sighting. No Hijri label saved (no helper exists). |
+
+## Rewards: example perks
+
+| Item | Date | What changed | Open |
+| --- | --- | --- | --- |
+| Perk starters | 2026-11-14 | `PERK_STARTERS` (five examples) in `config.js`; Rewards shows "Some ideas to start" above Perks only when there is no `perk` and no `perk-starters-done` event (`perkStartersOpen`). Edit text and level, drop rows with ×, then "Keep these" (saves normal perk events + `{ activity: "perk-starters-done" }`, one Undo) or "Start empty" (done event only). No XP, sync needs nothing special. `node tests/rewards.test.js`. | Not looked at in a browser yet. |
