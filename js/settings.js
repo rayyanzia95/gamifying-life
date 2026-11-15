@@ -89,16 +89,16 @@ const FEATURED_PALETTES = {
 const palettesFor = mode => PALETTES.filter(p => p.mode === mode || p.mode === "both");
 
 // Sci-fi effects (Appearance → Sci-fi FX). Each is its own setting; three of them also have a quieter
-// "Subtle". The defaults are the Recommended preset. fx.js and css/appearance.css do the drawing.
+// "Subtle". The defaults are the Recommended preset (Boot, Glitch and Cursor stay off; only All on turns them on). fx.js and css/appearance.css do the drawing.
 const ON_OFF = [{ value: "off", label: "Off" }, { value: "on", label: "On" }];
 const OFF_SUBTLE_FULL = [{ value: "off", label: "Off" }, { value: "subtle", label: "Subtle" }, { value: "on", label: "Full" }];
 const FX_CHOICES = {
-  fxBoot: { label: "Boot scan when a page opens", options: ON_OFF, default: "on" },
+  fxBoot: { label: "Boot scan when a page opens", options: ON_OFF, default: "off" },
   fxDecode: { label: "Level numbers decode up", options: ON_OFF, default: "on" },
   fxSweep: { label: "Scanning sweep on the Home ring", options: OFF_SUBTLE_FULL, default: "subtle" },
   fxBrackets: { label: "HUD corner brackets on cards", options: ON_OFF, default: "off" },
   fxHolo: { label: "Holographic shimmer on level chips", options: OFF_SUBTLE_FULL, default: "subtle" },
-  fxGlitch: { label: "Glitch when you tick", options: ON_OFF, default: "on" },
+  fxGlitch: { label: "Glitch when you tick", options: ON_OFF, default: "off" },
   fxCore: { label: "Pulsing core on Home", options: OFF_SUBTLE_FULL, default: "subtle" },
   fxBurst: { label: "Level-up line burst", options: ON_OFF, default: "on" },
   fxCursor: { label: "Typing-cursor page titles", options: ON_OFF, default: "off" },

@@ -49,3 +49,6 @@
 @media (max-width: 699px) {
   .appearance-preview { position: static; }
 }
+
+.fx-advanced { margin-top: 10px; }
+.fx-advanced summary { cursor: pointer; padding: 6px 0; color: var(--text-3); }

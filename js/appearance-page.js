@@ -32,13 +32,20 @@ function presetRow() {
   return row;
 }
 
+// The single effect switches, folded away (closed) under the presets.
+function advancedFold(form) {
+  const fold = Object.assign(document.createElement("details"), { className: "fx-advanced" });
+  fold.append(Object.assign(document.createElement("summary"), { textContent: "Advanced" }), form);
+  return fold;
+}
+
 function groupCard({ title, note, keys, presets }, current) {
   const card = Object.assign(document.createElement("section"), { className: "card" });
   const heading = Object.assign(document.createElement("div"), { className: "card-title", textContent: title });
   const form = Object.assign(document.createElement("form"), { className: "appearance-form" });
   form.append(...groupsFor(keys, current));
   const extra = note ? [Object.assign(document.createElement("p"), { className: "muted", textContent: note })] : [];
-  card.append(heading, ...(presets ? [presetRow()] : []), form, ...extra);
+  card.append(heading, ...(presets ? [presetRow(), advancedFold(form)] : [form]), ...extra);
   return card;
 }
 
