@@ -110,6 +110,8 @@ function render() {
   list.innerHTML = "";
   document.getElementById("prayer-day").replaceChildren(makeDayNav("Prayers", prayerDate, showPrayerDay));
 
+  drawPrayerWeek(events);
+
   for (const prayer of PRAYERS) {
     const main = mainSet(prayer);
     const mainEvent = findEvent(events, prayer.id, main.id, prayerDate);

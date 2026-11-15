@@ -109,6 +109,7 @@ const LOCAL_FILES = [
   "js/planner-week.js",
   "js/prayer-calc.js",
   "js/prayer-times.js",
+  "js/prayer-week.js",
   "js/quick-log-ui.js",
   "js/quick-log.js",
   "js/quran-view.js",

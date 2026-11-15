@@ -39,10 +39,13 @@ function drawRevision(events) {
 // Top card: a bar toward finishing this revision of all 30 juz.
 function drawQuranProgress(events) {
   const { done } = revisionProgress(events);
+  // The countdown sits beside the count so the pace is visible without opening the Quran tile.
+  const daysLeft = daysBetween(todayString(), RAMADAN_START);
+  const ramadan = daysLeft > 0 ? ` · ${daysLeft} days to Ramadan` : "";
   document.getElementById("quran-progress").innerHTML = `
     <div class="card-row">
       <span class="summary-label">Quran</span>
-      <span class="muted">${done} / ${QURAN.total} juz</span>
+      <span class="muted">${done} / ${QURAN.total} juz${ramadan}</span>
     </div>
     <div class="bar"><div class="bar-fill" style="width: ${(done / QURAN.total) * 100}%"></div></div>`;
 }

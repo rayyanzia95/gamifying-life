@@ -114,3 +114,17 @@
 @media (min-width: 1000px) {
   .tiles { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
+
+/* Last 7 days (js/prayer-week.js): a row per prayer, a column per day, today last. */
+#prayer-week { margin-top: 16px; }
+.prayer-week { width: 100%; margin-top: 8px; border-collapse: collapse; table-layout: fixed; }
+.prayer-week th { font-weight: 400; font-size: 0.8125rem; color: var(--muted); }
+.prayer-week th[scope="row"] { width: 5.2em; text-align: left; color: var(--text); font-size: 0.875rem; }
+.prayer-week th.is-today { color: var(--text); font-weight: 600; }
+.prayer-week td { padding: 5px 0; text-align: center; }
+.pw-dot { display: inline-block; width: 14px; height: 14px; border-radius: 50%; box-sizing: border-box; border: 1.5px solid var(--control-border); vertical-align: middle; }
+.pw-dot[data-state="prayed"] { border-color: var(--deen); background: color-mix(in srgb, var(--deen) 35%, transparent); }
+.pw-dot[data-state="ontime"] { border-color: var(--deen); background: var(--deen); }
+.pw-dot[data-masjid] { box-shadow: 0 0 0 2px var(--surface), 0 0 0 3.5px var(--gold); }
+.pw-key { display: flex; flex-wrap: wrap; gap: 6px 16px; margin: 10px 0 0; font-size: 0.8125rem; }
+.pw-key .pw-dot { width: 11px; height: 11px; margin-right: 4px; }
