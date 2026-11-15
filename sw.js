@@ -85,6 +85,7 @@ const LOCAL_FILES = [
   "js/dua.js",
   "js/fx.js",
   "js/health-page.js",
+  "js/history.js",
   "js/home-levels.js",
   "js/home.js",
   "js/hud-home.js",

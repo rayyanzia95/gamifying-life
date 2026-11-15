@@ -1567,3 +1567,20 @@ body[data-tab="backup"] [data-panel="backup"] { display: block; }
 .ql-toast button { font: inherit; cursor: pointer; }
 .ql-toast:not(:has(button)) { padding: 12px 18px; } /* a plain message (the sync status line) */
 .ql-toast button:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+
+/* History card (js/history.js): the last 12 weeks as a grid, one column per week, Sunday on top. */
+.history-body { display: flex; flex-wrap: wrap; gap: 14px 28px; align-items: center; margin-top: 10px; }
+.history-grid { --cell: 15px; display: grid; gap: 4px; }
+.history-months, .history-cells { display: grid; grid-template-columns: repeat(12, var(--cell)); gap: 4px; }
+.history-months span { font-size: 0.6875rem; color: var(--muted); white-space: nowrap; }
+.history-week { display: grid; gap: 4px; }
+.history-cell { width: var(--cell); height: var(--cell); border-radius: 3px; background: var(--line); }
+.history-cell.future { background: none; box-shadow: inset 0 0 0 1px var(--line); }
+.history-cell[data-shade="1"] { background: color-mix(in srgb, var(--hist, var(--accent)) 30%, var(--line)); }
+.history-cell[data-shade="2"] { background: color-mix(in srgb, var(--hist, var(--accent)) 55%, var(--line)); }
+.history-cell[data-shade="3"] { background: color-mix(in srgb, var(--hist, var(--accent)) 78%, var(--line)); }
+.history-cell[data-shade="4"] { background: var(--hist, var(--accent)); }
+.history-cell[data-today] { outline: 1.5px solid var(--text); outline-offset: 1px; }
+.history-facts { flex: 1; min-width: 190px; margin: 0; padding: 0; list-style: none; display: grid; gap: 6px; font-size: 0.875rem; color: var(--text-2, var(--muted)); }
+.history-facts strong { color: var(--text); font-variant-numeric: tabular-nums; }
+@media (max-width: 420px) { .history-grid { --cell: 13px; } }
