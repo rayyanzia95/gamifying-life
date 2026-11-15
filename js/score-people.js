@@ -2,7 +2,8 @@
 
 // ---- People ----
 // Names and dates are typed in on the People page, so they live only in events.
-// A person: { date, activity: "person", name, group }, removed by deleting that event.
+// A person: { id, date, activity: "person", name, group, rhythm? }, removed by deleting that event.
+// rhythm is "weekly" | "biweekly" | "monthly" (PEOPLE_RHYTHMS); older people have none.
 // A call/text/visit: { date, activity: "contact", name, group, kind: "call" | "text" | "visit" };
 // the group is copied in, so a call home still counts after the person is removed.
 // A date: { date, activity: "people-date", label, kind, day: "12-04" }, repeats every year.
@@ -18,6 +19,21 @@ function isWished(event) {
 
 function isHomeCall(event) {
   return isContact(event) && event.kind === "call" && event.group === PEOPLE.homeGroup;
+}
+
+// Days between contacts before a person shows a quiet "due" hint (never costs XP).
+const PEOPLE_RHYTHMS = [
+  { id: "weekly", name: "Weekly", days: 7 },
+  { id: "biweekly", name: "Every 2 weeks", days: 14 },
+  { id: "monthly", name: "Monthly", days: 30 },
+];
+
+// Due = their rhythm has passed since the last contact (or since they were added).
+function isDue(person, events, today) {
+  const rhythm = PEOPLE_RHYTHMS.find(r => r.id === person.rhythm);
+  if (!rhythm) return false;
+  const since = lastContact(events, person.name)?.date ?? person.date;
+  return daysBetween(since, today) > rhythm.days;
 }
 
 function peopleList(events) {

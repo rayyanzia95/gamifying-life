@@ -81,6 +81,9 @@ function personRow(person, events, today) {
   const last = Object.assign(document.createElement("small"),
     { textContent: lastLabel(lastContact(events, person.name), today) });
   who.append(last);
+  if (isDue(person, events, today)) {
+    who.append(Object.assign(document.createElement("small"), { className: "people-due", textContent: "due" }));
+  }
   const group = PEOPLE.groups.find(g => g.id === person.group);
   const kinds = PEOPLE.kinds.filter(kind => kind.id !== "visit" || group?.visits);
   const buttons = kinds.map(kind => {
@@ -90,43 +93,6 @@ function personRow(person, events, today) {
   });
   row.append(who, ...buttons);
   return row;
-}
-
-function addPerson(name, group, error) {
-  const clean = name.trim();
-  if (!clean) return showError(error, "Type a name first");
-  const events = loadEvents();
-  if (peopleList(events).some(p => sameName(p.name, clean))) {
-    return showError(error, `${clean} is already on the list`);
-  }
-  saveEvents([...events, { date: todayString(), activity: "person", name: clean, group }]);
-  render();
-}
-
-// Removing someone drops them from the list; their past calls and texts keep their XP.
-function removePerson(name) {
-  saveEvents(loadEvents().filter(e => !(e.activity === "person" && e.name === name)));
-  render();
-}
-
-// "Add or remove people": type a name, then tap a group to save.
-function manageFold(people) {
-  const fold = Object.assign(document.createElement("details"), { className: "money-fold" });
-  const summary = Object.assign(document.createElement("summary"), { textContent: "Add or remove people" });
-  const input = textInput("Name");
-  const error = errorLine();
-  const chips = Object.assign(document.createElement("div"), { className: "filters" });
-  chips.append(...PEOPLE.groups.map(group => button(group.name, () => addPerson(input.value, group.id, error))));
-  const list = Object.assign(document.createElement("ul"), { className: "plain-list" });
-  list.append(...people.map(person => {
-    const li = Object.assign(document.createElement("li"), { className: "money-row" });
-    li.append(person.name, removeButton(person.name, () => removePerson(person.name)));
-    return li;
-  }));
-  const form = Object.assign(document.createElement("div"), { className: "people-form" });
-  form.append(input, chips, error);
-  fold.append(summary, form, list);
-  return fold;
 }
 
 function drawPeople(events, today) {
@@ -143,7 +109,7 @@ function drawPeople(events, today) {
     list.append(...inGroup.map(p => personRow(p, events, today)));
     parts.push(Object.assign(document.createElement("p"), { className: "people-group", textContent: group.name }), list);
   }
-  parts.push(manageFold(people));
+  parts.push(setupFold(people));
   document.getElementById("people").replaceChildren(...parts);
 }
 

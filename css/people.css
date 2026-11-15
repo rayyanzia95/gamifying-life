@@ -48,3 +48,33 @@
   font-size: 0.8125rem;
   color: var(--now);
 }
+
+/* Quiet "due" hint: grey, no colour alarm. */
+.people-who small.people-due {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 0 6px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  opacity: 0.8;
+}
+
+.people-setup-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.people-setup-row > span {
+  flex: 1 1 100%;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.people-names {
+  width: 100%;
+  min-height: 72px;
+  box-sizing: border-box;
+}
