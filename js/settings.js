@@ -63,7 +63,11 @@ const PALETTES = [
 ];
 
 // Small headers in the dark palette picker; group = the palette's temperature or energy.
-const PALETTE_GROUPS = { warm: "Warm", cool: "Cool", loud: "Playful / loud", muted: "Muted" };
+// "experimental" heads the parked layouts (and the Orrery tilt) in the Layout picker.
+const PALETTE_GROUPS = { warm: "Warm", cool: "Cool", loud: "Playful / loud", muted: "Muted", experimental: "Experimental: still rough; may change" };
+
+// Parked layouts: still selectable and a saved one is honoured, but shown under Experimental. Later code (a Home loader) can read this.
+const EXPERIMENTAL_LAYOUTS = ["orrery", "wheel", "codex"];
 
 // Palettes merged away as near-duplicates (2026-11-13). A saved or synced old choice reads as the one kept,
 // so nobody lands on a palette that no longer has colours.
@@ -268,9 +272,9 @@ const APPEARANCE_CHOICES = {
       { value: "classic", label: "Classic" },
       { value: "hud", label: "Cockpit HUD" },
       { value: "city", label: "City" },
-      { value: "orrery", label: "Orrery" },
-      { value: "wheel", label: "Command wheel" },
-      { value: "codex", label: "Grimoire ledger" },
+      { value: "orrery", label: "Orrery", group: "experimental" },
+      { value: "wheel", label: "Command wheel", group: "experimental" },
+      { value: "codex", label: "Grimoire ledger", group: "experimental" },
     ],
   },
   // Only the Orrery's Home uses it (js/orrery-home.js); Motion None and the device's reduce-motion setting force Flat.
@@ -278,7 +282,7 @@ const APPEARANCE_CHOICES = {
     label: "Orrery view (when Layout is Orrery)",
     options: [
       { value: "flat", label: "Flat" },
-      { value: "tilt", label: "3D tilt (drag to turn)" },
+      { value: "tilt", label: "3D tilt (drag to turn)", group: "experimental" },
     ],
   },
 };
