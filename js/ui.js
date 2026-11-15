@@ -194,3 +194,6 @@ function showUndo(message, undo, onUndo) {
   toast.hidden = false;
   undoToastTimer = setTimeout(() => { toast.hidden = true; }, UNDO_TOAST_MS);
 }
+
+// Pasted deadlines (score-academics.js) join DEADLINES on every page that loads it.
+if (typeof applyImportedDeadlines === "function") applyImportedDeadlines(loadEvents());

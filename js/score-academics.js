@@ -119,3 +119,73 @@ function bossBonusXp(events, deadlines) {
   const beaten = deadlines.filter(d => isBoss(d) && bossState(events, d, ticked).beaten);
   return beaten.length * ACADEMICS.boss.bonusXp;
 }
+
+// ---- Pasted deadlines ----
+// "CMPUT 201, Assignment 4, 2026-12-01[, exam]" per line. Each saved line is one event:
+// { date: today, activity: "deadline-import", course, title, due, kind[, hp] }
+// and is merged on top of DEADLINES (the repo rows stay) by applyImportedDeadlines.
+
+const REPO_DEADLINE_COUNT = DEADLINES.length;
+
+// "CMPUT 201" / "cmput" / "Study Skills" → the course id, or null.
+function courseIdFromText(text) {
+  const key = text.trim().toLowerCase();
+  const first = key.split(/\s+/)[0];
+  const course = ACADEMICS.courses.find(c =>
+    [c.id, c.short, c.name].some(name => name.toLowerCase() === key || name.toLowerCase() === first));
+  return course ? course.id : null;
+}
+
+// "2026-12-01" is real; "2026-02-30" is not.
+function isRealDate(text) {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(text)) return false;
+  const date = new Date(`${text}T00:00:00Z`);
+  return !Number.isNaN(date.getTime()) && date.toISOString().slice(0, 10) === text;
+}
+
+const importKey = r => `${r.course}|${r.title.toLowerCase()}|${r.due ?? r.date}`;
+
+// One line → { row } or { error }. The title may hold commas: it's everything between course and date.
+function parseDeadlineLine(line) {
+  const parts = line.split(",").map(p => p.trim());
+  const isExam = parts.length > 3 && parts[parts.length - 1].toLowerCase() === "exam";
+  const fields = isExam ? parts.slice(0, -1) : parts;
+  if (fields.length < 3 || fields.some(f => f === "")) return { error: "needs COURSE, title, YYYY-MM-DD" };
+  const course = courseIdFromText(fields[0]);
+  if (!course) return { error: `unknown course "${fields[0]}"` };
+  const due = fields[fields.length - 1];
+  if (!isRealDate(due)) return { error: `bad date "${due}"` };
+  const title = fields.slice(1, -1).join(", ");
+  const kind = isExam ? DEADLINE_IMPORT.examKind : DEADLINE_IMPORT.kind;
+  return { row: { course, title, due, kind, ...(isExam ? { hp: DEADLINE_IMPORT.examHp } : {}) } };
+}
+
+// text → { rows, errors, skipped }. existing: rows already there ({course, title, due|date}),
+// so a pasted duplicate is skipped, not added twice.
+function parseDeadlineLines(text, existing = []) {
+  const lines = text.split(/\r?\n/).map((line, i) => ({ line: line.trim(), number: i + 1 })).filter(l => l.line);
+  const seen = new Set(existing.map(importKey));
+  return lines.reduce((acc, { line, number }) => {
+    const { row, error } = parseDeadlineLine(line);
+    if (error) return { ...acc, errors: [...acc.errors, { line: number, text: line, message: error }] };
+    if (seen.has(importKey(row))) return { ...acc, skipped: [...acc.skipped, row] };
+    seen.add(importKey(row));
+    return { ...acc, rows: [...acc.rows, row] };
+  }, { rows: [], errors: [], skipped: [] });
+}
+
+const isDeadlineImport = event => event.activity === DEADLINE_IMPORT.activity;
+
+// The imported events as DEADLINES rows.
+function importedDeadlines(events) {
+  return events.filter(isDeadlineImport).map(e => ({
+    date: e.due, time: DEADLINE_IMPORT.time, course: e.course, kind: e.kind, title: e.title,
+    ...(e.hp ? { hp: e.hp } : {}), imported: e.id,
+  }));
+}
+
+// DEADLINES is one shared array the readers all use, so this is the one place it changes:
+// the repo rows stay, the imported ones are swapped for the current events'.
+function applyImportedDeadlines(events) {
+  DEADLINES.splice(REPO_DEADLINE_COUNT, DEADLINES.length, ...importedDeadlines(events));
+}

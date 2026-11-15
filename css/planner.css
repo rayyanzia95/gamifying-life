@@ -337,3 +337,11 @@ button.pl-blk { cursor: pointer; }
 
 /* The header is tall on a phone (tabs + exam chips wrap), so it scrolls away there. */
 @media (max-width: 600px) { .pl-top { position: static; } }
+
+/* Import deadlines fold (deadline-import.js) */
+.import-fold { margin-bottom: 12px; }
+.import-text { display: block; width: 100%; box-sizing: border-box; margin: 8px 0; padding: 8px; font: inherit; font-size: 0.8125rem;
+  border: 1px solid var(--control-border); border-radius: 8px; background: var(--surface); color: var(--text); }
+.import-error { color: var(--now); }
+.import-fold li { display: flex; justify-content: space-between; gap: 8px; font-size: 0.8125rem; padding: 3px 0; }
+.import-remove { border: 0; background: none; color: var(--muted); font: inherit; font-size: 1rem; cursor: pointer; }

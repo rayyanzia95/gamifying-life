@@ -105,3 +105,7 @@ const STUDY_GUIDES = [
   { course: "study", kind: "plan",  updated: "2026-10-14", title: "Fall 2026 Study Plan",                       url: "https://claude.ai/artifact/CnhcwmrNcXiijodBf5kkL9" },
   { course: "study", kind: "plan",  updated: "2026-10-14", title: "Fall 2026 Deadlines",                        url: "https://claude.ai/artifact/MCiKJ8UDLoL3GiHCHW6DAf" },
 ];
+
+// Pasted deadlines (planner "Import deadlines"): what a line gets when it doesn't say.
+// An "exam" line becomes an exam row with examHp, like the midterms above.
+const DEADLINE_IMPORT = { activity: "deadline-import", kind: "assignment", examKind: "exam", examHp: 10, time: "Imported" };

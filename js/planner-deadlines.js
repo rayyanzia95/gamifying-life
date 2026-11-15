@@ -73,10 +73,11 @@ function deadlineWeeks(shown, ticked) {
 }
 
 function drawDeadlines(events) {
+  applyImportedDeadlines(events);
   const ticked = tickedDeadlines(events);
   const shown = deadlinesBetween("", "9999")
     .filter(d => deadlineFilters.courses.has(d.course))
     .filter(d => !(deadlineFilters.hideDone && ticked.has(deadlineId(d))));
   const weeks = shown.length > 0 ? deadlineWeeks(shown, ticked) : [el("p", "pl-empty", "Nothing matches these filters")];
-  document.getElementById("deadlines").replaceChildren(...deadlinesHeader(ticked), ...weeks);
+  document.getElementById("deadlines").replaceChildren(...deadlinesHeader(ticked), importFold(events), ...weeks);
 }
