@@ -24,7 +24,7 @@ Run the tests with `node tests/city-state.test.js` (21 checks).
 
 | File | What it is | Needs |
 | --- | --- | --- |
-| `js/city/build/catalogue.js` | 19 projects, 28 slots, the starter builds, roads, stage names | nothing |
+| `js/city/build/catalogue.js` | 19 projects, 29 slots, the starter builds, roads, stage names | nothing |
 | `js/city/build/state.js` | `cityState(events, level)` and the build / move / remove writers | catalogue |
 | `js/city/build/models.js` | `CityProjects3D[id](palette, opts)`: a 3D model per project | three.js, `js/city/utils.js`, `props.js` |
 | `js/city/build/scene-kit.js` | `CityBuildKit`: stand a model on a slot, sync a scene to the state, roads, slot markers, picking, the tick | all of the above, `js/city-svg.js` |

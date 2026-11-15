@@ -107,6 +107,12 @@ function cityOpenSlots(state) {
   return CITY_SLOTS.filter(slot => cityMenu(state, slot.id).length > 0 && !state.bySlot.get(slot.id)?.starter);
 }
 
+// Slots where something can be built right now (a blueprint to spend, the prerequisite standing, a monument
+// earned): the ones build mode lights up. With nothing to spend this is empty, and build mode is for moving.
+function cityBuildableSlots(state) {
+  return CITY_SLOTS.filter(slot => cityMenu(state, slot.id).some(option => option.ok));
+}
+
 // ---- Writers. Each returns a new events array (never changes the one passed in), or null if it can't be done. ----
 
 function cityBuild(events, state, projectId, slotId, now, date) {

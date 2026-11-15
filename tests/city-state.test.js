@@ -7,7 +7,7 @@ const load = f => fs.readFileSync(path.join(__dirname, "..", f), "utf8");
 const svg = load("js/city-svg.js");
 const cut = (from, to) => svg.slice(svg.indexOf(from), svg.indexOf(to, svg.indexOf(from)) + to.length);
 vm.runInContext(cut("const CITY_TERRAIN", "];") + cut("const CITY_PLOT", "};") + load("js/city/build/catalogue.js") + load("js/city/build/state.js") +
-  "\nthis.api={CITY_TERRAIN,CITY_PLOT,CITY_PROJECTS,CITY_SLOTS,CITY_STARTERS,cityCheckCatalogue,cityFits,cityProject,citySlot,cityStage,cityState,cityCanBuild,cityMenu,cityOpenSlots,cityBuild,cityMove,cityRemove,cityReplace,cityRoads,citySummary};", ctx);
+  "\nthis.api={CITY_TERRAIN,CITY_PLOT,CITY_PROJECTS,CITY_SLOTS,CITY_STARTERS,cityCheckCatalogue,cityFits,cityProject,citySlot,cityStage,cityState,cityCanBuild,cityMenu,cityOpenSlots,cityBuildableSlots,cityBuild,cityMove,cityRemove,cityReplace,cityRoads,citySummary};", ctx);
 const A = ctx.api;
 const ok = (name, fn) => { fn(); console.log("ok -", name); };
 let clock = 1000;
@@ -141,6 +141,12 @@ ok("open slots exclude starters and full slots with no upgrade", () => {
   const s = A.cityState([ev("docks", "b-quay")], 5);
   const open = A.cityOpenSlots(s).map(x => x.id);
   assert.ok(!open.includes("x-mid") && !open.includes("b-quay") && open.includes("b-mill"));
+});
+
+ok("buildable slots are empty with nothing to spend, and include upgrades when there is", () => {
+  assert.equal(A.cityBuildableSlots(A.cityState([ev("docks", "b-quay")], 1)).length, 0);
+  const ids = A.cityBuildableSlots(A.cityState([ev("footbridge", "x-west")], 3)).map(x => x.id);
+  assert.ok(ids.includes("x-west") && ids.includes("b-mill") && !ids.includes("x-mid"));
 });
 
 ok("roads appear when both ends are in use", () => {

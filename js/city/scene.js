@@ -1,5 +1,6 @@
-// The 3D city for City → Home on wide screens (js/city-home.js loads three.js, then the building files, then this).
-// One building per CITY_PLOT cell, an orthographic camera with limited orbit and zoom, today's XP as the glow
+// The 3D city for City → Home (js/city-home.js loads three.js, then the building files, then this).
+// One building per CITY_PLOT cell, plus whatever the city builder's state says is built (bridges, stairs, docks...:
+// js/city/build/, drawn through CityBuildKit), an orthographic camera with limited orbit and zoom, today's XP as the glow
 // material's brightness (dim 0.15 to full 1.0), small HTML tags over the buildings, 30 fps and paused when the page
 // is hidden or the city is off screen. On phones and under reduced motion it is "still": no orbit controls, and a frame is
 // drawn only when something changes (mount, resize, scrolling into view, a level-up build), so nothing loops. The scene is built once and kept; a redraw of Home only re-attaches it.
@@ -17,7 +18,6 @@ const CityScene = (() => {
     chores: { main: "#8b4513", accent: "#cd853f", dark: "#5c4033", light: "#f5deb3", glow: "#ffa500" },
     personal: { main: "#9acd32", accent: "#adff2f", dark: "#556b2f", light: "#f5f5dc", glow: "#adff2f" },
     people: { main: "#db7093", accent: "#ffb6c1", dark: "#c71585", light: "#fff0f5", glow: "#ff69b4" },
-    centre: { main: "#9370db", accent: "#8a2be2", dark: "#4b0082", light: "#f8f8ff", glow: "#e0b0ff" },
     park: { main: "#228B22", accent: "#FF69B4", dark: "#556B2F", light: "#D2B48C", glow: "#7CFC00" },
     pool: { main: "#00CED1", accent: "#FF4500", dark: "#008B8B", light: "#E0FFFF", glow: "#00FFFF" },
   };
@@ -97,6 +97,20 @@ const CityScene = (() => {
     ring.position.set(group.position.x, base + 0.1, group.position.z);
     s.scene.add(ghost, ring);
     builds.push({ start: performance.now() / 1000, group, ghost, ring, plane, base, height: top - base + 1 });
+  }
+
+  // A project just placed in build mode rises the same way, with nothing to fade out first.
+  function startRise(group) {
+    const box = new THREE.Box3().setFromObject(group);
+    const base = box.min.y;
+    const plane = new THREE.Plane(new THREE.Vector3(0, -1, 0), base - 1);
+    ownMaterials(group, m => { m.clippingPlanes = [plane]; });
+    const ring = new THREE.Mesh(new THREE.RingGeometry(1.9, 2.1, 64),
+      new THREE.MeshBasicMaterial({ color: 0xffd684, transparent: true, opacity: 0, side: THREE.DoubleSide, depthWrite: false }));
+    ring.rotation.x = -Math.PI / 2;
+    box.getCenter(ring.position).setY(base + 0.15);
+    s.scene.add(ring);
+    builds.push({ start: performance.now() / 1000, group, ghost: new THREE.Group(), ring, plane, base, height: box.max.y - base + 1 });
   }
 
   function stepBuilds(t) {
@@ -179,7 +193,8 @@ const CityScene = (() => {
     floor.receiveShadow = true;
     scene.add(floor);
     CityTerrain.build(scene);
-    s = { canvas, renderer, scene, camera, controls, districts: new Map(), tags: new Map(), visible: true, last: 0, down: null, still: false, queued: false };
+    s = { canvas, renderer, scene, camera, controls, districts: new Map(), tags: new Map(), visible: true, last: 0, down: null, still: false, queued: false,
+      placed: new Map(), roads: null, markers: null, city: null, cityDrawn: false };
     addScenery();
     watchPointer();
     new IntersectionObserver(([e]) => { s.visible = e.isIntersecting; wake(); }).observe(canvas);
@@ -187,7 +202,8 @@ const CityScene = (() => {
     document.addEventListener("visibilitychange", wake); // a frame skipped while the page was hidden is redrawn on return
   }
 
-  // A click on a building (not the end of a drag) opens its page.
+  // A click (not the end of a drag). In build mode it picks a glowing slot, or a project to move or remove, and
+  // hands the slot id to city-home.js; otherwise a click on a building opens its page.
   function watchPointer() {
     const ray = new THREE.Raycaster(), point = new THREE.Vector2();
     s.canvas.addEventListener("pointerdown", e => { s.down = [e.clientX, e.clientY]; });
@@ -195,6 +211,11 @@ const CityScene = (() => {
       if (!s.down || Math.hypot(e.clientX - s.down[0], e.clientY - s.down[1]) > 5) return;
       const box = s.canvas.getBoundingClientRect();
       point.set(((e.clientX - box.left) / box.width) * 2 - 1, -((e.clientY - box.top) / box.height) * 2 + 1);
+      if (s.city?.building) {
+        const slot = (s.markers && CityBuildKit.pickSlot(s.camera, point, s.markers)) ?? CityBuildKit.pickProject(s.camera, point, s.placed);
+        s.city.onSlot(slot);
+        return;
+      }
       ray.setFromCamera(point, s.camera);
       for (const hit of ray.intersectObjects(s.scene.children, true)) {
         let o = hit.object;
@@ -203,6 +224,28 @@ const CityScene = (() => {
         if (entry?.item?.href) { location.href = entry.item.href; return; }
       }
     });
+  }
+
+  // Bring the built projects, roads and build-mode markers in line with the city builder's state.
+  // city: { state, running, building, slots, lit, onSlot } from city-home.js. Only what changed is touched; a project
+  // added after the first draw rises into place. Each project glows like a building, by the town's average share.
+  function drawCity(city) {
+    s.city = city;
+    const { added, removed } = CityBuildKit.sync(s.scene, city.state, s.placed, { running: city.running });
+    removed.forEach(slot => s.districts.delete(`slot:${slot}`));
+    added.forEach(group => {
+      collect(group);
+      s.districts.set(`slot:${group.userData.slot}`, { group, item: null });
+      if (s.cityDrawn && !s.still) startRise(group);
+    });
+    s.placed.forEach(({ group }) => { group.userData.base = brightness(city.lit); });
+    if (s.roads) s.scene.remove(s.roads);
+    s.roads = CityBuildKit.roads(city.state);
+    s.scene.add(s.roads);
+    if (s.markers) s.scene.remove(s.markers);
+    s.markers = city.building ? CityBuildKit.markers(city.state, city.slots ? { slots: city.slots } : {}) : null;
+    if (s.markers) s.scene.add(s.markers);
+    s.cityDrawn = true;
   }
 
   // The camera shows the whole plot whatever the shape of the box: wide boxes show the plot's width, tall ones its height.
@@ -254,11 +297,11 @@ const CityScene = (() => {
 
   function frame(time) {
     s.queued = false;
-    if (!s.still || builds.length) wake();
+    if (!s.still || builds.length || s.markers) wake(); // markers breathe, so build mode keeps drawing
     if (document.hidden || !s.visible || (!s.still && time - s.last < FRAME_MS)) return;
     s.last = time;
     const t = time / 1000;
-    CityUtils.tick(s.scene, t); // water, boats, flags and lamps
+    CityBuildKit.tick(s.scene, t); // water, boats, flags and lamps (CityUtils.tick), plus the train, the funicular and markers
     stepBuilds(time / 1000);
     s.districts.forEach(({ group }) => {
       const factor = group.userData.base / GLOW_NEUTRAL;
@@ -273,12 +316,15 @@ const CityScene = (() => {
     placeTags();
   }
 
-  // items: [{ id, name, href, level, tier, lit, c, label }]; grown: [{ id, from }] districts to rebuild; still: no controls, frames on demand. Safe to call again with fresh numbers.
-  function mount(host, items, grown = [], still = false) {
+  // items: [{ id, name, href, level, tier, lit, c, label }]; grown: [{ id, from }] districts to rebuild; still: no controls, frames on demand.
+  // city: the builder's state and build-mode flags (see drawCity). Safe to call again with fresh numbers.
+  function mount(host, items, grown = [], still = false, city = null) {
     if (!s) create(host);
     s.still = still;
     s.controls.enabled = !still;
     items.forEach(item => addDistrict(item, grown));
+    if (city) drawCity(city);
+    host.classList.toggle("is-building", Boolean(city?.building));
     host.classList.toggle("is-still", still);
     host.replaceChildren(s.canvas, ...items.map(tagFor));
     fit();

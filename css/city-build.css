@@ -48,6 +48,11 @@
 .cb-button:disabled { opacity: 0.45; cursor: default; }
 .cb-button:focus-visible, .cb-slot:focus-visible polygon { outline: 2px solid var(--gold, #ffd684); outline-offset: 2px; }
 
+.cb-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.cb-close { justify-self: end; }
+/* The app's sheet is a <dialog> sharing .ql-sheet (bottom sheet on phones); give its list room to scroll. */
+.city-sheet { max-height: min(86vh, 640px); overflow-y: auto; }
+
 /* ---- city-preview.html only ---- */
 body.cbp-page { max-width: none; margin: 0; padding: 0; }
 .cbp { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 16px; max-width: 1400px; margin: 0 auto; padding: 16px; }

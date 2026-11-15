@@ -11,7 +11,7 @@
 //
 // To retire old files from the cache after deleting/renaming something, bump CACHE_VERSION.
 
-const CACHE_VERSION = "v3";
+const CACHE_VERSION = "v4";
 const CACHE = `gamifying-life-${CACHE_VERSION}`;
 const NETWORK_TIMEOUT_MS = 4000;
 
@@ -49,6 +49,7 @@ const LOCAL_FILES = [
   "css/deen.css",
   "css/health.css",
   "css/home.css",
+  "css/city-build.css",
   "css/layout-city.css",
   "css/layout-codex.css",
   "css/layout-hud.css",
@@ -76,6 +77,9 @@ const LOCAL_FILES = [
   "js/city-build.js",
   "js/city-home.js",
   "js/city-svg.js",
+  "js/city/build/catalogue.js",
+  "js/city/build/state.js",
+  "js/city/build/svg.js",
   "js/codex.js",
   "js/command-wheel.js",
   "js/config-academics.js",

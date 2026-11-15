@@ -56,6 +56,16 @@
 [data-layout="city"] #home-card { padding: 0; border: 0; background: none; }
 
 .city { display: grid; gap: 16px; }
+.city-main { display: grid; gap: 8px; min-width: 0; }
+
+/* Above the town: its stage and blueprints ("Village · 2 blueprints") and the Build button (js/city-home.js). */
+.city-bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.city-stage-name { font-weight: 600; font-size: 0.9375rem; }
+.city-bar .cb-button { min-height: 40px; }
+.city-bar .cb-button.primary { --c: var(--gold); }
+.city-build-hint { margin: 0; font-size: 0.8125rem; color: var(--muted); }
+.city-stage.is-building { border-color: var(--gold); }
+.city-stage.is-building .city-tag { pointer-events: none; opacity: 0.55; } /* taps go to the slots, not the branch pages */
 .city a { color: inherit; text-decoration: none; }
 
 .city-stage {

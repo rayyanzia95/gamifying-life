@@ -107,6 +107,9 @@ const CITY_SLOTS = [
   { id: "p-row", name: "Market row", zones: ["plain"], x: 8, y: 7, w: 1, h: 1, face: "w", level: 1 },
   { id: "p-south", name: "South field", zones: ["plain"], x: 2, y: 8, w: 1, h: 2, face: "e", level: 1 },
 
+  // the middle of town, where the overall-level tower used to stand
+  { id: "p-heart", name: "Town heart", zones: ["plain", "hill"], x: 5, y: 2, w: 2, h: 2, face: "s", level: 2 },
+
   // knolls
   { id: "h-south", name: "South knoll", zones: ["hill"], x: 8, y: 8, w: 2, h: 2, face: "n", level: 2 },
   { id: "h-west", name: "West knoll", zones: ["hill"], x: 0, y: 8, w: 2, h: 2, face: "e", level: 2 },
@@ -152,6 +155,7 @@ const CITY_ROADS = [
   { id: "r-high", ends: ["t-garden", "t-yard"], via: [[7, 1.6], [7.5, 1.6], [8, 1.6], [8.5, 1.6], [9, 1.6]] },
   { id: "r-east", ends: ["t-yard", "t-east"], via: [[10.5, 2.1], [11, 2.4]] },
   { id: "r-knoll", ends: ["h-south", "plot:money"], via: [[9.5, 8.1], [9.5, 7.9]] },
+  { id: "r-heart", ends: ["p-heart", "plot:chores"], via: [[7.1, 3.4], [7.5, 3.4], [8, 3.4], [8.5, 3.4], [8.9, 3.4]] },
 ];
 
 const cityProject = id => CITY_PROJECTS.find(p => p.id === id);

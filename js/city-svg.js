@@ -5,7 +5,7 @@
 // Loads right after nav.js on every page; on a branch page it adds the portrait under the title.
 
 // First level of tiers 2 to 6. Lv 1-2 is tier 1, 3-4 tier 2, 5-6 tier 3, 7-9 tier 4, 10-14 tier 5, 15+ tier 6.
-// The centre uses the overall level with the same bands (overall levels climb about 3x slower).
+// The overall level has no building of its own: it earns blueprints and names the town's stage (js/city/build/).
 const CITY_TIER_FROM = [3, 5, 7, 10, 15];
 const cityTier = level => 1 + CITY_TIER_FROM.filter(from => level >= from).length;
 
@@ -32,19 +32,17 @@ const cityLevelAt = (col, row) => { const ch = CITY_TERRAIN[row]?.[col]; return 
 // terrain), turn is a small angle in degrees so the street looks lived in. Park and pool are scenery.
 const CITY_PLOT = {
   deen: { x: 4, y: 1, turn: 8 }, health: { x: 8, y: 1, turn: -6 }, academics: { x: 12, y: 1, turn: -10 },
-  centre: { x: 6, y: 3, turn: 5 }, chores: { x: 10, y: 3, turn: 12 },
+  chores: { x: 10, y: 3, turn: 12 },
   personal: { x: 2, y: 5, turn: -14 }, people: { x: 6, y: 7, turn: 10 }, money: { x: 10, y: 7, turn: -8 },
   park: { x: 4, y: 9, turn: 0 }, pool: { x: 12, y: 9, turn: 6 },
 };
 const cityPadLevel = p => cityLevelAt(Math.round(p.x) - 1, Math.round(p.y) - 1);
 
-// Two bridges across the river (x: the deck's centre line, y0 to y1: where it runs, level: the bank it springs from)
-// and the steps cut into the rock (x, y: the cell; dir: which way they climb; low and high: the levels they join).
-const CITY_BRIDGES = [{ x: 7.5, y0: 3.5, y1: 6, level: 2 }, { x: 11.5, y0: 4.5, y1: 7, level: 2 }];
-const CITY_STAIRS = [
-  { x: 7.5, y: 6.5, dir: "n", low: 1, high: 2 }, { x: 11.5, y: 7.5, dir: "n", low: 1, high: 2 },
-  { x: 7.5, y: 2.5, dir: "n", low: 2, high: 3 }, { x: 7.5, y: 7.5, dir: "s", low: 1, high: 2 },
-];
+// The two bridges and four flights of steps the town began with are now starter projects in the city builder
+// (CITY_STARTERS in js/city/build/catalogue.js), drawn from cityState() like everything else that is built.
+// These two tables stay, empty, because js/city/terrain.js and cityMapSvg still read them.
+const CITY_BRIDGES = [];
+const CITY_STAIRS = [];
 const CITY_DIRS = { n: [0, -1], s: [0, 1], e: [1, 0], w: [-1, 0] };
 
 const CITY_HALF = 14; // SVG: half a tile's width, in view-box units
