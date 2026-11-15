@@ -13,8 +13,8 @@
 
 const isCityBuild = event => event.activity === "city-build";
 
-// One blueprint per overall level, including the first, so a brand-new town can build something on day one.
-const cityBlueprintsEarned = level => Math.max(Math.floor(level), 0);
+// One blueprint per overall level gained: none at level 1, the first at level 2, so the first build is earned.
+const cityBlueprintsEarned = level => Math.max(Math.floor(level) - 1, 0);
 
 // level: the overall level. options.allowLater: accept the terrain-changing projects (off for the first slice).
 // options.earned: how many monuments of each kind have been earned, e.g. { boss: 2, ramadan: 1 }.

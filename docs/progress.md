@@ -23,7 +23,7 @@ Plan: `docs/round-2-brief.md`. One line per item: code, date, what changed, what
 | H3 | 2026-11-14 | Today list in day order (morning adhkar after Fajr, evening after Asr), evening adhkar dimmed until Asr, a finished group folds to its header (tap to reopen). | Folded state is per page load. |
 | L1 | 2026-11-14 | One-column Home (under 1000px, Classic): centrepiece on top (since 2026-11-14, like the other layouts), then Now, Today list, Quick log. | Other layouts: centrepiece, Now, Quick log, Today. |
 | L7 | 2026-11-14 | Already in place before this round (44px hit areas in base.css "Polish pass"); nothing changed. |  |
-| H5, X2 | 2026-11-14 | Not done: the ring + web card on Home is a design Rayyan picked on 2026-11-12, so it stays until he says otherwise. The balance web now also exists on the weekly review. | DECIDE: keep the web on Home, or rows only? |
+| H5, X2 | 2026-11-14 | Not done: the ring + web card on Home is a design Rayyan picked on 2026-11-12, so it stays until he says otherwise. The balance web now also exists on the weekly review. | Decided 2026-11-14: the ring + web stays on Home. |
 
 ## Round 3, look back
 
@@ -39,7 +39,7 @@ Plan: `docs/round-2-brief.md`. One line per item: code, date, what changed, what
 
 | Item | Date | What changed | Open |
 | --- | --- | --- | --- |
-| R6-1, R6-2 | 2026-11-14 | `js/city/build/catalogue.js` (19 projects, 29 slots, starters, roads, stages) and `state.js` (`cityState(events, level)`, build / move / remove). `node tests/city-state.test.js`, 22 checks. | One blueprint per overall level, including level 1. |
+| R6-1, R6-2 | 2026-11-14 | `js/city/build/catalogue.js` (19 projects, 29 slots, starters, roads, stages) and `state.js` (`cityState(events, level)`, build / move / remove). `node tests/city-state.test.js`, 22 checks. | One blueprint per overall level gained; the first comes at level 2 (decided 2026-11-14). |
 | R6-7, R6-8 | 2026-11-14 | `models.js` (a 3D model per project), `scene-kit.js` (CityBuildKit), `svg.js` (flat drawings), `css/city-build.css`, `city-preview.html` playground, `docs/city-kit.md`. | Canal, dam and tunnel are modelled but locked (they change terrain). Flat drawings are simple boxes. |
 | R6-3 to R6-6, R6-9, R6-10 | 2026-11-14 | City Home reads `cityState`: the two bridges and four stairs are starter projects (`CITY_BRIDGES` / `CITY_STAIRS` are now empty), a Build button turns on build mode (glowing slots, a sheet to build, move, remove, all with Undo), 3D on wide screens and the flat map on phones. The centre tower is gone (`buildings/centre.js` deleted, pad is the "Town heart" slot); the overall level shows as "Village · 2 blueprints". Event: `{ date, activity: "city-build", project, slot, at }`. sw cache v4. | Victory statues count beaten bosses; the lantern arch needs a "Ramadan completed" event that doesn't exist yet. The train runs while the Quran or Dua streak is alive. Not tried on a real phone or GPU. |
 | R6 preview | 2026-11-14 | The build sheet shows the chosen blueprint turning in a small 3D window (`CityBuildKit.showcase()`, one shared WebGL renderer); tap a card to swap, Build still builds. Still frame with reduced motion; hidden without WebGL. | Wide models sit smaller than tall ones; the grass tile can clip on tall ones. |

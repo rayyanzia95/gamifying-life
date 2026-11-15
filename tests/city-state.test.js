@@ -16,10 +16,11 @@ const slots = state => state.built.filter(b => !b.starter).map(b => `${b.project
 
 ok("catalogue matches the real terrain and plots", () => assert.deepEqual(A.cityCheckCatalogue(A.CITY_TERRAIN, A.CITY_PLOT), []));
 
-ok("a new town has its starters and one blueprint", () => {
+ok("a new town has its starters and no blueprint until level 2", () => {
   const s = A.cityState([], 1);
   assert.equal(s.built.length, A.CITY_STARTERS.length);
-  assert.equal(s.free, 1); assert.equal(s.stage.name, "Hamlet");
+  assert.equal(s.free, 0); assert.equal(s.stage.name, "Hamlet");
+  assert.equal(A.cityState([], 2).free, 1);
   assert.ok(s.has("stonebridge") && s.has("rockstairs"));
 });
 
@@ -28,11 +29,11 @@ ok("stage names follow the level bands", () =>
 
 ok("building spends a blueprint", () => {
   const s = A.cityState([ev("docks", "b-quay")], 3);
-  assert.deepEqual(slots(s), ["docks@b-quay"]); assert.equal(s.spent, 1); assert.equal(s.free, 2);
+  assert.deepEqual(slots(s), ["docks@b-quay"]); assert.equal(s.spent, 1); assert.equal(s.free, 1);
 });
 
 ok("overspending leaves the latest build unplaced, not lost", () => {
-  const s = A.cityState([ev("docks", "b-quay"), ev("watermill", "b-mill")], 1);
+  const s = A.cityState([ev("docks", "b-quay"), ev("watermill", "b-mill")], 2);
   assert.deepEqual(slots(s), ["docks@b-quay"]);
   assert.equal(s.unplaced.length, 1); assert.equal(s.unplaced[0].reason, "blueprint"); assert.equal(s.free, 0);
 });
@@ -118,7 +119,7 @@ ok("moving is free and keeps the blueprint spent", () => {
 ok("removing gives the blueprint back", () => {
   const e = [ev("docks", "b-quay")];
   const after = A.cityRemove(e, A.cityState(e, 2), "b-quay");
-  assert.equal(A.cityState(after, 2).free, 2);
+  assert.equal(A.cityState(after, 2).free, 1);
 });
 
 ok("the writers never change the list they were given", () => {
@@ -129,7 +130,7 @@ ok("the writers never change the list they were given", () => {
 });
 
 ok("the menu lists what a slot can take, buildable first", () => {
-  const s = A.cityState([], 1);
+  const s = A.cityState([], 2);
   const menu = A.cityMenu(s, "b-quay");
   assert.ok(menu[0].ok); assert.ok(menu.some(m => m.project.id === "docks"));
   assert.ok(!menu.some(m => m.project.id === "stonebridge"));
@@ -144,7 +145,7 @@ ok("open slots exclude starters and full slots with no upgrade", () => {
 });
 
 ok("buildable slots are empty with nothing to spend, and include upgrades when there is", () => {
-  assert.equal(A.cityBuildableSlots(A.cityState([ev("docks", "b-quay")], 1)).length, 0);
+  assert.equal(A.cityBuildableSlots(A.cityState([ev("docks", "b-quay")], 2)).length, 0);
   const ids = A.cityBuildableSlots(A.cityState([ev("footbridge", "x-west")], 3)).map(x => x.id);
   assert.ok(ids.includes("x-west") && ids.includes("b-mill") && !ids.includes("x-mid"));
 });
@@ -156,8 +157,9 @@ ok("roads appear when both ends are in use", () => {
 });
 
 ok("the summary line reads naturally", () => {
-  assert.equal(A.citySummary(A.cityState([], 1)), "Hamlet · 1 blueprint");
-  assert.equal(A.citySummary(A.cityState([ev("docks", "b-quay")], 3)), "Village · 2 blueprints");
-  assert.equal(A.citySummary(A.cityState([ev("docks", "b-quay")], 1)), "Hamlet · no blueprints");
+  assert.equal(A.citySummary(A.cityState([], 1)), "Hamlet · no blueprints");
+  assert.equal(A.citySummary(A.cityState([], 2)), "Hamlet · 1 blueprint");
+  assert.equal(A.citySummary(A.cityState([ev("docks", "b-quay")], 4)), "Village · 2 blueprints");
+  assert.equal(A.citySummary(A.cityState([ev("docks", "b-quay")], 2)), "Hamlet · no blueprints");
 });
 console.log("all city tests passed");

@@ -34,7 +34,7 @@ Run the tests with `node tests/city-state.test.js` (22 checks).
 
 ## The rules, in one place
 
-- One **blueprint** per overall level (`cityBlueprintsEarned`). Free blueprints = earned minus spent.
+- One **blueprint** per overall level gained: none at level 1, the first at level 2 (`cityBlueprintsEarned`). Free blueprints = earned minus spent.
 - A **project** costs blueprints (usually 1) and goes in a **slot**. It fits when the slot is big enough and they
   share a **zone**: crossing, riverbank, low ground, knoll, under the cliff, cliff face, high plateau, peak.
 - Some projects **need** another first (docks before the riverside market; a terraced street before the lookout

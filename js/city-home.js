@@ -105,7 +105,7 @@ function cityBarHtml(state) {
   return `<div class="city-bar">
     <span class="city-stage-name">${citySummary(state)}${waiting ? ` · ${waiting} to place` : ""}</span>
     <button type="button" class="cb-button${cityBuilding ? " primary" : ""}" id="city-build-toggle" aria-pressed="${cityBuilding}">${cityBuilding ? "Done" : "Build"}</button>
-  </div>${cityBuilding ? `<p class="city-build-hint">${cityMoving ? "Pick a glowing place to move it to." : state.free > 0 || waiting ? "Tap a glowing place to build. Tap something you built to move it." : "No blueprints left. The next overall level brings one. Tap something you built to move it."}</p>` : ""}`;
+  </div>${cityBuilding ? `<p class="city-build-hint">${cityMoving ? "Pick a glowing place to move it to." : state.free > 0 || waiting ? "Tap a glowing place to build. Tap something you built to move it." : "No blueprints to spend. The next overall level brings one. Tap something you built to move it."}</p>` : ""}`;
 }
 
 let cityPending = null; // the items for the 3D stage that cityHomeMount fills in

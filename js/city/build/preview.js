@@ -235,7 +235,7 @@ function slotSheet() {
 function overview() {
   const box = el("section", { className: "cb-sheet card" });
   box.append(el("h2", {}, citySummary(state)),
-    el("p", { className: "cb-where" }, `Level ${ui.level}: ${state.earned} earned, ${state.spent} spent. One blueprint per overall level.`));
+    el("p", { className: "cb-where" }, `Level ${ui.level}: ${state.earned} earned, ${state.spent} spent. One blueprint per level gained, the first at level 2.`));
   const mine = state.built.filter(b => !b.starter);
   box.append(el("p", {}, mine.length ? "Built:" : ui.building ? "Tap a glowing slot to build." : "Turn on Build mode to place something."));
   if (mine.length) box.append(el("ul", { className: "cbp-list" }, ...mine.map(b => el("li", {}, `${cityProject(b.project).name} at ${citySlot(b.slot).name}`))));
