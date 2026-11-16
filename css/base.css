@@ -1625,3 +1625,6 @@ body[data-tab="backup"] [data-panel="backup"] { display: block; }
 /* Settings → Backup: branch select next to Export CSV */
 .export-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 8px; }
 .export-row select { font: inherit; font-size: 0.875rem; padding: 6px 8px; border: 1px solid var(--control-border); border-radius: 8px; background: var(--surface); color: var(--text); }
+
+/* Mac "Add to Dock" app: stop a two-finger sideways swipe at the page edge from navigating Back */
+html, body { overscroll-behavior-x: none; }
