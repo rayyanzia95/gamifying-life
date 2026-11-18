@@ -27,13 +27,26 @@ function sleepStreak(events) {
 }
 
 // A labelled <input type="time">. An emptied field saves as no time at all.
+// Browsers fire "change" after each part (hour, then minutes), and saving
+// redraws the card, which would close the picker mid-pick. So while the field
+// has focus we wait, and save once on blur. If focus went to the other time
+// field, it gets focus back after the redraw.
 function timeField(text, value, field) {
   const label = document.createElement("label");
   label.className = "field";
   const input = document.createElement("input");
   input.type = "time";
   input.value = value ?? "";
-  input.addEventListener("change", () => saveSleep({ [field]: input.value || undefined }));
+  input.dataset.field = field;
+  const save = () => {
+    if (input.value !== (value ?? "")) saveSleep({ [field]: input.value || undefined });
+  };
+  input.addEventListener("change", () => { if (document.activeElement !== input) save(); });
+  input.addEventListener("blur", event => {
+    const next = event.relatedTarget?.dataset?.field;
+    save();
+    if (next) document.querySelector(`#sleep input[data-field="${next}"]`)?.focus();
+  });
   label.append(text, input);
   return label;
 }
