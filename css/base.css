@@ -1628,3 +1628,88 @@ body[data-tab="backup"] [data-panel="backup"] { display: block; }
 
 /* Mac "Add to Dock" app: stop a two-finger sideways swipe at the page edge from navigating Back */
 html, body { overscroll-behavior-x: none; }
+
+/* ==== Accent means clickable ====
+   Anything that logs, adds or changes data wears the palette accent: soft tint + accent text, inputs get an
+   accent border, each card's main action is filled. Looks-only things (rings, charts, nav, header icon
+   buttons) and disabled states are left alone. `:root` lifts specificity above the page CSS that loads later. */
+:root {
+  --action: var(--accent);
+  --on-action: var(--on-accent);
+}
+/* Branch pages use their branch colour (a grey palette accent would make the tint invisible). Text on a filled
+   branch colour is --on-accent: contrast-check's "chip" column already proves it reads on every --c-* colour. */
+html[data-branch="deen"] { --action: var(--c-deen); }
+html[data-branch="chores"] { --action: var(--c-chores); }
+html[data-branch="health"] { --action: var(--c-health); }
+html[data-branch="academics"] { --action: var(--c-academics); }
+html[data-branch="money"] { --action: var(--c-money); }
+html[data-branch="personal"] { --action: var(--c-personal); }
+html[data-branch="people"] { --action: var(--c-people); }
+
+/* Soft-tint controls */
+:root .stepper button:not(:disabled),
+:root .rating button,
+:root .filter-button,
+:root .day-nav button:not(:disabled),
+:root .rest-button,
+:root .chore-btn,
+:root .ql-btn:not(.primary):not(.done),
+:root .cb-button:not(.primary) {
+  background: color-mix(in oklch, var(--action) 14%, transparent);
+  border-color: transparent;
+  color: var(--action);
+  font-weight: 600;
+}
+
+:root .stepper button:not(:disabled):hover,
+:root .rating button:hover,
+:root .filter-button:hover,
+:root .day-nav button:not(:disabled):hover,
+:root .rest-button:hover,
+:root .chore-btn:hover,
+:root .ql-btn:not(.primary):not(.done):hover,
+:root .cb-button:not(.primary):hover {
+  background: color-mix(in oklch, var(--action) 24%, transparent);
+  outline: 2px solid var(--action);
+  outline-offset: 0;
+}
+
+/* Bigger tap targets */
+:root .stepper button { width: 36px; height: 36px; font-size: 1.125rem; }
+:root .rating button { min-height: 32px; padding: 4px 12px; }
+:root .filter-button { min-height: 32px; }
+:root .day-nav button { min-height: 36px; }
+
+/* Selected / main action: filled accent */
+:root .rating button[aria-pressed="true"],
+:root .filter-button[aria-pressed="true"],
+:root .filter-button.primary,
+:root .cb-button.primary {
+  background: var(--action);
+  border-color: var(--action);
+  color: var(--on-action);
+}
+
+:root .filter-button:disabled,
+:root .chore-btn:disabled {
+  background: var(--disabled-bg);
+  color: var(--disabled-text);
+  outline: none;
+}
+
+/* Inputs read as fields */
+:root .field input[type="time"],
+:root .money-input,
+:root .amount-input,
+:root .chore-field input,
+:root .chore-field select,
+:root .chore-add input,
+:root .perk-text-input,
+:root .perk-select,
+:root .perk-level-input,
+:root .export-row select {
+  border: 1px solid var(--action);
+  background: var(--surface);
+  color: var(--text);
+}

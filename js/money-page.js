@@ -81,7 +81,7 @@ function amountForm({ button, cents = null, name = null, onSave }) {
     value: cents === null ? "" : (cents / 100).toFixed(2),
   });
   amountInput.setAttribute("aria-label", button + " amount");
-  const save = Object.assign(document.createElement("button"), { className: "filter-button", textContent: button });
+  const save = Object.assign(document.createElement("button"), { className: "filter-button primary", textContent: button });
   const error = Object.assign(document.createElement("p"), { className: "money-error", hidden: true });
 
   form.addEventListener("submit", event => {

@@ -193,7 +193,7 @@ function drawReviewNote(events) {
   form.innerHTML = `<label class="card-title" for="review-note-text">What I'll change next week</label>
     <textarea id="review-note-text" rows="3" maxlength="400" placeholder="One line is enough."></textarea>
     <div class="card-row"><span class="muted">${saved ? "Saved for this week. Edit and save again to change it." : "Kept with this week, synced like everything else."}</span>
-      <button class="filter-button" type="submit">Save</button></div>`;
+      <button class="filter-button primary" type="submit">Save</button></div>`;
   form.querySelector("textarea").value = saved;
   form.addEventListener("submit", event => { event.preventDefault(); saveReviewNote(form.querySelector("textarea").value); });
   document.getElementById("review-note").replaceChildren(form);

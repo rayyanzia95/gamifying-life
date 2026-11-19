@@ -94,7 +94,7 @@ function perkForm() {
   level.setAttribute("aria-label", "Level");
 
   const add = Object.assign(document.createElement("button"),
-    { type: "submit", className: "filter-button", textContent: "Add" });
+    { type: "submit", className: "filter-button primary", textContent: "Add" });
 
   form.addEventListener("submit", e => {
     e.preventDefault();

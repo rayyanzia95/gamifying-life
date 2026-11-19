@@ -82,7 +82,7 @@ function pageForm(book, page) {
     className: "money-input", inputMode: "numeric", placeholder: "Page you're on", value: page || "",
   });
   input.setAttribute("aria-label", `Page you're on in ${book.title}`);
-  const save = Object.assign(document.createElement("button"), { className: "filter-button", textContent: "Save" });
+  const save = Object.assign(document.createElement("button"), { className: "filter-button primary", textContent: "Save" });
   const error = Object.assign(document.createElement("p"), { className: "money-error", hidden: true });
   form.addEventListener("submit", event => {
     event.preventDefault();
@@ -225,7 +225,7 @@ function bookForm() {
   });
   title.setAttribute("aria-label", "Book title");
   pages.setAttribute("aria-label", "Number of pages");
-  const add = Object.assign(document.createElement("button"), { className: "filter-button", textContent: "Add book" });
+  const add = Object.assign(document.createElement("button"), { className: "filter-button primary", textContent: "Add book" });
   const error = Object.assign(document.createElement("p"), { className: "money-error", hidden: true });
   form.addEventListener("submit", event => {
     event.preventDefault();

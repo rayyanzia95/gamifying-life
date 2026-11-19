@@ -344,7 +344,7 @@ function syncForm({ type, placeholder, button, onSubmit, autocomplete }) {
     className: "money-input", type, placeholder, required: true, autocomplete,
   });
   input.setAttribute("aria-label", placeholder);
-  const submit = Object.assign(document.createElement("button"), { className: "filter-button", textContent: button });
+  const submit = Object.assign(document.createElement("button"), { className: "filter-button primary", textContent: button });
   const error = Object.assign(document.createElement("p"), { className: "money-error", hidden: true });
 
   form.addEventListener("submit", async event => {
