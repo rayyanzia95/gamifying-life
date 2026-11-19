@@ -83,6 +83,28 @@ function setupHistory() {
   document.querySelector("body > script").before(card);
   drawHistory();
   window.addEventListener("events-saved", drawHistory);
+  splitColumns();
+}
+
+// Desktop layout: logging cards in a wide left column, progress (hero, XP bar, history) in a narrow right one.
+// The cards are plain body children, so wrap them here once the history card exists. The header (.back, h1,
+// layout headers) stays outside; on phones both wrappers are display: contents so nothing moves.
+function splitColumns() {
+  const hero = document.querySelector("body > .hero");
+  const heroXp = document.querySelector("body > .hero-xp");
+  const history = document.getElementById("history");
+  if (!hero || !heroXp || !history) return;
+  const logging = [];
+  for (let node = heroXp.nextElementSibling; node && node.tagName !== "SCRIPT"; node = node.nextElementSibling) {
+    if (node !== history) logging.push(node);
+  }
+  const progressCol = Object.assign(document.createElement("aside"), { className: "progress-col" });
+  progressCol.setAttribute("aria-label", "Progress");
+  const logCol = Object.assign(document.createElement("div"), { className: "log-col" });
+  hero.before(progressCol);
+  progressCol.append(hero, heroXp, history);
+  progressCol.after(logCol);
+  logCol.append(...logging);
 }
 
 setupHistory();

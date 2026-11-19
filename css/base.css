@@ -1482,30 +1482,43 @@ html[data-layout]:not([data-layout="classic"]) .hero .summary-row { grid-templat
 /* Branch pages: ONE grid for every layout (a page with a .hero card, or body.grid-page). Layouts add their own header
    element after the h1 and only give it `order: -1`; none of them may change body's display (that is what broke the
    wide view in Orrery / Wheel / Grimoire). One column on a phone, hero band + two columns from 1000px. */
-body.has-nav:is(:has(> .hero), .grid-page) {
+body.has-nav:is(:has(> :is(.hero, .progress-col)), .grid-page) {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   column-gap: 16px;
   align-content: start;
 }
-body.has-nav:is(:has(> .hero), .grid-page) > * { min-width: 0; }
-body.has-nav:is(:has(> .hero), .grid-page) > .back { order: -2; justify-self: start; }
-body.has-nav:is(:has(> .hero), .grid-page) > h1 { order: -1; }
+body.has-nav:is(:has(> :is(.hero, .progress-col)), .grid-page) > * { min-width: 0; }
+body.has-nav:is(:has(> :is(.hero, .progress-col)), .grid-page) > .back { order: -2; justify-self: start; }
+body.has-nav:is(:has(> :is(.hero, .progress-col)), .grid-page) > h1 { order: -1; }
+
+/* Phones: the two wrappers vanish so the cards flow in the body grid as before; history stays last. */
+.log-col, .progress-col { display: contents; }
+.history-card { order: 1; }
 
 @media (min-width: 1000px) {
-  body.has-nav:is(:has(> .hero), .grid-page) {
+  body.has-nav:is(:has(> :is(.hero, .progress-col)), .grid-page) {
     --page-width: min(1040px, calc(100vw - 268px));
     grid-template-columns: repeat(2, minmax(0, 1fr));
     align-items: start;
   }
   /* Title, layout header, tabs and lists span; cards pair up. */
-  body.has-nav:is(:has(> .hero), .grid-page) > * { grid-column: 1 / -1; }
-  body.has-nav:is(:has(> .hero), .grid-page) > :is(section.card, a.branch-link):not(.hero):not(.hero-xp) { grid-column: auto; }
+  body.has-nav:is(:has(> :is(.hero, .progress-col)), .grid-page) > * { grid-column: 1 / -1; }
+  body.has-nav:is(:has(> :is(.hero, .progress-col)), .grid-page) > :is(section.card, a.branch-link):not(.hero):not(.hero-xp) { grid-column: auto; }
   /* Hero band: hero card with the XP bar folded under it, full width as on phones. */
-  body.has-nav:has(> .hero) :is(.sleep-week, .dial, .money-rings, .home-hub) { max-width: 340px; margin-inline: auto; }
+  body.has-nav:has(> :is(.hero, .progress-col)) :is(.sleep-week, .dial, .money-rings, .home-hub) { max-width: 340px; margin-inline: auto; }
   /* Long lists (Deen prayers) run in two columns instead of one 1000px-wide strip. */
   #view-prayers #prayers { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 24px; }
+  /* Logging left (wide), progress right (narrow); history.js splitColumns() builds the two wrappers. */
+  body.has-nav:has(> .progress-col) { grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); }
+  body.has-nav > :is(.log-col, .progress-col) { display: block; min-width: 0; align-self: start; }
+  body.has-nav > .log-col { grid-column: 1; order: 0; }
+  body.has-nav > .progress-col { grid-column: 2; order: 1; }
+  .progress-col .summary-row { grid-template-columns: minmax(0, 1fr); }
 }
+
+/* Logging cards get a thin left edge in the action colour. */
+.log-col > section.card { box-shadow: inset 3px 0 0 var(--action); }
 
 /* Streak flame: the drawn icon, always shown (the .ic default is hidden until Appearance → Icons asks for it). */
 .streak-flame .ic { display: inline-block; color: var(--gold); }
