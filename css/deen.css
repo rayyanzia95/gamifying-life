@@ -52,11 +52,12 @@
   padding: 12px;
   cursor: pointer;
   font-size: 0.875rem;
+  background: var(--surface);
 }
 
 .tile.selected {
-  border-color: var(--accent);
-  box-shadow: inset 0 0 0 1px var(--accent);
+  border-color: var(--action);
+  box-shadow: inset 0 0 0 1px var(--action);
 }
 
 .tile-title {

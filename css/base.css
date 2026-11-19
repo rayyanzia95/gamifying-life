@@ -1518,7 +1518,7 @@ body.has-nav:is(:has(> :is(.hero, .progress-col)), .grid-page) > h1 { order: -1;
 }
 
 /* Logging cards get a thin left edge in the action colour. */
-.log-col > section.card { box-shadow: inset 3px 0 0 var(--action); }
+.log-col > :is(section.card, [id^="view-"] > section.card) { box-shadow: inset 3px 0 0 var(--action); }
 
 /* Streak flame: the drawn icon, always shown (the .ic default is hidden until Appearance → Icons asks for it). */
 .streak-flame .ic { display: inline-block; color: var(--gold); }
