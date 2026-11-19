@@ -67,6 +67,68 @@ function check({ vars }) {
   return { results, failed: Object.keys(NEED).filter(k => results[k] < NEED[k]) };
 }
 
+// ---- branch recolour check: every offered hue on every palette ----
+// Mirrors the CSS in base.css: oklch(from var(--c-x) l max(c, CHROMA_FLOOR) h-replaced). Out-of-gamut colours lose
+// chroma until they fit (what browsers do), so lightness is kept and the contrast stays what the palette set.
+const CHROMA_FLOOR = 0.1;
+// The hue lists live in js/settings.js (between the "branch colours" markers); read them from there so they can't drift.
+const settingsSrc = fs.readFileSync(path.join(__dirname, "..", "js", "settings.js"), "utf8");
+const branchBlock = settingsSrc.slice(settingsSrc.indexOf("// ---- branch colours ----"), settingsSrc.indexOf("// ---- end branch colours ----"));
+const { BRANCH_SWATCH_HUES: SWATCH_HUES, BRANCH_SETS } = require("vm").runInNewContext(branchBlock.split("const branchHueKey")[0] + "({ BRANCH_SWATCH_HUES, BRANCH_SETS })");
+const toLinear = hex => {
+  const h = hex.replace("#", "");
+  const full = h.length === 3 ? [...h].map(x => x + x).join("") : h;
+  return [0, 2, 4].map(i => channel(parseInt(full.slice(i, i + 2), 16) / 255));
+};
+function hexToOklch(hex) {
+  const [r, g, b] = toLinear(hex);
+  const l = Math.cbrt(0.4122214708 * r + 0.5363325363 * g + 0.0514459929 * b);
+  const m = Math.cbrt(0.2119034982 * r + 0.6806995451 * g + 0.1073969566 * b);
+  const s = Math.cbrt(0.0883024619 * r + 0.2817188376 * g + 0.6299787005 * b);
+  const L = 0.2104542553 * l + 0.793617785 * m - 0.0040720468 * s;
+  const A = 1.9779984951 * l - 2.428592205 * m + 0.4505937099 * s;
+  const B = 0.0259040371 * l + 0.7827717662 * m - 0.808675766 * s;
+  return { L, C: Math.hypot(A, B), H: ((Math.atan2(B, A) * 180) / Math.PI + 360) % 360 };
+}
+function oklchToLinear({ L, C, H }) {
+  const a = C * Math.cos((H * Math.PI) / 180), b = C * Math.sin((H * Math.PI) / 180);
+  const l = (L + 0.3963377774 * a + 0.2158037573 * b) ** 3;
+  const m = (L - 0.1055613458 * a - 0.0638541728 * b) ** 3;
+  const s = (L - 0.0894841775 * a - 1.291485548 * b) ** 3;
+  return [4.0767416621 * l - 3.3077115913 * m + 0.2309699292 * s,
+    -1.2684380046 * l + 2.6097574011 * m - 0.3413193965 * s,
+    -0.0041960863 * l - 0.7034186147 * m + 1.707614701 * s];
+}
+const inGamut = rgb => rgb.every(x => x >= -0.0005 && x <= 1.0005);
+const encode = c => { const x = Math.min(1, Math.max(0, c)); return x <= 0.0031308 ? 12.92 * x : 1.055 * x ** (1 / 2.4) - 0.055; };
+function recolour(hex, hue) {
+  const { L, C } = hexToOklch(hex);
+  let lo = 0, hi = Math.max(C, CHROMA_FLOOR);
+  if (!inGamut(oklchToLinear({ L, C: hi, H: hue }))) {
+    for (let i = 0; i < 30; i++) {
+      const mid = (lo + hi) / 2;
+      if (inGamut(oklchToLinear({ L, C: mid, H: hue }))) lo = mid; else hi = mid;
+    }
+    hi = lo;
+  }
+  const rgb = oklchToLinear({ L, C: hi, H: hue }).map(encode);
+  return "#" + rgb.map(x => Math.round(x * 255).toString(16).padStart(2, "0")).join("");
+}
+function checkRecolours(palette) {
+  const v = name => palette.vars["--" + name];
+  const bad = [];
+  for (const b of BRANCHES) {
+    const hues = [...new Set([...SWATCH_HUES, ...Object.values(BRANCH_SETS).map(set => set.hues[b])])];
+    for (const hue of hues) {
+      const colour = recolour(v("c-" + b), hue);
+      const ui = Math.min(contrast(colour, v("surface")), contrast(colour, v("bg")));
+      const chip = contrast(v("on-accent"), colour);
+      if (ui < UI_MIN || chip < TEXT_MIN) bad.push(`${b}@${hue} (ui ${ui.toFixed(2)}, chip ${chip.toFixed(2)})`);
+    }
+  }
+  return bad;
+}
+
 // ---- table ----
 const COLUMNS = Object.keys(NEED);
 const onlyFails = process.argv.includes("--fails");
@@ -87,4 +149,10 @@ for (const row of rows) {
 console.log(`\n${rows.length - failures}/${rows.length} pass. Needs: text, text-2, text-3 >= ${TEXT_MIN} on bg and surface;`
   + ` accent >= ${UI_MIN} on bg; on-accent >= ${TEXT_MIN} on accent; each branch >= ${UI_MIN} on bg and surface;`
   + ` chip (on-accent text on each branch) >= ${TEXT_MIN}.`);
-process.exit(failures ? 1 : 0);
+let recolourFails = 0;
+for (const p of readPalettes()) {
+  const bad = p.vars["--c-deen"] ? checkRecolours(p) : [];
+  if (bad.length) { recolourFails += bad.length; console.log(`recolour FAIL ${p.id}: ${bad.join(", ")}`); }
+}
+console.log(`Branch recolours (${SWATCH_HUES.length} swatch hues + set hues, chroma floor ${CHROMA_FLOOR}): ${recolourFails ? recolourFails + " failing" : "all pass"}.`);
+process.exit(failures || recolourFails ? 1 : 0);

@@ -127,6 +127,42 @@ const FX_PRESETS = {
   on: { ...Object.fromEntries(EFFECT_KEYS.map(key => [key, "on"])), texture: "scan" },
 };
 
+// ---- branch colours ----
+// Two ways to recolour the seven branches (see css/base.css, --bh-* / --bc-*): a set (one hue per branch) and
+// a hue per branch. Precedence: a branch's own hue > the set > the palette's own colour.
+// Only hues are stored; lightness and chroma come from the palette, so every pick keeps its contrast.
+// Every hue here is checked by `node tools/contrast-check.js` on every palette: change them there too.
+const BRANCH_IDS = ["deen", "health", "academics", "money", "people", "personal", "chores"];
+const BRANCH_SWATCH_HUES = [25, 55, 80, 105, 130, 215, 240, 265, 300, 340];
+const BRANCH_SETS = {
+  ocean: { label: "Ocean", hues: { deen: 215, health: 240, academics: 265, money: 130, people: 280, personal: 300, chores: 230 } },
+  sunset: { label: "Sunset", hues: { deen: 55, health: 85, academics: 25, money: 70, people: 0, personal: 340, chores: 40 } },
+  jewel: { label: "Jewel", hues: { deen: 240, health: 130, academics: 265, money: 85, people: 350, personal: 310, chores: 215 } },
+  forest: { label: "Forest", hues: { deen: 130, health: 115, academics: 215, money: 95, people: 40, personal: 240, chores: 105 } },
+};
+const branchHueKey = id => "hue" + id[0].toUpperCase() + id.slice(1); // deen → hueDeen
+const BRANCH_COLOUR_CHOICES = {
+  branchSet: {
+    label: "Branch colour set",
+    options: [
+      { value: "palette", label: "Palette's own" },
+      ...Object.entries(BRANCH_SETS).map(([value, { label }]) => ({ value, label })),
+    ],
+  },
+  ...Object.fromEntries(BRANCH_IDS.map(id => [branchHueKey(id), {
+    label: id[0].toUpperCase() + id.slice(1), // the legend in Appearance → Branch colours
+    options: [{ value: "set", label: "Follow set" }, ...BRANCH_SWATCH_HUES.map(h => ({ value: String(h), label: `Hue ${h}` }))],
+  }])),
+};
+
+// The hue a branch should show (a number), or null for the palette's own colour.
+function branchHue(settings, id) {
+  const own = settings[branchHueKey(id)];
+  if (own !== undefined && own !== "set") return Number(own);
+  return BRANCH_SETS[settings.branchSet]?.hues[id] ?? null;
+}
+// ---- end branch colours ----
+
 const APPEARANCE_CHOICES = {
   paletteDark: { label: "Colours in dark mode", options: palettesFor("dark"), default: "multi", featured: FEATURED_PALETTES.dark },
   paletteLight: { label: "Colours in light mode", options: palettesFor("light"), featured: FEATURED_PALETTES.light },
@@ -146,6 +182,7 @@ const APPEARANCE_CHOICES = {
   },
   // A slider, not a list: any whole number in the range is allowed (loadSettings checks it).
   accentHue: { label: "Accent hue", range: { min: 0, max: 359 }, default: 200 },
+  ...BRANCH_COLOUR_CHOICES,
   glow: {
     label: "Glow strength",
     default: "1",
@@ -402,7 +439,25 @@ function applyAppearance() {
     ...Object.fromEntries(EFFECT_KEYS.map(key => [key, s[key]])), // fxBoot → data-fx-boot, animTick → data-anim-tick
   });
   root.style.setProperty("--accent-hue", s.accentHue); // a number the CSS turns into an oklch colour
+  applyBranchHues(s);
   loadTypeFont(s.type);
+}
+
+// A branch with a hue gets --bh-<id> (the hue) and --bc-<id> (chroma floor); base.css turns them into the colour.
+// Without one both are removed, so the palette's own --c-<id> shows.
+const BRANCH_CHROMA_FLOOR = "max(c, 0.1)"; // same floor tools/contrast-check.js uses
+function applyBranchHues(s) {
+  const style = document.documentElement.style;
+  BRANCH_IDS.forEach(id => {
+    const hue = branchHue(s, id);
+    if (hue === null) {
+      style.removeProperty(`--bh-${id}`);
+      style.removeProperty(`--bc-${id}`);
+      return;
+    }
+    style.setProperty(`--bh-${id}`, hue);
+    style.setProperty(`--bc-${id}`, BRANCH_CHROMA_FLOOR);
+  });
 }
 
 applyAppearance();

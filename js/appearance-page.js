@@ -7,6 +7,8 @@ const APPEARANCE_GROUPS = [
   { title: "Layout", keys: ["layout", "orreryView"], note: "Changes how Home and the branch pages are laid out. Works with any palette." },
   { title: "Colours", note: "The light/dark button picks which of the two colour sets shows.",
     keys: ["paletteDark", "paletteLight", "black", "accent", "accentHue", "glow", "tint"] },
+  { title: "Branch colours", preview: "branches", keys: ["branchSet", ...BRANCH_IDS.map(branchHueKey)],
+    note: "Pick a set to recolour all seven branches, then change any one below. A branch's own colour beats the set." },
   { title: "Type and shape", keys: ["type", "size", "radius", "density"] },
   { title: "Bars, ticks and icons", keys: ["bars", "ticks", "icons"] },
   { title: "Motion", keys: ["motion", "levelUp"] },
@@ -39,13 +41,24 @@ function advancedFold(form) {
   return fold;
 }
 
-function groupCard({ title, note, keys, presets }, current) {
+// What a branch page picks up from its colour: a tinted pill (ticks) and a button. Settings has no data-branch,
+// so each sample sets --action itself, the same variable base.css reads on a branch page.
+function branchPreview() {
+  const row = Object.assign(document.createElement("div"), { className: "bc-preview" });
+  row.setAttribute("aria-hidden", "true");
+  row.innerHTML = BRANCHES.map(b =>
+    `<span class="bc-sample" style="--action: var(--${b.id})"><span class="bc-pill">${b.name}</span>` +
+    `<button type="button" class="filter-button" tabindex="-1">Log</button></span>`).join("");
+  return row;
+}
+
+function groupCard({ title, note, keys, presets, preview }, current) {
   const card = Object.assign(document.createElement("section"), { className: "card" });
   const heading = Object.assign(document.createElement("div"), { className: "card-title", textContent: title });
   const form = Object.assign(document.createElement("form"), { className: "appearance-form" });
   form.append(...groupsFor(keys, current));
   const extra = note ? [Object.assign(document.createElement("p"), { className: "muted", textContent: note })] : [];
-  card.append(heading, ...(presets ? [presetRow(), advancedFold(form)] : [form]), ...extra);
+  card.append(heading, ...(preview === "branches" ? [branchPreview()] : []), ...(presets ? [presetRow(), advancedFold(form)] : [form]), ...extra);
   return card;
 }
 

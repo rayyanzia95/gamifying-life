@@ -135,6 +135,21 @@
   --chores: var(--c-chores);
 }
 
+/* Branch recolour (Appearance → Branch colours): settings.js sets --bh-<branch> (hue) and --bc-<branch> (chroma floor)
+   on <html> when a set or a per-branch hue is picked. Same lightness as the palette, new hue. :root only, so palette
+   swatches keep their own colours; it comes after the block above, so it wins on <html>. */
+@supports (color: oklch(from red l c h)) {
+  :root {
+    --deen: oklch(from var(--c-deen) l var(--bc-deen, c) var(--bh-deen, h));
+    --health: oklch(from var(--c-health) l var(--bc-health, c) var(--bh-health, h));
+    --academics: oklch(from var(--c-academics) l var(--bc-academics, c) var(--bh-academics, h));
+    --money: oklch(from var(--c-money) l var(--bc-money, c) var(--bh-money, h));
+    --people: oklch(from var(--c-people) l var(--bc-people, c) var(--bh-people, h));
+    --personal: oklch(from var(--c-personal) l var(--bc-personal, c) var(--bh-personal, h));
+    --chores: oklch(from var(--c-chores) l var(--bc-chores, c) var(--bh-chores, h));
+  }
+}
+
 /* hidden always hides, even on elements whose class sets display: flex or grid. */
 [hidden] {
   display: none !important;
@@ -572,13 +587,13 @@ h1 {
   margin-right: 14px;
 }
 
-.appearance-form .choice[data-key^="palette"] {
+.appearance-form .choice:is([data-key^="palette"], [data-key="branchSet"]) {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); /* 2 cards across at 375px */
   gap: 8px 10px;
 }
 
-.appearance-form .choice[data-key^="palette"] label {
+.appearance-form .choice:is([data-key^="palette"], [data-key="branchSet"]) label {
   display: block;
   margin-right: 0;
 }
@@ -1652,13 +1667,13 @@ html, body { overscroll-behavior-x: none; }
 }
 /* Branch pages use their branch colour (a grey palette accent would make the tint invisible). Text on a filled
    branch colour is --on-accent: contrast-check's "chip" column already proves it reads on every --c-* colour. */
-html[data-branch="deen"] { --action: var(--c-deen); }
-html[data-branch="chores"] { --action: var(--c-chores); }
-html[data-branch="health"] { --action: var(--c-health); }
-html[data-branch="academics"] { --action: var(--c-academics); }
-html[data-branch="money"] { --action: var(--c-money); }
-html[data-branch="personal"] { --action: var(--c-personal); }
-html[data-branch="people"] { --action: var(--c-people); }
+html[data-branch="deen"] { --action: var(--deen); }
+html[data-branch="chores"] { --action: var(--chores); }
+html[data-branch="health"] { --action: var(--health); }
+html[data-branch="academics"] { --action: var(--academics); }
+html[data-branch="money"] { --action: var(--money); }
+html[data-branch="personal"] { --action: var(--personal); }
+html[data-branch="people"] { --action: var(--people); }
 
 /* Soft-tint controls */
 :root .stepper button:not(:disabled),
