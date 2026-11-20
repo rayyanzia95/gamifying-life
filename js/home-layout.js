@@ -21,12 +21,29 @@ const HOME_LAYOUT_FILES = {
   codex: { css: ["css/layout-codex.css"], js: ["js/codex.js"] },
 };
 
-const homeLayoutName = loadSettings().layout;
+// The "City →" pill opens index.html?view=city: this visit shows the City layout, the saved layout stays as it is.
+// applyAppearance (settings.js) reads homeLayoutPeek so a light/dark toggle keeps the city.
+const homeLayoutPeek = new URLSearchParams(location.search).get("view") === "city" ? "city" : "";
+const homeLayoutName = homeLayoutPeek || loadSettings().layout;
 const homeLayoutFiles = HOME_LAYOUT_FILES[homeLayoutName] ?? { css: [], js: [] };
+document.documentElement.dataset.layout = homeLayoutName;
 
 // Another device changed the layout (a sync pull): the files loaded here are the wrong ones, so the page reloads
-// (redrawPage in sync.js checks this).
-const homeLayoutStale = () => loadSettings().layout !== homeLayoutName;
+// (redrawPage in sync.js checks this). A city peek ignores the saved layout, so it never goes stale.
+const homeLayoutStale = () => !homeLayoutPeek && loadSettings().layout !== homeLayoutName;
+
+// The city pill in the header: "← Back" (first) while peeking, hidden when City is already the layout.
+document.addEventListener("DOMContentLoaded", () => {
+  const pill = document.getElementById("city-peek");
+  if (!pill) return;
+  if (homeLayoutPeek) {
+    pill.textContent = "← Back";
+    pill.href = "index.html";
+    pill.parentElement.querySelector(".planner-link")?.before(pill);
+  } else if (homeLayoutName === "city") {
+    pill.hidden = true;
+  }
+});
 
 document.write(homeLayoutFiles.css.map(href => `<link rel="stylesheet" href="${href}">`).join(""));
 

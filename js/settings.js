@@ -435,7 +435,9 @@ function applyAppearance() {
     black: dark ? s.black : "palette",
     accent: s.accent === "custom" ? `custom-${dark ? "dark" : "light"}` : "palette",
     glow: s.glow, type: s.type, bars: s.bars, ticks: s.ticks, motion: s.motion, size: s.size, radius: s.radius,
-    density: s.density, levelUp: s.levelUp, texture: s.texture, icons: s.icons, tint: s.tint, layout: s.layout, orreryView: s.orreryView, centre: s.centre,
+    density: s.density, levelUp: s.levelUp, texture: s.texture, icons: s.icons, tint: s.tint,
+    layout: (typeof homeLayoutPeek === "string" && homeLayoutPeek) || s.layout, // Home's city peek (home-layout.js)
+    orreryView: s.orreryView, centre: s.centre,
     ...Object.fromEntries(EFFECT_KEYS.map(key => [key, s[key]])), // fxBoot → data-fx-boot, animTick → data-anim-tick
   });
   root.style.setProperty("--accent-hue", s.accentHue); // a number the CSS turns into an oklch colour
