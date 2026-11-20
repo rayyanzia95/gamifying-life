@@ -109,11 +109,13 @@ function hudReticleSvg(overall, branches) {
   </svg>`;
 }
 
-// Level climb: one column per branch, as tall as its level (plus progress) next to the highest one.
+// Level climb: one column per branch, as tall as its climb past level 1 (levels gained plus progress)
+// next to the highest one. Levels start at 1, so 0 XP is an empty column.
 function hudColumnsHtml(branches) {
-  const top = Math.max(...branches.map(b => b.level + 1));
+  const climb = b => b.level - 1 + b.into / b.cost;
+  const top = Math.max(1, ...branches.map(b => Math.ceil(climb(b) + 0.001)));
   return branches.map(b => {
-    const height = hudPercent((b.level + b.into / b.cost) / top);
+    const height = hudPercent(climb(b) / top);
     return `<a class="hud-col" href="${b.page}" style="--c: var(--${b.id})" aria-label="${b.name} level ${b.level}">
       <span class="hud-col-track"><i style="height: ${height}%"></i></span><b>${b.level}</b><span>${hudShort(b.name)}</span></a>`;
   }).join("");
