@@ -134,13 +134,19 @@ function earlierMatches(events, event, from, matches) {
 function levelInfo(xp, multiplier) {
   let level = 1;
   let into = xp;
-  let cost = LEVELS.first * multiplier;
+  const costAt = lvl => Math.round((LEVELS.first + LEVELS.step * (lvl - 1)) * multiplier);
+  let cost = costAt(level);
   while (into >= cost) {
     into -= cost;
     level += 1;
-    cost = (LEVELS.first + LEVELS.step * (level - 1)) * multiplier;
+    cost = costAt(level);
   }
   return { level, into, cost };
+}
+
+// A branch's level: levelInfo with that branch's cost multiplier (LEVELS.branchCost).
+function branchLevelInfo(xp, branchId) {
+  return levelInfo(xp, LEVELS.branchCost[branchId] ?? 1);
 }
 
 function branchGoal(branchId) {

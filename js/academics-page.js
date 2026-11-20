@@ -125,7 +125,7 @@ function render() {
   const events = loadEvents();
   const today = todayString();
   const xp = xpByBranch(events)[ACADEMICS.branch] || 0;
-  document.getElementById("levels").innerHTML = badgeHtml("Academics", levelInfo(xp, 1));
+  document.getElementById("levels").innerHTML = badgeHtml("Academics", branchLevelInfo(xp, "academics"));
   document.getElementById("boss-lineup").innerHTML = bossLineupHtml(events, today);
   document.getElementById("bosses").innerHTML = bossListHtml(events, today);
 

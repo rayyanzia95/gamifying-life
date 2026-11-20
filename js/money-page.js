@@ -372,7 +372,7 @@ function render() {
   const events = loadEvents();
   const today = todayString();
   const xp = xpByBranch(events)[MONEY.branch] || 0;
-  document.getElementById("levels").innerHTML = badgeHtml("Money", levelInfo(xp, 1));
+  document.getElementById("levels").innerHTML = badgeHtml("Money", branchLevelInfo(xp, "money"));
   document.getElementById("money-top").innerHTML = moneyTopHtml(events, today);
 
   // The bar mixes today (logged or not) with the payout this week is on track for.

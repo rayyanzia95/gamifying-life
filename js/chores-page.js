@@ -100,7 +100,7 @@ function render() {
   const events = loadEvents();
   const week = weekStart(todayString());
   const xp = xpByBranch(events)[CHORES.branch] || 0;
-  document.getElementById("levels").innerHTML = badgeHtml("Chores", levelInfo(xp, 1));
+  document.getElementById("levels").innerHTML = badgeHtml("Chores", branchLevelInfo(xp, "chores"));
   drawWheel(events);
   drawWeekBar(choreWeek(events, week));
   drawQuests(events, week);

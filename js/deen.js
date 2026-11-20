@@ -205,7 +205,7 @@ function render() {
   document.getElementById("progress-label").textContent = total + " / " + goal + " XP today";
   document.getElementById("bonus").textContent = extra > 0 ? "includes " + extra + " bonus XP" : "";
 
-  const deen = levelInfo(xpByBranch(events).deen || 0, 1);
+  const deen = branchLevelInfo(xpByBranch(events).deen || 0, "deen");
   document.getElementById("levels").innerHTML = badgeHtml("Deen", deen);
   drawTiles(events);
   drawRevision(events);

@@ -325,7 +325,7 @@ function render() {
   const events = loadEvents();
   const today = todayString();
   const xp = xpByBranch(events)[PERSONAL.branch] || 0;
-  document.getElementById("levels").innerHTML = badgeHtml("Personal", levelInfo(xp, 1));
+  document.getElementById("levels").innerHTML = badgeHtml("Personal", branchLevelInfo(xp, "personal"));
 
   // The bar matches the Home ring: plum for today, teal for this week.
   const parts = personalParts(events, today);

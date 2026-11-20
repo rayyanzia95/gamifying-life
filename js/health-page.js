@@ -292,7 +292,7 @@ function render() {
   const events = loadEvents();
   const today = todayString();
   const xp = xpByBranch(events)[SLEEP.branch] || 0;
-  document.getElementById("levels").innerHTML = badgeHtml("Health", levelInfo(xp, 1));
+  document.getElementById("levels").innerHTML = badgeHtml("Health", branchLevelInfo(xp, "health"));
   document.getElementById("sleep-week").innerHTML = sleepWeekHtml(events, today);
 
   // The bar mixes sleep and diet today with this week's sessions, one coloured

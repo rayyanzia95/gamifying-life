@@ -6,7 +6,7 @@
 
 // The level of a branch from XP totals, or the overall level when branchId is null.
 function levelOf(totals, branchId) {
-  if (branchId) return levelInfo(totals[branchId] || 0, 1);
+  if (branchId) return branchLevelInfo(totals[branchId] || 0, branchId);
   const overall = Object.values(totals).reduce((sum, xp) => sum + xp, 0);
   return levelInfo(overall, LEVELS.overallMultiplier);
 }

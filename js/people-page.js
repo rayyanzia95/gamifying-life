@@ -190,7 +190,7 @@ function render() {
   const events = loadEvents();
   const today = todayString();
   const xp = xpByBranch(events)[PEOPLE.branch] || 0;
-  document.getElementById("levels").innerHTML = badgeHtml("People", levelInfo(xp, 1));
+  document.getElementById("levels").innerHTML = badgeHtml("People", branchLevelInfo(xp, "people"));
   drawClock();
 
   // The bar mixes today (checked in or not) with this week's calls home.
