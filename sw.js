@@ -11,7 +11,7 @@
 //
 // To retire old files from the cache after deleting/renaming something, bump CACHE_VERSION.
 
-const CACHE_VERSION = "v17";
+const CACHE_VERSION = "v18";
 const CACHE = `gamifying-life-${CACHE_VERSION}`;
 const NETWORK_TIMEOUT_MS = 4000;
 
@@ -122,6 +122,7 @@ const LOCAL_FILES = [
   "js/prayer-times.js",
   "js/prayer-week.js",
   "js/quick-log-ui.js",
+  "js/look-popup.js",
   "js/quick-log.js",
   "js/quran-view.js",
   "js/quran.js",

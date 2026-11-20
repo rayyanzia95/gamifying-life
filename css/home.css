@@ -125,3 +125,35 @@
   [data-layout]:not([data-layout="classic"]) .home-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
   [data-layout]:not([data-layout="classic"]) .home-centre { grid-column: 1 / -1; }
 }
+
+/* Appearance pill + popup (js/look-popup.js). */
+button.planner-link { font: inherit; font-size: 0.8125rem; cursor: pointer; }
+.look-dialog {
+  width: min(420px, calc(100vw - 24px));
+  box-sizing: border-box;
+  padding: 16px;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: calc(12px * var(--round));
+}
+.look-dialog::backdrop { background: rgb(0 0 0 / 0.45); }
+.look-dialog button { font: inherit; color: inherit; cursor: pointer; }
+.look-dialog button:focus-visible, .look-more:focus-visible { outline: 2px solid var(--action, var(--accent)); outline-offset: 2px; }
+.look-head { display: flex; align-items: center; justify-content: space-between; }
+.look-head h2 { margin: 0; font-size: 1.1rem; }
+.look-close { border: 0; background: none; font-size: 1.5rem; line-height: 1; padding: 4px 8px; }
+.look-dialog h3 { margin: 14px 0 6px; font-size: 0.8rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; }
+.look-tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.look-tile, .look-palette, .look-mode button {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: calc(12px * var(--round));
+}
+.look-tile { padding: 18px 6px; font-weight: 600; font-size: 0.85rem; }
+.look-palettes { display: flex; gap: 8px; overflow-x: auto; padding: 2px 2px 8px; }
+.look-palette { flex: none; padding: 6px 8px; min-width: 52px; }
+.look-mode { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.look-mode button { padding: 8px; }
+.look-dialog [aria-pressed="true"] { border-color: var(--action, var(--accent)); box-shadow: 0 0 0 1px var(--action, var(--accent)); }
+.look-more { display: inline-block; margin-top: 14px; color: var(--action, var(--accent)); text-decoration: none; font-size: 0.875rem; }
