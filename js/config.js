@@ -7,8 +7,8 @@ const SCORING = {
 
 const LEVELS = { first: 600, step: 100, overallMultiplier: 3 };
 // Per-branch level cost multiplier, scaled to a normal day's XP (about Deen 230, Health 90, Academics 50, Personal 25,
-// Money/People/Chores 20), so each branch takes about a week of normal days per level. Overall stays x3 on the sum.
-LEVELS.branchCost = { deen: 2.5, health: 1, academics: 0.5, personal: 0.3, money: 0.25, people: 0.25, chores: 0.25 };
+// Money/Chores 20, People ~40), so each branch takes about a week of normal days per level. Overall stays x3 on the sum.
+LEVELS.branchCost = { deen: 2.5, health: 1, academics: 0.5, personal: 0.3, money: 0.25, people: 0.5, chores: 0.25 };
 
 // Level-up rewards. Each overall level reached gives one rest day, held up to restMax
 // (one earned while holding restMax is not kept). A rest day is spent on one streak's
