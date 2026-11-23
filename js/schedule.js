@@ -167,10 +167,9 @@ const PLANNED_DAYS = {
 // template's generic ECON slot (Mon 2 p.m., Thu 11:15, Fri 11:00) becomes this.
 // The final is Mon Dec 14, 9 a.m. (DEADLINES); Dec 8–13 are in PLANNED_DAYS below.
 const ECON_FINAL_PLAN = {
-  "2026-11-23": ["econ", "ECON: redo all 12 midterm misses", "Rescue Plan table, without looking. Take what's still unclear to office hours at 5 p.m."],
   "2026-11-26": ["econ", "ECON Ch 4 practice set", "Ch 4 answer key at the bottom of the file. Ceilings, floors, government cost"],
   "2026-11-27": ["econ", "ECON Ch 5 + Ch 3 practice sets", "Elasticity, taxes, total revenue test. Keys at the bottom of each file"],
-  "2026-11-30": ["econ", "ECON Ch 1, 2, 6 + Winter 2020 midterm", "PPF, comparative advantage, utility tables, then the midterm with its explanations"],
+  "2026-11-30": ["econ", "ECON Winter 2020 midterm (timed), then its explanations", "Ch 1–6 check before office hours at 5 p.m."],
   "2026-12-03": ["econ", "ECON Ch 7: build the cost table", "TC, TVC, AVC, ATC, MC from scratch until it's automatic"],
   "2026-12-04": ["econ", "ECON Ch 8 + Ch 7–8 practice set", "Shutdown rule, long-run equilibrium. Check against the detailed final answers"],
 };
@@ -189,6 +188,42 @@ const ECON_FINAL_DAYS = {
   "2026-12-13": () => [study("10:00", "11:30", "econ", "ECON: light review only", "Patterns list, miss log, formula sheet. No new material. Sleep early, exam 9 a.m. tomorrow")],
 };
 Object.assign(PLANNED_DAYS, ECON_FINAL_DAYS);
+
+// Week of Nov 23 (planned Nov 22 from Canvas): ECON from scratch, MSA meeting Mon 5 p.m.
+// (ECON office hours moved to Nov 30), one dawah reel, Farwah's PR application.
+const MSA_MEETING = (from, to) => ({ from, to, kind: "class", course: "msa", title: "MSA meeting" });
+const ASTRO_LECTURE = lecture("16:00", "16:50", "ASTRO 101 lecture (CCIS L2-200)", "astro");
+const WEEK_NOV_23 = {
+  "2026-11-23": () => [study("08:45", "09:25", "phys", "PHYS Reading Quiz 8", "Due 9:30 a.m. Do it before the lecture"),
+    CMPUT_LECTURE, PHYS_LECTURE, study("11:00", "11:50", "astro", "ASTRO Knowledge Check 9", "Due 11:55 a.m."),
+    study("12:00", "13:15", "econ", "ECON Ch 1–2: notes + videos at 1.5×", "Rescue Plan cheat notes alongside. Finish with a one-page summary"),
+    rest("13:15", "14:00", "Dhuhr + lunch"),
+    study("14:00", "15:30", "econ", "ECON: redo all 12 midterm misses", "Rescue Plan table, without looking. Note what's still unclear for office hours on Nov 30"),
+    rest("15:30", "15:55", "Asr, walk to CCIS"), ASTRO_LECTURE, MSA_MEETING("17:00", "18:30"),
+    study("19:45", "21:00", "phys", "PHYS Lab 7 report: Speed of Sound", "Due Tue 11 a.m. Get the analysis done tonight")],
+  "2026-11-24": () => [study("09:00", "10:50", "phys", "PHYS Lab 7 report: finish + submit by 11 a.m.", "Then a 5-minute check that A3 runs for the 2 p.m. demo"),
+    lecture("11:00", "13:50", "PHYS 124 lab (L2-150), Dhuhr in the gap", "phys"),
+    lecture("14:00", "16:50", "CMPUT 175 lab D01: Assignment 3 demo at 2 p.m. (UCOMM 3-130)", "cmput")],
+  "2026-11-25": () => [CMPUT_LECTURE, PHYS_LECTURE,
+    study("11:00", "11:50", "econ", "ECON Ch 3: supply and demand, notes + videos", "Demand shifters vs supply shifters"),
+    study("12:00", "13:15", "econ", "ECON Ch 4: equilibrium + price controls, notes + videos"), rest("13:15", "14:00", "Dhuhr + lunch"),
+    study("14:00", "15:30", "phys", "PHYS Content Quiz 8 + this week's lectures", "Quiz due Thu night"),
+    rest("15:30", "15:55", "Asr, walk to CCIS"), ASTRO_LECTURE],
+  "2026-11-26": () => freeDay(["cmput", "CMPUT Lab 8: finish + submit", "Due Fri (tentative), so submit today"],
+    ["econ", "ECON Ch 4 practice set", "Answer key at the bottom of the file. Ceilings, floors, government cost"],
+    ["phys", "PHYS Diffraction report: draft", "Due Tue Dec 1, 11 a.m. Content Quiz 8 tonight if it isn't done"],
+    ["flex", "Farwah's PR application: checklist + documents", "List what's done, what's missing and the next deadline"]),
+  "2026-11-27": () => friday(["econ", "ECON Ch 5 + Ch 3 practice sets", "Elasticity, taxes, total revenue test. Read the Ch 5 cheat notes first"],
+    ["cmput", "CMPUT Midterm 3 prep: start", "Midterm Mon Dec 7. List the topics since Midterm 2"]),
+  "2026-11-28": () => [study("10:00", "11:30", "econ", "ECON Ch 6: consumer choice + utility tables", "Then the Ch 1–2 practice questions"),
+    study("11:45", "12:45", "chore", "Fold laundry + ironing"), rest("12:45", "14:15", "Dhuhr + lunch"),
+    study("14:15", "15:15", "chore", "Cleaning"), study("15:15", "17:00", "msa", "Dawah reel #1: rough cut", "Clips in order, trim, rough timing")],
+  "2026-11-29": () => [study("10:00", "11:30", "msa", "Dawah reel #1: captions, polish, export, send", "One full watch-through before you export"),
+    study("11:45", "13:00", "study", "Study Skills Reflection Letter", "Due tonight 11:59 p.m."),
+    study("14:00", "15:15", "flex", "Farwah's PR application: forms", "Lahore is 11 hours ahead, so call her this morning or tonight if you need her documents"),
+    study("15:30", "16:30", "phys", "PHYS Reading Quiz 9 + ASTRO Knowledge Check 10", "Both due Monday morning")],
+};
+Object.assign(PLANNED_DAYS, WEEK_NOV_23);
 
 // ---- Nov 2 – Dec 6: the weekly template ----
 
