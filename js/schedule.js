@@ -162,6 +162,34 @@ const PLANNED_DAYS = {
     ["cmput", "CMPUT Post-test 6: Queues and Linked Lists", "Due tonight (Canvas: 12:30 a.m.)"]),
 };
 
+// ---- ECON final rescue plan (Nov 22): what each template ECON slot covers ----
+// From the "ECON 101 Final Exam Rescue Plan" doc (Study page). On these dates the
+// template's generic ECON slot (Mon 2 p.m., Thu 11:15, Fri 11:00) becomes this.
+// The final is Mon Dec 14, 9 a.m. (DEADLINES); Dec 8–13 are in PLANNED_DAYS below.
+const ECON_FINAL_PLAN = {
+  "2026-11-23": ["econ", "ECON: redo all 12 midterm misses", "Rescue Plan table, without looking. Take what's still unclear to office hours at 5 p.m."],
+  "2026-11-26": ["econ", "ECON Ch 4 practice set", "Ch 4 answer key at the bottom of the file. Ceilings, floors, government cost"],
+  "2026-11-27": ["econ", "ECON Ch 5 + Ch 3 practice sets", "Elasticity, taxes, total revenue test. Keys at the bottom of each file"],
+  "2026-11-30": ["econ", "ECON Ch 1, 2, 6 + Winter 2020 midterm", "PPF, comparative advantage, utility tables, then the midterm with its explanations"],
+  "2026-12-03": ["econ", "ECON Ch 7: build the cost table", "TC, TVC, AVC, ATC, MC from scratch until it's automatic"],
+  "2026-12-04": ["econ", "ECON Ch 8 + Ch 7–8 practice set", "Shutdown rule, long-run equilibrium. Check against the detailed final answers"],
+};
+const econSlot = (date, slot) => ECON_FINAL_PLAN[date] ?? slot;
+
+// Dec 8–13: classes are over. ECON in the mornings, the rest of the day left for ASTRO and PHYS finals.
+const econFinalDay = (a, b) => [study("09:30", "12:00", ...a), rest("12:00", "13:00", "Dhuhr + lunch"),
+  ...(b ? [study("13:00", "14:30", ...b)] : [])];
+const PAST_FINAL = year => ["econ", `ECON past final: Fall ${year}, timed`, "150 min, on paper, no notes. Then mark it with the detailed answers"];
+const ECON_FINAL_DAYS = {
+  "2026-12-08": () => econFinalDay(["econ", "ECON Ch 9–10: monopoly, monopolistic competition, oligopoly", "Rescue Plan cheat notes. Do Quiz 5 yourself if it's open"]),
+  "2026-12-09": () => econFinalDay(PAST_FINAL(2016), ["econ", "ECON: redo every miss from Fall 2016"]),
+  "2026-12-10": () => econFinalDay(PAST_FINAL(2017), ["econ", "ECON: redo every miss from Fall 2017"]),
+  "2026-12-11": () => [study("09:00", "11:30", ...PAST_FINAL(2018)), rest("12:00", "14:00", "Jumu'ah + lunch")],
+  "2026-12-12": () => econFinalDay(["econ", "ECON: redo Fall 2018 misses + weakest chapter", "Whichever chapter cost you most across the three finals"]),
+  "2026-12-13": () => [study("10:00", "11:30", "econ", "ECON: light review only", "Patterns list, miss log, formula sheet. No new material. Sleep early, exam 9 a.m. tomorrow")],
+};
+Object.assign(PLANNED_DAYS, ECON_FINAL_DAYS);
+
 // ---- Nov 2 – Dec 6: the weekly template ----
 
 const isBetween = (date, range) => date >= range.from && date <= range.to;
@@ -182,13 +210,13 @@ function templateDay(date) {
   const phys = slot => (isBetween(date, SCHEDULE.physMidterm) ? PHYS_PREP : slot);
   const cmputMid = isBetween(date, SCHEDULE.cmputMidterm);
   switch (weekday) {
-    case 1: return monWed(date, phys(["phys", "PHYS review: this week's lectures"]), ["econ", "ECON: this week's chapter"]);
+    case 1: return monWed(date, phys(["phys", "PHYS review: this week's lectures"]), econSlot(date, ["econ", "ECON: this week's chapter"]));
     case 2: return tuesday(["phys", "PHYS prelab + submit last week's lab report", "Report due 11 a.m."]);
     case 3: return monWed(date, ["astro", "ASTRO: this week's module"], phys(["phys", "PHYS Content Quiz", "Due Thu night"]));
     case 4: return freeDay(
       cmputMid ? ["cmput", "CMPUT Midterm 3 prep", "Midterm Mon Dec 7, 25%"] : ["cmput", "CMPUT lab or assignment due Fri"],
-      ["econ", "ECON: this week's chapter"], ["phys", "PHYS lab report draft"], ["astro", "ASTRO: module + Knowledge Check"]);
-    case 5: return friday(["econ", "ECON problems"], cmputMid ? ["cmput", "CMPUT Midterm 3 practice"] : ["cmput", "CMPUT assignment"]);
+      econSlot(date, ["econ", "ECON: this week's chapter"]), ["phys", "PHYS lab report draft"], ["astro", "ASTRO: module + Knowledge Check"]);
+    case 5: return friday(econSlot(date, ["econ", "ECON problems"]), cmputMid ? ["cmput", "CMPUT Midterm 3 practice"] : ["cmput", "CMPUT assignment"]);
     case 6: return saturday(phys(["phys", "PHYS problem set"]));
     default: return [study("10:00", "11:30", "phys", "PHYS Reading Quiz + ASTRO Knowledge Check", "Both due Monday morning"),
       study("11:45", "13:00", "study", "Study Skills quiz + plan the week")];
