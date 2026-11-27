@@ -7,6 +7,7 @@
 //       "class", "exam", "break", "flex"  shown only.
 // scheduleFor(date) builds a day: a hand-written day from PLANNED_DAYS (Oct 15 – Nov 6),
 // else the weekly template (Nov 2 – Dec 6), else just classes (until Dec 7).
+// Nov 26 re-plan: ECON restarts from Ch 1 and PHYS from Part 9; REPLAN_NOV_26 holds Nov 30 – Dec 22.
 
 const SCHEDULE = {
   templateStart: "2026-11-02",
@@ -167,11 +168,8 @@ const PLANNED_DAYS = {
 // template's generic ECON slot (Mon 2 p.m., Thu 11:15, Fri 11:00) becomes this.
 // The final is Mon Dec 14, 9 a.m. (DEADLINES); Dec 8–13 are in PLANNED_DAYS below.
 const ECON_FINAL_PLAN = {
-  "2026-11-26": ["econ", "ECON Ch 4 practice set", "Ch 4 answer key at the bottom of the file. Ceilings, floors, government cost"],
-  "2026-11-27": ["econ", "ECON Ch 5 + Ch 3 practice sets", "Elasticity, taxes, total revenue test. Keys at the bottom of each file"],
-  "2026-11-30": ["econ", "ECON Winter 2020 midterm (timed), then its explanations", "Ch 1–6 check before office hours at 5 p.m."],
-  "2026-12-03": ["econ", "ECON Ch 7: build the cost table", "TC, TVC, AVC, ATC, MC from scratch until it's automatic"],
-  "2026-12-04": ["econ", "ECON Ch 8 + Ch 7–8 practice set", "Shutdown rule, long-run equilibrium. Check against the detailed final answers"],
+  // Nov 26: nothing on this list was done yet, so the dates moved. The new ones are full
+  // days in WEEK_NOV_23 and REPLAN_NOV_26 below; this object is now empty on purpose.
 };
 const econSlot = (date, slot) => ECON_FINAL_PLAN[date] ?? slot;
 
@@ -179,13 +177,25 @@ const econSlot = (date, slot) => ECON_FINAL_PLAN[date] ?? slot;
 const econFinalDay = (a, b) => [study("09:30", "12:00", ...a), rest("12:00", "13:00", "Dhuhr + lunch"),
   ...(b ? [study("13:00", "14:30", ...b)] : [])];
 const PAST_FINAL = year => ["econ", `ECON past final: Fall ${year}, timed`, "150 min, on paper, no notes. Then mark it with the detailed answers"];
+// Exam period: ECON in the mornings until the Dec 14 final, PHYS (new Parts 9–11) in the afternoons.
+const examDay = (a, b, c) => [study("09:30", "12:00", ...a), rest("12:00", "13:00", "Dhuhr + lunch"),
+  ...(b ? [study("13:00", "14:30", ...b)] : []), rest("15:00", "15:15", "Asr"),
+  ...(c ? [study("15:15", "16:45", ...c)] : [])];
 const ECON_FINAL_DAYS = {
-  "2026-12-08": () => econFinalDay(["econ", "ECON Ch 9–10: monopoly, monopolistic competition, oligopoly", "Rescue Plan cheat notes. Do Quiz 5 yourself if it's open"]),
-  "2026-12-09": () => econFinalDay(PAST_FINAL(2016), ["econ", "ECON: redo every miss from Fall 2016"]),
-  "2026-12-10": () => econFinalDay(PAST_FINAL(2017), ["econ", "ECON: redo every miss from Fall 2017"]),
-  "2026-12-11": () => [study("09:00", "11:30", ...PAST_FINAL(2018)), rest("12:00", "14:00", "Jumu'ah + lunch")],
-  "2026-12-12": () => econFinalDay(["econ", "ECON: redo Fall 2018 misses + weakest chapter", "Whichever chapter cost you most across the three finals"]),
-  "2026-12-13": () => [study("10:00", "11:30", "econ", "ECON: light review only", "Patterns list, miss log, formula sheet. No new material. Sleep early, exam 9 a.m. tomorrow")],
+  "2026-12-08": () => examDay(["econ", "ECON Ch 10: monopolistic competition, oligopoly, game theory", "Rescue Plan cheat notes. First: PHYS redo-lab selection on Canvas if you want one (due noon)"],
+    ["econ", "ECON Ch 9–10 practice + Quiz 5 if it's open", "Payoff matrices: dominant strategies, Nash equilibrium"],
+    ["phys", "PHYS Ch 14: waves and sound", "Part 10 slides, then 14.15 and 14.57"]),
+  "2026-12-09": () => examDay(PAST_FINAL(2016), ["econ", "ECON: redo every miss from Fall 2016"],
+    ["phys", "PHYS Ch 14 + 28: standing waves, interference, diffraction", "Rest of Part 10, then 14.59, 14.63, 14.69"]),
+  "2026-12-10": () => examDay(PAST_FINAL(2017), ["econ", "ECON: redo every miss from Fall 2017"],
+    ["phys", "PHYS Ch 12: gravity", "Part 11 slides, then 12.7, 12.17, 12.21"]),
+  "2026-12-11": () => [study("09:00", "11:30", ...PAST_FINAL(2018)), rest("12:00", "14:00", "Jumu'ah + lunch"),
+    study("14:15", "15:30", "phys", "PHYS Ch 12: orbits + escape speed", "12.43, 12.49 and the rest of Part 11"), study("15:45", "17:00", ...LAUNDRY)],
+  "2026-12-12": () => [...examDay(["econ", "ECON: redo Fall 2018 misses + weakest chapter", "Whichever chapter cost you most across the three finals"],
+    ["econ", "ECON Final Mock Exam, timed", "Study page → Final Mock Exams. Mark it, redo the misses"]),
+    study("15:15", "16:15", "chore", "Fold laundry + cleaning")],
+  "2026-12-13": () => [study("10:00", "11:30", "econ", "ECON: light review only", "Patterns list, miss log, formula sheet. No new material. Sleep early, exam 9 a.m. tomorrow"),
+    study("11:45", "12:15", "study", "Study Skills: Student Evaluation Form", "Due tonight. 5% for completing it")],
 };
 Object.assign(PLANNED_DAYS, ECON_FINAL_DAYS);
 
@@ -214,16 +224,71 @@ const WEEK_NOV_23 = {
     ["econ", "ECON Ch 4 practice set", "Answer key at the bottom of the file. Ceilings, floors, government cost"],
     ["phys", "PHYS Diffraction report: draft", "Due Tue Dec 1, 11 a.m. Content Quiz 8 tonight if it isn't done"],
     ["flex", "Farwah's PR application: checklist + documents", "List what's done, what's missing and the next deadline"]),
-  "2026-11-27": () => friday(["econ", "ECON Ch 5 + Ch 3 practice sets", "Elasticity, taxes, total revenue test. Read the Ch 5 cheat notes first"],
+  // Nov 27 on: re-planned Nov 26 (ECON from Ch 1, PHYS from the Lab 8 report).
+  "2026-11-27": () => friday(["econ", "ECON Ch 1–2: notes + videos at 1.5×, one-page summary", "Restarting ECON from zero for the Dec 14 final. Rescue Plan cheat notes alongside"],
     ["cmput", "CMPUT Midterm 3 prep: start", "Midterm Mon Dec 7. List the topics since Midterm 2"]),
-  "2026-11-28": () => [study("10:00", "11:30", "econ", "ECON Ch 6: consumer choice + utility tables", "Then the Ch 1–2 practice questions"),
+  "2026-11-28": () => [study("10:00", "11:30", "phys", "PHYS Lab 8 (Diffraction) report: draft", "Due Tue Dec 1, 11 a.m."),
     study("11:45", "12:45", "chore", "Fold laundry + ironing"), rest("12:45", "14:15", "Dhuhr + lunch"),
     study("14:15", "15:15", "chore", "Cleaning")],
-  "2026-11-29": () => [study("11:45", "13:00", "study", "Study Skills Reflection Letter", "Due tonight 11:59 p.m."),
+  "2026-11-29": () => [study("10:00", "11:30", "econ", "ECON: redo all 12 midterm misses", "Rescue Plan table, without looking. Note what's still unclear for office hours Mon 5 p.m."),
+    study("11:45", "13:00", "study", "Study Skills Reflection Letter", "Due tonight 11:59 p.m."),
     study("14:00", "15:15", "flex", "Farwah's PR application: forms", "Lahore is 11 hours ahead, so call her this morning or tonight if you need her documents"),
-    study("15:30", "16:30", "phys", "PHYS Reading Quiz 9 + ASTRO Knowledge Check 10", "Both due Monday morning")],
+    study("15:30", "17:00", "cmput", "CMPUT Midterm 3 prep", "Midterm Mon Dec 7, 25%")],
 };
 Object.assign(PLANNED_DAYS, WEEK_NOV_23);
+
+// ---- Nov 26 re-plan: Nov 30 – Dec 7 (ECON Ch 3–9, Lab 8, PHYS Ch 13) and Dec 14 – 22 ----
+// ECON final Mon Dec 14 9 a.m., ASTRO Fri Dec 18 1 p.m. (pending accommodation), PHYS Tue Dec 22 5:30 p.m.
+const REPLAN_NOV_26 = {
+  "2026-11-30": date => monWed(date, ["econ", "ECON Ch 4: equilibrium + price controls, notes + videos"],
+    ["econ", "ECON Ch 4 practice set", "Answer key at the bottom of the file. Ceilings, floors, government cost. Office hours at 5"],
+    ["econ", "ECON Ch 3: supply and demand, notes + videos", "Demand shifters vs supply shifters"]),
+  "2026-12-01": () => tuesday(["phys", "PHYS Lab 8 (Diffraction) report: finish + submit", "Due 11 a.m. on Canvas"]),
+  "2026-12-02": date => monWed(date, ["astro", "ASTRO: this week's module"],
+    ["econ", "ECON Ch 5 + Ch 3 practice sets", "Elasticity, taxes, total revenue test. Keys at the bottom of each file"],
+    ["econ", "ECON Ch 5: elasticity + taxes, notes + videos"]),
+  "2026-12-03": () => freeDay(["cmput", "CMPUT Midterm 3 prep", "Midterm Mon Dec 7, 25%"],
+    ["econ", "ECON Ch 6: consumer choice + utility tables", "Then the Ch 1–2 practice questions"],
+    ["phys", "PHYS Ch 13: simple harmonic motion, part 1", "Part 9 slides, then 13.11, 13.15, 13.23"],
+    ["astro", "ASTRO: module + Knowledge Check"]),
+  "2026-12-04": () => friday(["econ", "ECON Winter 2020 midterm (timed), then its explanations", "Ch 1–6 check. Week 5 on Canvas"],
+    ["cmput", "CMPUT Midterm 3 practice"]),
+  "2026-12-05": () => saturday(["econ", "ECON Ch 7: build the cost table", "TC, TVC, AVC, ATC, MC from scratch until it's automatic"]),
+  "2026-12-06": () => [study("10:00", "11:30", "econ", "ECON Ch 8 + Ch 7–8 practice set", "Shutdown rule, long-run equilibrium. Check against the answer key"),
+    study("11:45", "13:00", "study", "Study Skills quiz + plan the week"),
+    study("14:00", "15:30", "cmput", "CMPUT Midterm 3: redo missed questions, build your cheat sheet", "Midterm tomorrow, 9 a.m.")],
+  "2026-12-07": date => [exam("09:00", "09:50", "cmput", "CMPUT 175 Midterm 3 (NRE 1-001)", "25%, in class"), PHYS_LECTURE,
+    study("12:00", "13:15", "econ", "ECON Ch 9: monopoly + price discrimination", "Week 9 notes and videos, Rescue Plan cheat notes"),
+    rest("13:15", "14:00", "Dhuhr + lunch"),
+    study("14:00", "15:30", "phys", "PHYS Ch 13: SHM energy + pendulums", "Rest of Part 9, then 13.29, 13.41"),
+    rest("15:30", "15:55", "Asr, walk to CCIS"), astroSlot(date)],
+  "2026-12-14": () => [exam("09:00", "11:30", "econ", "ECON 101 Final Exam (ED 3-106)", "2.5 h. Formula sheet provided"),
+    rest("12:00", "13:00", "Dhuhr + lunch"),
+    study("14:00", "15:30", "phys", "PHYS Ch 1–6 review (light)", "Redo Content Quizzes 1–4 without notes")],
+  "2026-12-15": () => freeDay(["astro", "ASTRO final review: Modules 1–5", "Final Fri Dec 18, 1 p.m. (pending accommodation)"],
+    ["astro", "ASTRO final review: Modules 6–10"],
+    ["phys", "PHYS Ch 7–9 review: energy + momentum", "Redo Content Quizzes 5–6"],
+    ["phys", "PHYS Ch 10–11 review: rotation", "Redo Content Quiz 7"]),
+  "2026-12-16": () => freeDay(["astro", "ASTRO: practice Knowledge Checks + quizzes", "Redo the ones you got wrong"],
+    ["astro", "ASTRO: weakest modules"],
+    ["phys", "PHYS Ch 13, 14 + 28 review", "Redo Content Quizzes 8–9"],
+    ["phys", "PHYS Ch 12 review: gravity", "Redo Content Quiz 10"]),
+  "2026-12-17": () => freeDay(["astro", "ASTRO: mock final, timed", "Then fix every miss"],
+    ["astro", "ASTRO: light review of misses"],
+    ["phys", "PHYS: random content-quiz questions, mixed", "Canvas → Past Exams and Practice Materials"],
+    ["flex", "Flex, then an early night"]),
+  "2026-12-18": () => [study("09:30", "11:00", "astro", "ASTRO: light review only", "Final at 1 p.m. unless the accommodation moves it. Check Bear Tracks")],
+  "2026-12-19": () => saturday(["phys", "PHYS online past exam, timed", "Canvas → Past Exams and Practice Materials. Mark it and start a mistake log by chapter"]),
+  "2026-12-20": () => [study("10:00", "11:30", "phys", "PHYS past Midterms 1 + 2 (2025), timed", "Chapters 1–11. You didn't write Midterm 2, so this is your check on that half"),
+    study("11:45", "13:00", "phys", "PHYS: fix those mistakes + formula sheet walkthrough", "Know which line of the formula sheet solves which kind of problem")],
+  "2026-12-21": () => freeDay(["phys", "PHYS mock final, first half (15 Q, 90 min)", "Past-exam + random content-quiz questions, 6 minutes each"],
+    ["phys", "PHYS mock final, second half (15 Q, 90 min)", "Then mark both halves"],
+    ["phys", "PHYS: fix only what you got wrong", "Then stop. Early night"],
+    ["flex", "Pack: pencil, OneCard, non-programmable calculator"]),
+  "2026-12-22": () => [study("10:00", "11:30", "phys", "PHYS: mistake log + formula sheet only (light)", "No new material today"),
+    exam("17:30", "20:30", "phys", "PHYS 124 Final Exam (Van Vliet Pavilion)", "30 MC, cumulative except chapter 30. Midterm 2's weight is on this exam")],
+};
+Object.assign(PLANNED_DAYS, REPLAN_NOV_26);
 
 // ---- Nov 2 – Dec 6: the weekly template ----
 
